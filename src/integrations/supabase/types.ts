@@ -88,7 +88,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ranking_semanal: {
+        Row: {
+          melhor_nota: number | null
+          nome: string | null
+          total_redacoes: number | null
+          ultima_redacao: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
