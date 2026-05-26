@@ -11,7 +11,7 @@ import { Trophy, Medal, Award, Sparkles, TrendingUp } from "lucide-react";
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
-      { title: "Top Notas da Semana – Nota900 AI" },
+      { title: "Top Notas da Semana – Nota 1000 ENEM" },
       { name: "description", content: "Veja o ranking das melhores notas de redação ENEM da semana. Entre para competir e evoluir sua nota." },
     ],
   }),

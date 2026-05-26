@@ -6,14 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Sparkles, Zap, Brain, FileText, Trophy, Target, Check, Star, ArrowRight, BookOpen, GraduationCap } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import heroMockup from "@/assets/hero-mockup.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nota900 AI – Corretor de Redação ENEM com Inteligência Artificial" },
-      { name: "description", content: "Descubra sua nota do ENEM em segundos. Corrija redações com IA, treine questões e estude com metodologia focada em nota 900+." },
-      { property: "og:title", content: "Nota900 AI – Sua aprovação no ENEM começa aqui" },
+      { title: "Nota 1000 ENEM – Corretor de Redação ENEM com Inteligência Artificial" },
+      { name: "description", content: "Descubra sua nota do ENEM em segundos. Corrija redações com IA, treine questões e estude com metodologia focada em nota 1000." },
+      { property: "og:title", content: "Nota 1000 ENEM – Sua aprovação no ENEM começa aqui" },
       { property: "og:description", content: "Correção de redação ENEM com IA, simulados, vídeo aulas e metodologia comprovada." },
     ],
   }),
@@ -49,7 +50,7 @@ function Index() {
           </div>
           <div className="relative">
             <div className="absolute inset-0 -z-10 blur-3xl opacity-50 bg-primary/30 rounded-full" />
-            <img src={heroMockup} alt="IA Nota900 corrigindo redação do ENEM" width={1280} height={960} className="animate-float rounded-2xl border border-primary/20 glow-blue" />
+            <img src={heroMockup} alt="IA Nota 1000 ENEM corrigindo redação do ENEM" width={1280} height={960} className="animate-float rounded-2xl border border-primary/20 glow-blue" />
           </div>
         </div>
       </section>
@@ -59,7 +60,7 @@ function Index() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
-            <h2 className="mt-3 text-3xl font-bold md:text-4xl">3 passos para sua <span className="gradient-text">nota 900+</span></h2>
+            <h2 className="mt-3 text-3xl font-bold md:text-4xl">3 passos para sua <span className="gradient-text">nota 1000</span></h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -143,7 +144,7 @@ function Index() {
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { name: "ENEM Light", price: "19,90", cta: "Começar Agora", popular: false, items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 900+", "Acesso básico IA"] },
+              { name: "ENEM Light", price: "19,90", cta: "Começar Agora", popular: false, items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"] },
               { name: "ENEM Pro", price: "29,90", cta: "Quero o Pro", popular: true, items: ["Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1000 questões para passar", "Simulados", "Correção IA avançada", "Repertórios automáticos", "Cronograma inteligente"] },
               { name: "Full Acesso", price: "49,90", cta: "Quero Acesso Total", popular: false, items: ["Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"] },
             ].map((p) => (
@@ -174,7 +175,7 @@ function Index() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Provas sociais</Badge>
-            <h2 className="mt-3 text-3xl font-bold md:text-4xl">Resultados de quem usou a <span className="gradient-text">Nota900 AI</span></h2>
+            <h2 className="mt-3 text-3xl font-bold md:text-4xl">Resultados de quem usou a <span className="gradient-text">Nota 1000 ENEM</span></h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -189,6 +190,56 @@ function Index() {
               </Card>
             ))}
           </div>
+
+          {/* CARROSSEL DE MAIS PROVAS SOCIAIS */}
+          <div className="mt-12">
+            <div className="mb-6 text-center">
+              <Badge variant="outline" className="border-primary/40 text-primary">
+                <Star className="mr-1 h-3 w-3 fill-primary" /> Mais histórias reais
+              </Badge>
+              <h3 className="mt-3 text-2xl font-bold md:text-3xl">
+                +12 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
+              </h3>
+            </div>
+            <Carousel opts={{ align: "start", loop: true }} className="mx-auto max-w-6xl">
+              <CarouselContent>
+                {[
+                  { name: "Beatriz, 17", curso: "Quer Direito", nota: "780 → 940", text: "Em 3 semanas usando o Modo Professor Rígido, minha nota subiu quase 200 pontos. A IA é honesta como meu cursinho não é." },
+                  { name: "Rafael, 18", curso: "Engenharia", nota: "620 → 880", text: "Eu não tinha repertório nenhum. Os repertórios automáticos me deram um banco de exemplos que uso em qualquer tema." },
+                  { name: "Camila, 19", curso: "Medicina USP", nota: "900 → 980", text: "Achei que já estava bom, mas a IA mostrou erros sutis de coesão. Passei em primeira chamada na USP." },
+                  { name: "Thiago, 16", curso: "2º ano EM", nota: "540 → 820", text: "Comecei cedo e em 6 meses dobrei minha nota. O cronograma de estudo me organizou de verdade." },
+                  { name: "Larissa, 18", curso: "Psicologia", nota: "700 → 920", text: "O que mais me ajudou foi ver onde eu perdia ponto em cada competência. Antes era um chute, agora é estratégia." },
+                  { name: "Pedro, 17", curso: "Ciência da Computação", nota: "660 → 900", text: "Treinei 1 redação por dia por 2 meses. A IA me corrige na mesma hora, em segundos. Mudou tudo." },
+                  { name: "Sofia, 19", curso: "Arquitetura", nota: "740 → 940", text: "A proposta de intervenção sempre foi meu calcanhar de Aquiles. Aprendi a estrutura certa e nunca mais perdi nota nessa." },
+                  { name: "Gabriel, 18", curso: "Direito UFMG", nota: "820 → 960", text: "Usei o ranking semanal pra me motivar. Brigar pelo top 3 vira vício saudável." },
+                  { name: "Helena, 17", curso: "Quer Veterinária", nota: "580 → 860", text: "Eu chorava ao ver minhas redações antigas. Hoje escrevo com confiança e sei exatamente onde melhorar." },
+                ].map((t, i) => (
+                  <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
+                    <Card className="card-glass h-full p-6">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="flex gap-1">
+                          {Array.from({length: 5}).map((_, k) => <Star key={k} className="h-3.5 w-3.5 fill-primary text-primary" />)}
+                        </div>
+                        <Badge variant="outline" className="border-primary/40 text-xs text-primary">{t.nota}</Badge>
+                      </div>
+                      <p className="text-sm leading-relaxed">"{t.text}"</p>
+                      <div className="mt-4 flex items-center gap-3 border-t border-border/40 pt-3">
+                        <div className="grid h-10 w-10 place-content-center rounded-full bg-primary/10 text-sm font-bold text-primary ring-1 ring-primary/30">
+                          {t.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{t.name}</p>
+                          <p className="text-xs text-muted-foreground">{t.curso}</p>
+                        </div>
+                      </div>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
+          </div>
         </div>
       </section>
 
@@ -196,7 +247,7 @@ function Index() {
       <section className="border-t border-border/40 py-20">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
-          <h2 className="mt-4 text-3xl font-bold md:text-5xl">Sua nota 900 começa <span className="gradient-text">hoje</span>.</h2>
+          <h2 className="mt-4 text-3xl font-bold md:text-5xl">Sua nota 1000 começa <span className="gradient-text">hoje</span>.</h2>
           <p className="mt-3 text-muted-foreground">Teste grátis. Sem cartão. Sem enrolação.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link to="/redacao"><Button size="lg" className="glow-blue">Corrigir minha redação agora <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>

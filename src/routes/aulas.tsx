@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 export const Route = createFileRoute("/aulas")({
   head: () => ({
     meta: [
-      { title: "Vídeo Aulas ENEM – Nota900 AI" },
+      { title: "Vídeo Aulas ENEM – Nota 1000 ENEM" },
       { name: "description", content: "Vídeo aulas focadas em alta performance no ENEM: redação, matemática, linguagens e mais." },
     ],
   }),
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/aulas")({
 
 const trilhas = [
   {
-    area: "Redação Nota 900+",
+    area: "Redação Nota 1000",
     cor: "from-primary/30 to-primary/5",
     aulas: [
       { t: "Estrutura dissertativo-argumentativa", min: 12, free: true },
@@ -66,7 +66,7 @@ function Aulas() {
           <Sparkles className="mr-1 h-3 w-3" /> Conteúdo focado em aprovação
         </Badge>
         <h1 className="mt-3 text-3xl font-bold md:text-5xl">
-          Vídeo aulas <span className="gradient-text">Nota900</span>
+          Vídeo aulas <span className="gradient-text">Nota 1000 ENEM</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Trilhas curtas e diretas ao ponto, sem enrolação, focadas no que mais cai no ENEM.
