@@ -20,7 +20,7 @@ export const Route = createFileRoute("/aulas")({
 
 const trilhas = [
   {
-    area: "Redação Nota 900+",
+    area: "Redação Nota 1000",
     cor: "from-primary/30 to-primary/5",
     aulas: [
       { t: "Estrutura dissertativo-argumentativa", min: 12, free: true },
