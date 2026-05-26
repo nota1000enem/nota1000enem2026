@@ -7,6 +7,8 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Sparkles, Zap, Brain, FileText, Trophy, Target, Check, Star, ArrowRight, BookOpen, GraduationCap } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 import heroMockup from "@/assets/hero-mockup.jpg";
 
 export const Route = createFileRoute("/")({
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }));
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -201,7 +204,7 @@ function Index() {
                 +12 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
               </h3>
             </div>
-            <Carousel opts={{ align: "start", loop: true }} className="mx-auto max-w-6xl">
+            <Carousel opts={{ align: "start", loop: true }} plugins={[autoplay.current]} className="mx-auto max-w-6xl px-12 md:px-16">
               <CarouselContent>
                 {[
                   { name: "Beatriz, 17", curso: "Quer Direito", nota: "780 → 940", text: "Em 3 semanas usando o Modo Professor Rígido, minha nota subiu quase 200 pontos. A IA é honesta como meu cursinho não é." },
@@ -236,8 +239,8 @@ function Index() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex" />
-              <CarouselNext className="hidden md:flex" />
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
             </Carousel>
           </div>
         </div>
