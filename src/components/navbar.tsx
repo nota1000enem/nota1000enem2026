@@ -25,7 +25,7 @@ export function Navbar() {
           <div className="grid h-8 w-8 place-content-center rounded-lg bg-primary/20 ring-1 ring-primary/40">
             <Sparkles className="h-4 w-4 text-primary" />
           </div>
-          <span className="font-bold tracking-tight">Nota<span className="gradient-text">900</span> AI</span>
+          <span className="font-bold tracking-tight">Nota <span className="gradient-text">1000</span> ENEM</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
