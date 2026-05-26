@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RedacaoRouteImport } from './routes/redacao'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -19,6 +20,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const RedacaoRoute = RedacaoRouteImport.update({
   id: '/redacao',
   path: '/redacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/planos': typeof PlanosRoute
+  '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/planos': typeof PlanosRoute
+  '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
 }
 export interface FileRoutesById {
@@ -70,13 +78,28 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/planos': typeof PlanosRoute
+  '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/aulas' | '/auth' | '/dashboard' | '/planos' | '/redacao'
+  fullPaths:
+    | '/'
+    | '/aulas'
+    | '/auth'
+    | '/dashboard'
+    | '/planos'
+    | '/ranking'
+    | '/redacao'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/aulas' | '/auth' | '/dashboard' | '/planos' | '/redacao'
+  to:
+    | '/'
+    | '/aulas'
+    | '/auth'
+    | '/dashboard'
+    | '/planos'
+    | '/ranking'
+    | '/redacao'
   id:
     | '__root__'
     | '/'
@@ -84,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/planos'
+    | '/ranking'
     | '/redacao'
   fileRoutesById: FileRoutesById
 }
@@ -93,6 +117,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   PlanosRoute: typeof PlanosRoute
+  RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
 }
 
@@ -103,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/redacao'
       fullPath: '/redacao'
       preLoaderRoute: typeof RedacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -149,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   PlanosRoute: PlanosRoute,
+  RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
 }
 export const routeTree = rootRouteImport

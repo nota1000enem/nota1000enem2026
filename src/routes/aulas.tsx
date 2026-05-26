@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlayCircle, Lock, Sparkles } from "lucide-react";
+import { PlayCircle, Lock, Sparkles, Crown } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/aulas")({
   head: () => ({
@@ -48,6 +50,14 @@ const trilhas = [
 ];
 
 function Aulas() {
+  const [openLock, setOpenLock] = useState(false);
+  const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
+
+  function handleClick(titulo: string) {
+    setAulaSelecionada(titulo);
+    setOpenLock(true);
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -68,17 +78,22 @@ function Aulas() {
               <h2 className="mb-4 text-xl font-semibold">{tr.area}</h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {tr.aulas.map((a) => (
-                  <Card key={a.t} className="card-glass overflow-hidden">
+                  <Card
+                    key={a.t}
+                    onClick={() => handleClick(a.t)}
+                    className="card-glass cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
+                  >
                     <div className={`relative aspect-video bg-gradient-to-br ${tr.cor}`}>
                       <div className="absolute inset-0 grid place-content-center">
-                        {a.free ? (
-                          <PlayCircle className="h-14 w-14 text-primary drop-shadow-lg" />
-                        ) : (
-                          <Lock className="h-10 w-10 text-muted-foreground" />
-                        )}
+                        <PlayCircle className="h-14 w-14 text-primary/40 drop-shadow-lg" />
                       </div>
-                      <Badge className="absolute top-3 right-3" variant={a.free ? "default" : "outline"}>
-                        {a.free ? "Grátis" : "Pro"}
+                      <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
+                        <div className="grid h-16 w-16 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
+                          <Lock className="h-8 w-8 text-primary" />
+                        </div>
+                      </div>
+                      <Badge className="absolute top-3 right-3" variant="outline">
+                        <Lock className="mr-1 h-3 w-3" /> Premium
                       </Badge>
                     </div>
                     <div className="p-4">
@@ -100,6 +115,26 @@ function Aulas() {
           </Link>
         </Card>
       </section>
+
+      <Dialog open={openLock} onOpenChange={setOpenLock}>
+        <DialogContent className="card-glass border-primary/30 sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-3 grid h-14 w-14 place-content-center rounded-full bg-primary/10 ring-2 ring-primary/40">
+              <Crown className="h-7 w-7 text-primary" />
+            </div>
+            <DialogTitle className="text-center text-2xl">Escolha um plano para começar!</DialogTitle>
+            <DialogDescription className="text-center">
+              A aula <span className="font-medium text-foreground">"{aulaSelecionada}"</span> faz parte do conteúdo premium.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-2 grid gap-2">
+            <Link to="/planos"><Button className="w-full" variant="outline">Ver Plano Light — R$ 19,90</Button></Link>
+            <Link to="/planos"><Button className="w-full glow-blue">Ver Plano Pro — R$ 29,90</Button></Link>
+            <Link to="/planos"><Button className="w-full" variant="outline">Ver Plano Full — R$ 49,90</Button></Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );

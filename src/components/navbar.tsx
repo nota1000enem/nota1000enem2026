@@ -13,6 +13,7 @@ export function Navbar() {
   const links = [
     { to: "/", label: "Início" },
     { to: "/redacao", label: "Corrigir Redação" },
+    { to: "/ranking", label: "Ranking" },
     { to: "/aulas", label: "Vídeo Aulas" },
     { to: "/planos", label: "Planos" },
   ];

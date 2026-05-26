@@ -16,6 +16,14 @@ serve(async (req) => {
       });
     }
 
+    // ============================================================
+    // INSERIR API KEY OPENAI AQUI (futuro)
+    // Para migrar para OpenAI:
+    //   const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    //   endpoint: https://api.openai.com/v1/chat/completions
+    //   model: "gpt-4o-mini" ou "gpt-4o"
+    // Atualmente usando Lovable AI Gateway (sem necessidade de chave do usuário).
+    // ============================================================
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 

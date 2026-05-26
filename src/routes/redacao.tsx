@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
+import { Lock, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/redacao")({
   head: () => ({
@@ -47,12 +48,33 @@ function RedacaoPage() {
   const [modoRigido, setModoRigido] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [resultado, setResultado] = useState<Resultado | null>(null);
+  const [plano, setPlano] = useState<string>("free");
+  const [usadas, setUsadas] = useState<number>(0);
+  const [bloqueado, setBloqueado] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
   }, [loading, user, router]);
 
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const [{ data: prof }, { count }] = await Promise.all([
+        supabase.from("profiles").select("plan").eq("id", user.id).maybeSingle(),
+        supabase.from("redacoes").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
+      const p = (prof?.plan as string) ?? "free";
+      setPlano(p);
+      setUsadas(count ?? 0);
+      if (p === "free" && (count ?? 0) >= 1) setBloqueado(true);
+    })();
+  }, [user]);
+
   async function handleSubmit() {
+    if (bloqueado) {
+      toast.error("Você já usou sua correção gratuita.");
+      return;
+    }
     if (texto.trim().length < 50) {
       toast.error("Cole uma redação completa (mínimo 50 caracteres).");
       return;
@@ -80,6 +102,9 @@ function RedacaoPage() {
         feedback: r,
         modo_rigido: modoRigido,
       });
+      const novoTotal = usadas + 1;
+      setUsadas(novoTotal);
+      if (plano === "free" && novoTotal >= 1) setBloqueado(true);
       toast.success(`Correção concluída! Nota: ${r.nota_total}/1000`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao corrigir");
@@ -112,6 +137,22 @@ function RedacaoPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <Card className="card-glass p-6">
+            {bloqueado && (
+              <div className="mb-4 rounded-lg border border-primary/40 bg-primary/5 p-4">
+                <div className="flex items-start gap-3">
+                  <Lock className="mt-0.5 h-5 w-5 text-primary" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">Você usou sua correção gratuita.</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Escolha um plano para continuar evoluindo sua nota.
+                    </p>
+                    <Link to="/planos" className="mt-3 inline-block">
+                      <Button size="sm" className="glow-blue"><Crown className="mr-1 h-3 w-3" /> Ver Planos</Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
             <Label htmlFor="tema">Tema (opcional)</Label>
             <Input
               id="tema"
