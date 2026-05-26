@@ -12,7 +12,7 @@ import { FileText, TrendingUp, Trophy, Sparkles, Plus } from "lucide-react";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard – Nota900 AI" },
+      { title: "Dashboard – Nota 1000 ENEM" },
       { name: "description", content: "Acompanhe seu progresso e suas redações corrigidas." },
     ],
   }),

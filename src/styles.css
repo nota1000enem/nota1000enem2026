@@ -63,7 +63,7 @@
 
 :root {
   --radius: 0.625rem;
-  /* Nota900 AI dark neon theme */
+  /* Nota 1000 ENEM dark neon theme */
   --background: oklch(0.13 0.02 250);
   --foreground: oklch(0.98 0.01 250);
   --card: oklch(0.18 0.03 255);
@@ -145,7 +145,7 @@
   }
 }
 
-/* Nota900 AI utilities */
+/* Nota 1000 ENEM utilities */
 .glow-blue {
   box-shadow: 0 0 40px -8px oklch(0.72 0.22 235 / 0.55), 0 0 80px -20px oklch(0.72 0.22 235 / 0.3);
 }

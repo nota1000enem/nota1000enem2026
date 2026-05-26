@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Entrar – Nota900 AI" }] }),
+  head: () => ({ meta: [{ title: "Entrar – Nota 1000 ENEM" }] }),
   component: AuthPage,
 });
 
@@ -56,7 +56,7 @@ function AuthPage() {
       <div className="mx-auto flex max-w-md flex-col px-4 py-16">
         <div className="mb-6 text-center">
           <Sparkles className="mx-auto h-8 w-8 text-primary" />
-          <h1 className="mt-2 text-2xl font-bold">Bem-vindo à <span className="gradient-text">Nota900 AI</span></h1>
+          <h1 className="mt-2 text-2xl font-bold">Bem-vindo à <span className="gradient-text">Nota 1000 ENEM</span></h1>
           <p className="text-sm text-muted-foreground">Entre e comece a corrigir suas redações</p>
         </div>
         <Card className="card-glass p-6">

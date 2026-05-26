@@ -10,7 +10,7 @@ export function Footer() {
             <div className="grid h-8 w-8 place-content-center rounded-lg bg-primary/20 ring-1 ring-primary/40">
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
-            <span className="font-bold">Nota<span className="gradient-text">900</span> AI</span>
+            <span className="font-bold">Nota <span className="gradient-text">1000</span> ENEM</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">A IA que vai te aprovar no ENEM. Correção, simulados e metodologia de aprovados.</p>
         </div>
@@ -38,7 +38,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Nota900 AI · Todos os direitos reservados
+        © {new Date().getFullYear()} Nota 1000 ENEM · Todos os direitos reservados
       </div>
     </footer>
   );

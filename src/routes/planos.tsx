@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/planos")({
   head: () => ({
     meta: [
-      { title: "Planos – Nota900 AI" },
+      { title: "Planos – Nota 1000 ENEM" },
       { name: "description", content: "Escolha o plano ideal para sua aprovação no ENEM. A partir de R$ 19,90/mês." },
     ],
   }),
@@ -23,7 +23,7 @@ const planos = [
     price: "19,90",
     desc: "Para começar com o pé direito.",
     popular: false,
-    items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 900+", "Acesso básico IA"],
+    items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",

@@ -19,7 +19,7 @@ import { Lock, Crown } from "lucide-react";
 export const Route = createFileRoute("/redacao")({
   head: () => ({
     meta: [
-      { title: "Corrigir Redação com IA – Nota900 AI" },
+      { title: "Corrigir Redação com IA – Nota 1000 ENEM" },
       { name: "description", content: "Cole sua redação do ENEM e receba correção completa pelas 5 competências em segundos." },
     ],
   }),

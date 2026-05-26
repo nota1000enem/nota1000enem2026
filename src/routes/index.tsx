@@ -11,9 +11,9 @@ import heroMockup from "@/assets/hero-mockup.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nota900 AI – Corretor de Redação ENEM com Inteligência Artificial" },
-      { name: "description", content: "Descubra sua nota do ENEM em segundos. Corrija redações com IA, treine questões e estude com metodologia focada em nota 900+." },
-      { property: "og:title", content: "Nota900 AI – Sua aprovação no ENEM começa aqui" },
+      { title: "Nota 1000 ENEM – Corretor de Redação ENEM com Inteligência Artificial" },
+      { name: "description", content: "Descubra sua nota do ENEM em segundos. Corrija redações com IA, treine questões e estude com metodologia focada em nota 1000." },
+      { property: "og:title", content: "Nota 1000 ENEM – Sua aprovação no ENEM começa aqui" },
       { property: "og:description", content: "Correção de redação ENEM com IA, simulados, vídeo aulas e metodologia comprovada." },
     ],
   }),
@@ -49,7 +49,7 @@ function Index() {
           </div>
           <div className="relative">
             <div className="absolute inset-0 -z-10 blur-3xl opacity-50 bg-primary/30 rounded-full" />
-            <img src={heroMockup} alt="IA Nota900 corrigindo redação do ENEM" width={1280} height={960} className="animate-float rounded-2xl border border-primary/20 glow-blue" />
+            <img src={heroMockup} alt="IA Nota 1000 ENEM corrigindo redação do ENEM" width={1280} height={960} className="animate-float rounded-2xl border border-primary/20 glow-blue" />
           </div>
         </div>
       </section>
@@ -59,7 +59,7 @@ function Index() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
-            <h2 className="mt-3 text-3xl font-bold md:text-4xl">3 passos para sua <span className="gradient-text">nota 900+</span></h2>
+            <h2 className="mt-3 text-3xl font-bold md:text-4xl">3 passos para sua <span className="gradient-text">nota 1000</span></h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -143,7 +143,7 @@ function Index() {
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { name: "ENEM Light", price: "19,90", cta: "Começar Agora", popular: false, items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 900+", "Acesso básico IA"] },
+              { name: "ENEM Light", price: "19,90", cta: "Começar Agora", popular: false, items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"] },
               { name: "ENEM Pro", price: "29,90", cta: "Quero o Pro", popular: true, items: ["Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1000 questões para passar", "Simulados", "Correção IA avançada", "Repertórios automáticos", "Cronograma inteligente"] },
               { name: "Full Acesso", price: "49,90", cta: "Quero Acesso Total", popular: false, items: ["Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"] },
             ].map((p) => (
@@ -174,7 +174,7 @@ function Index() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Provas sociais</Badge>
-            <h2 className="mt-3 text-3xl font-bold md:text-4xl">Resultados de quem usou a <span className="gradient-text">Nota900 AI</span></h2>
+            <h2 className="mt-3 text-3xl font-bold md:text-4xl">Resultados de quem usou a <span className="gradient-text">Nota 1000 ENEM</span></h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -196,7 +196,7 @@ function Index() {
       <section className="border-t border-border/40 py-20">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
-          <h2 className="mt-4 text-3xl font-bold md:text-5xl">Sua nota 900 começa <span className="gradient-text">hoje</span>.</h2>
+          <h2 className="mt-4 text-3xl font-bold md:text-5xl">Sua nota 1000 começa <span className="gradient-text">hoje</span>.</h2>
           <p className="mt-3 text-muted-foreground">Teste grátis. Sem cartão. Sem enrolação.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link to="/redacao"><Button size="lg" className="glow-blue">Corrigir minha redação agora <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
