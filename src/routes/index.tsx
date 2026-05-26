@@ -104,6 +104,36 @@ function Index() {
         </div>
       </section>
 
+      {/* TOP NOTAS DA SEMANA */}
+      <section className="border-t border-border/40 py-20">
+        <div className="mx-auto max-w-5xl px-4 text-center">
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
+          </Badge>
+          <h2 className="mt-3 text-3xl font-bold md:text-4xl">
+            Veja quem está <span className="gradient-text">no topo</span> esta semana
+          </h2>
+          <p className="mt-3 text-muted-foreground">Ranking ao vivo dos alunos com as melhores notas dos últimos 7 dias.</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {[
+              { pos: "1º", nome: "Lucas", nota: 960, color: "text-yellow-400", ring: "ring-yellow-400/60", glow: "glow-blue" },
+              { pos: "2º", nome: "Ana", nota: 940, color: "text-slate-300", ring: "ring-slate-300/60", glow: "" },
+              { pos: "3º", nome: "Pedro", nota: 920, color: "text-orange-400", ring: "ring-orange-400/60", glow: "" },
+            ].map((p) => (
+              <Card key={p.pos} className={`card-glass p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
+                <Trophy className={`mx-auto h-8 w-8 ${p.color}`} />
+                <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">{p.pos} lugar</p>
+                <p className="mt-2 text-lg font-semibold">{p.nome}</p>
+                <p className="mt-2 text-4xl font-bold gradient-text text-glow">{p.nota}</p>
+              </Card>
+            ))}
+          </div>
+          <div className="mt-8">
+            <Link to="/ranking"><Button size="lg" className="glow-blue">Entrar no Ranking <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
+          </div>
+        </div>
+      </section>
+
       {/* PLANOS */}
       <section id="planos" className="border-t border-border/40 py-20">
         <div className="mx-auto max-w-7xl px-4">
