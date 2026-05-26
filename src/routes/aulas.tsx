@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PlayCircle, Lock, Sparkles, Crown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 export const Route = createFileRoute("/aulas")({
   head: () => ({
@@ -18,34 +19,90 @@ export const Route = createFileRoute("/aulas")({
   component: Aulas,
 });
 
+function gerar(titulos: string[]): { t: string; min: number }[] {
+  return titulos.map((t, i) => ({ t, min: 10 + ((i * 3) % 22) }));
+}
+
 const trilhas = [
   {
-    area: "Redação Nota 1000",
-    cor: "from-primary/30 to-primary/5",
-    aulas: [
-      { t: "Estrutura dissertativo-argumentativa", min: 12, free: true },
-      { t: "Repertórios socioculturais que pontuam", min: 18, free: true },
-      { t: "Proposta de intervenção perfeita", min: 14, free: false },
-      { t: "Coesão e conectivos avançados", min: 16, free: false },
-    ],
-  },
-  {
-    area: "Matemática estratégica",
+    area: "Matemática",
     cor: "from-blue-500/30 to-blue-500/5",
-    aulas: [
-      { t: "As 10 questões que sempre caem", min: 22, free: true },
-      { t: "Geometria sem decoreba", min: 19, free: false },
-      { t: "Funções na prática do ENEM", min: 24, free: false },
-    ],
+    aulas: gerar([
+      "As 10 questões que sempre caem no ENEM",
+      "Geometria plana sem decoreba",
+      "Funções: lineares, quadráticas e exponenciais",
+      "Porcentagem, juros e matemática financeira",
+      "Probabilidade e análise combinatória",
+      "Estatística: média, mediana e moda no ENEM",
+      "Trigonometria essencial",
+      "Geometria espacial: volumes e sólidos",
+      "Razões, proporções e regra de três",
+      "Resolução cronometrada: simulado relâmpago",
+    ]),
   },
   {
     area: "Linguagens e Códigos",
     cor: "from-fuchsia-500/30 to-fuchsia-500/5",
-    aulas: [
-      { t: "Interpretação de texto que não falha", min: 17, free: true },
-      { t: "Literatura cobrada de verdade", min: 21, free: false },
-      { t: "Inglês/Espanhol em 1h", min: 28, free: false },
-    ],
+    aulas: gerar([
+      "Interpretação de texto que não falha",
+      "Figuras de linguagem cobradas no ENEM",
+      "Literatura brasileira: o que estudar de verdade",
+      "Variação linguística e norma culta",
+      "Funções da linguagem na prática",
+      "Gêneros textuais que mais aparecem",
+      "Inglês: leitura estratégica em 1 hora",
+      "Espanhol: cognatos e falsos amigos",
+      "Artes, música e cultura no ENEM",
+      "Educação física e esporte como tema",
+    ]),
+  },
+  {
+    area: "Ciências Humanas",
+    cor: "from-amber-500/30 to-amber-500/5",
+    aulas: gerar([
+      "História do Brasil: República em 1 aula",
+      "Era Vargas e ditadura militar",
+      "Geografia do Brasil: regiões e clima",
+      "Globalização e geopolítica atual",
+      "Filosofia: dos clássicos a Foucault",
+      "Sociologia: Marx, Weber e Durkheim",
+      "Movimentos sociais e cidadania",
+      "Cartografia e leitura de mapas",
+      "História Geral: revoluções e guerras",
+      "Atualidades que sempre caem",
+    ]),
+  },
+  {
+    area: "Ciências da Natureza",
+    cor: "from-emerald-500/30 to-emerald-500/5",
+    aulas: gerar([
+      "Física: mecânica essencial para o ENEM",
+      "Eletricidade e circuitos descomplicados",
+      "Termologia e calorimetria",
+      "Óptica e ondas",
+      "Química orgânica em 1 aula",
+      "Estequiometria sem sofrer",
+      "Soluções, pH e equilíbrio químico",
+      "Biologia: ecologia e meio ambiente",
+      "Genética: Mendel ao DNA",
+      "Fisiologia humana e doenças no ENEM",
+    ]),
+  },
+  {
+    area: "Redação completa",
+    cor: "from-primary/30 to-primary/5",
+    aulas: gerar([
+      "Estrutura dissertativo-argumentativa perfeita",
+      "Como construir uma tese forte",
+      "Repertórios socioculturais que pontuam",
+      "Argumentação por dados e citações",
+      "Coesão e conectivos avançados",
+      "Proposta de intervenção nota 1000",
+      "Erros que zeram a redação",
+      "Modo Professor Rígido: como usar",
+      "Análise de redações nota 1000 reais",
+      "Simulado: escreva e corrija em 1h",
+    ]),
   },
 ];
 
@@ -69,40 +126,54 @@ function Aulas() {
           Vídeo aulas <span className="gradient-text">Nota 1000 ENEM</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Trilhas curtas e diretas ao ponto, sem enrolação, focadas no que mais cai no ENEM.
+          5 grandes áreas, 10 aulas em cada uma. Direto ao que mais cai no ENEM.
         </p>
 
-        <div className="mt-10 space-y-10">
+        <div className="mt-10 space-y-14">
           {trilhas.map((tr) => (
             <div key={tr.area}>
-              <h2 className="mb-4 text-xl font-semibold">{tr.area}</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {tr.aulas.map((a) => (
-                  <Card
-                    key={a.t}
-                    onClick={() => handleClick(a.t)}
-                    className="card-glass cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
-                  >
-                    <div className={`relative aspect-video bg-gradient-to-br ${tr.cor}`}>
-                      <div className="absolute inset-0 grid place-content-center">
-                        <PlayCircle className="h-14 w-14 text-primary/40 drop-shadow-lg" />
-                      </div>
-                      <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
-                        <div className="grid h-16 w-16 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
-                          <Lock className="h-8 w-8 text-primary" />
-                        </div>
-                      </div>
-                      <Badge className="absolute top-3 right-3" variant="outline">
-                        <Lock className="mr-1 h-3 w-3" /> Premium
-                      </Badge>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium">{a.t}</h3>
-                      <p className="mt-1 text-xs text-muted-foreground">{a.min} min</p>
-                    </div>
-                  </Card>
-                ))}
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
+                  <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
+                </div>
+                <Badge variant="outline" className="border-primary/40 text-primary">Trilha completa</Badge>
               </div>
+              <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
+                <CarouselContent>
+                  {tr.aulas.map((a, idx) => (
+                    <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                      <Card
+                        onClick={() => handleClick(a.t)}
+                        className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
+                      >
+                        <div className={`relative aspect-video bg-gradient-to-br ${tr.cor}`}>
+                          <div className="absolute inset-0 grid place-content-center">
+                            <PlayCircle className="h-14 w-14 text-primary/40 drop-shadow-lg" />
+                          </div>
+                          <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
+                            <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
+                              <Lock className="h-7 w-7 text-primary" />
+                            </div>
+                          </div>
+                          <Badge className="absolute top-3 right-3" variant="outline">
+                            <Lock className="mr-1 h-3 w-3" /> Premium
+                          </Badge>
+                          <span className="absolute top-3 left-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
+                            Aula {String(idx + 1).padStart(2, "0")}
+                          </span>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="line-clamp-2 text-sm font-medium">{a.t}</h3>
+                          <p className="mt-1 text-xs text-muted-foreground">{a.min} min</p>
+                        </div>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
             </div>
           ))}
         </div>
