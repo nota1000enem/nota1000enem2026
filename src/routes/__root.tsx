@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Nota 100 ENEM" },
+      { name: "description", content: "Nota900 AI offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Nota 100 ENEM" },
+      { property: "og:description", content: "Nota900 AI offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Nota 100 ENEM" },
+      { name: "twitter:description", content: "Nota900 AI offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/G3zR6STR0hQh4fSD4aCg3hWLzPV2/social-images/social-1779754549726-nota_1000_enem.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/G3zR6STR0hQh4fSD4aCg3hWLzPV2/social-images/social-1779754549726-nota_1000_enem.webp" },
     ],
     links: [
       {
