@@ -15,6 +15,7 @@ export function Navbar() {
     { to: "/redacao", label: "Corrigir Redação" },
     { to: "/ranking", label: "Ranking" },
     { to: "/aulas", label: "Vídeo Aulas" },
+    { to: "/plano-estudo", label: "Plano de Estudo" },
     { to: "/planos", label: "Planos" },
   ];
 

@@ -126,7 +126,7 @@ function Aulas() {
           Vídeo aulas <span className="gradient-text">Nota 1000 ENEM</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          5 grandes áreas, 10 aulas em cada uma. Direto ao que mais cai no ENEM.
+          <span className="font-semibold text-primary">Aula nova toda semana</span> (em cada matéria) até o dia da prova.
         </p>
 
         <div className="mt-10 space-y-14">
