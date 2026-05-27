@@ -21,23 +21,38 @@ const planos = [
   {
     name: "ENEM Light",
     price: "19,90",
+    periodo: "/mês",
     desc: "Para começar com o pé direito.",
     popular: false,
-    items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    upgrade: true,
+    items: ["Até 25 redações corrigidas por mês", "Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
     price: "29,90",
+    periodo: "/mês",
     desc: "O queridinho dos aprovados.",
     popular: true,
-    items: ["Tudo do Light", "História", "Geografia", "Ciências da Natureza", "20 vídeo aulas", "Simulados", "Correção IA avançada", "Repertórios automáticos", "Cronograma inteligente"],
+    upgrade: true,
+    items: ["Até 50 redações corrigidas por mês", "Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
-    name: "Full Acesso",
+    name: "Full Acess ENEM",
     price: "49,90",
+    periodo: "/mês",
     desc: "Tudo, sem limites.",
     popular: false,
-    items: ["Tudo do Pro", "Correção IA ilimitada", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Estratégias de aprovação", "Atualizações futuras"],
+    upgrade: false,
+    items: ["Até 100 redações corrigidas por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+  },
+  {
+    name: "Full Acess ENEM Vitalício",
+    price: "499",
+    periodo: "uma vez",
+    desc: "Pague uma vez, use para SEMPRE.",
+    popular: false,
+    upgrade: false,
+    items: ["Acesso ETERNO — sem mensalidade", "Até 100 redações corrigidas por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
   },
 ];
 
@@ -59,7 +74,7 @@ function Planos() {
           Planos pensados para diferentes momentos do seu estudo. Cancele quando quiser.
         </p>
 
-        <div className="mt-12 grid gap-6 text-left md:grid-cols-3">
+        <div className="mt-12 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-4">
           {planos.map((p) => (
             <Card key={p.name} className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}>
               {p.popular && (
@@ -72,7 +87,7 @@ function Planos() {
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-sm text-muted-foreground">R$</span>
                 <span className="text-5xl font-bold">{p.price}</span>
-                <span className="text-sm text-muted-foreground">/mês</span>
+                <span className="text-sm text-muted-foreground">{p.periodo}</span>
               </div>
               <Button
                 onClick={() => handleCheckout(p.name)}
@@ -81,6 +96,11 @@ function Planos() {
               >
                 Assinar {p.name}
               </Button>
+              {p.upgrade && (
+                <p className="mt-2 text-center text-xs text-primary">
+                  ↗ Upgrade disponível a qualquer momento
+                </p>
+              )}
               <ul className="mt-6 space-y-2 text-sm">
                 {p.items.map((it) => (
                   <li key={it} className="flex items-start gap-2">
