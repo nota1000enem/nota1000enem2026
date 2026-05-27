@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as PlanosRouteImport } from './routes/planos'
+import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AulasRouteImport } from './routes/aulas'
@@ -30,6 +31,11 @@ const RankingRoute = RankingRouteImport.update({
 const PlanosRoute = PlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
+  id: '/plano-estudo',
+  path: '/plano-estudo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/plano-estudo'
     | '/planos'
     | '/ranking'
     | '/redacao'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/plano-estudo'
     | '/planos'
     | '/ranking'
     | '/redacao'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/plano-estudo'
     | '/planos'
     | '/ranking'
     | '/redacao'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AulasRoute: typeof AulasRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  PlanoEstudoRoute: typeof PlanoEstudoRoute
   PlanosRoute: typeof PlanosRoute
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/planos'
       fullPath: '/planos'
       preLoaderRoute: typeof PlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plano-estudo': {
+      id: '/plano-estudo'
+      path: '/plano-estudo'
+      fullPath: '/plano-estudo'
+      preLoaderRoute: typeof PlanoEstudoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AulasRoute: AulasRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  PlanoEstudoRoute: PlanoEstudoRoute,
   PlanosRoute: PlanosRoute,
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,

@@ -21,6 +21,8 @@ export type Database = {
           full_name: string | null
           id: string
           plan: string
+          plan_expires_at: string | null
+          plan_vitalicio: boolean
         }
         Insert: {
           created_at?: string
@@ -28,6 +30,8 @@ export type Database = {
           full_name?: string | null
           id: string
           plan?: string
+          plan_expires_at?: string | null
+          plan_vitalicio?: boolean
         }
         Update: {
           created_at?: string
@@ -35,6 +39,8 @@ export type Database = {
           full_name?: string | null
           id?: string
           plan?: string
+          plan_expires_at?: string | null
+          plan_vitalicio?: boolean
         }
         Relationships: []
       }
@@ -100,7 +106,8 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      plano_ativo: { Args: { _user_id: string }; Returns: boolean }
+      pode_corrigir_redacao: { Args: { _user_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

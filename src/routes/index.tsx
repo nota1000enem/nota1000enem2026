@@ -52,6 +52,14 @@ function Index() {
             </div>
           </div>
           <div className="relative">
+            <div className="mb-4 flex flex-wrap gap-2">
+              {["Matemática","Linguagens e Códigos","Ciências Humanas","Ciências da Natureza","Redação","+ 1.000 questões em VÍDEO"].map((t) => (
+                <Badge key={t} variant="outline" className="border-primary/40 text-primary">{t}</Badge>
+              ))}
+            </div>
+            <p className="mb-4 text-sm text-muted-foreground">
+              <span className="font-semibold text-primary">AULA NOVA TODA SEMANA</span> — Estude todas as áreas do ENEM com correções inteligentes, trilhas personalizadas e foco na nota 1000. Tudo em um só lugar. Chega de gastar dinheiro à toa com vários cursos ou questões sem sentido. Tenha acesso a tudo <span className="font-semibold text-foreground">AQUI e AGORA</span>! O sonho da <span className="gradient-text font-semibold">NOTA 1.000</span> e da Universidade está mais próximo.
+            </p>
             <div className="absolute inset-0 -z-10 blur-3xl opacity-50 bg-primary/30 rounded-full" />
             <img src={heroMockup} alt="IA Nota 1000 ENEM corrigindo redação do ENEM" width={1280} height={960} className="animate-float rounded-2xl border border-primary/20 glow-blue" />
           </div>
@@ -82,6 +90,42 @@ function Index() {
                 <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* APROVADOS / CHECKLIST DE BENEFÍCIOS */}
+      <section className="border-t border-border/40 py-20">
+        <div className="mx-auto max-w-5xl px-4 text-center">
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            <Trophy className="mr-1 h-3 w-3" /> Resultados
+          </Badge>
+          <h2 className="mt-3 text-3xl font-bold md:text-5xl">
+            <span className="gradient-text">1.890 alunos aprovados</span> em 2025
+          </h2>
+          <p className="mt-3 text-muted-foreground">Seja você o próximo.</p>
+          <ul className="mx-auto mt-8 grid max-w-3xl gap-3 text-left text-sm md:text-base">
+            {[
+              "1.000 questões em VÍDEO. Te ensino a como resolver do Zero!",
+              "Correção inteligente de redações baseada nos critérios oficiais do ENEM",
+              "Plano de estudos personalizado com IA treinada 100% no ENEM",
+              "Questões comentadas de Matemática, Linguagens e Códigos, Ciências da Natureza e Humanas",
+              "Feedback instantâneo para identificar erros e acelerar sua evolução",
+              "Simulados completos com análise detalhada de desempenho",
+              "Trilhas de estudo focadas nas competências que mais caem no ENEM",
+              "Relatórios inteligentes para acompanhar sua evolução em tempo real",
+              "Estratégias e repertórios prontos para tirar nota alta na redação",
+              "Ranking de desempenho para acompanhar seu progresso e motivação",
+              "Videoaulas, exercícios e revisões organizadas em uma única plataforma",
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-3 rounded-lg border border-border/40 bg-card/40 p-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            <Link to="/planos"><Button size="lg" className="glow-blue">Quero ser o próximo aprovado <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
           </div>
         </div>
       </section>
@@ -145,11 +189,12 @@ function Index() {
             <Badge variant="outline">Planos</Badge>
             <h2 className="mt-3 text-3xl font-bold md:text-4xl">Escolha seu caminho para a <span className="gradient-text">aprovação</span></h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
-              { name: "ENEM Light", price: "19,90", cta: "Começar Agora", popular: false, items: ["Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"] },
-              { name: "ENEM Pro", price: "29,90", cta: "Quero o Pro", popular: true, items: ["Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1000 questões para passar", "Simulados", "Correção IA avançada", "Repertórios automáticos", "Cronograma inteligente"] },
-              { name: "Full Acesso", price: "49,90", cta: "Quero Acesso Total", popular: false, items: ["Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"] },
+              { name: "ENEM Light", price: "19,90", periodo: "/mês", cta: "Começar Agora", popular: false, items: ["Até 25 redações corrigidas por mês","Matemática","Português","Redação","1000 questões","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA"] },
+              { name: "ENEM Pro", price: "29,90", periodo: "/mês", cta: "Quero o Pro", popular: true, items: ["Até 50 redações corrigidas por mês","Matemática","Português","História","Geografia","Ciências da Natureza","Redação","20 vídeo aulas","1000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Repertórios automáticos","Cronograma inteligente"] },
+              { name: "Full Acess ENEM", price: "49,90", periodo: "/mês", cta: "Quero Acesso Total", popular: false, items: ["Até 100 redações corrigidas por mês","Matemática","Linguagens e Códigos","Ciências Humanas","Ciências da Natureza","Redação completa","Correção IA ilimitada","1000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras"] },
+              { name: "Full Acess ENEM Vitalício", price: "499", periodo: "uma vez", cta: "Quero Vitalício", popular: false, items: ["Acesso ETERNO — sem mensalidade","Até 100 redações corrigidas por mês","Tudo do Full Acess","IA Professor Rígido vitalício","Atualizações futuras incluídas","Sem renovação, sem cobrança recorrente"] },
             ].map((p) => (
               <Card key={p.name} className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}>
                 {p.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">MAIS VENDIDO</Badge>}
@@ -157,7 +202,7 @@ function Index() {
                 <div className="mt-2 flex items-baseline gap-1">
                   <span className="text-sm text-muted-foreground">R$</span>
                   <span className="text-4xl font-bold">{p.price}</span>
-                  <span className="text-sm text-muted-foreground">/mês</span>
+                  <span className="text-sm text-muted-foreground">{p.periodo}</span>
                 </div>
                 <ul className="mt-6 space-y-2 text-sm">
                   {p.items.map((it) => (
