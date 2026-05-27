@@ -104,6 +104,21 @@ const trilhas = [
       "Simulado: escreva e corrija em 1h",
     ]),
   },
+  {
+    area: "BÔNUS — 9 segredos para aprovação no vestibular",
+    cor: "from-yellow-500/30 to-yellow-500/5",
+    aulas: [
+      { t: "Segredo 1: A rotina secreta dos aprovados", min: 18 },
+      { t: "Segredo 2: Como estudar 3x mais rápido", min: 22 },
+      { t: "Segredo 3: A técnica dos 90 minutos", min: 15 },
+      { t: "Segredo 4: Memorizar sem decorar", min: 19 },
+      { t: "Segredo 5: O que fazer 30 dias antes da prova", min: 24 },
+      { t: "Segredo 6: Controle de ansiedade no dia D", min: 17 },
+      { t: "Segredo 7: Como gabaritar com chute estratégico", min: 13 },
+      { t: "Segredo 8: A mentalidade do aluno top 1%", min: 21 },
+      { t: "Segredo 9: O ritual da véspera da prova", min: 14 },
+    ],
+  },
 ];
 
 function Aulas() {
