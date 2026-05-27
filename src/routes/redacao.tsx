@@ -49,34 +49,49 @@ function RedacaoPage() {
   const [submitting, setSubmitting] = useState(false);
   const [resultado, setResultado] = useState<Resultado | null>(null);
   const [plano, setPlano] = useState<string>("free");
-  const [usadas, setUsadas] = useState<number>(0);
   const [bloqueado, setBloqueado] = useState(false);
+  const [motivoBloqueio, setMotivoBloqueio] = useState<string>("");
+  const [limite, setLimite] = useState<number>(1);
+  const [usadas, setUsadas] = useState<number>(0);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
   }, [loading, user, router]);
 
-  useEffect(() => {
+  async function recarregarStatus() {
     if (!user) return;
-    (async () => {
-      const [{ data: prof }, { count }] = await Promise.all([
-        supabase.from("profiles").select("plan").eq("id", user.id).maybeSingle(),
-        supabase.from("redacoes").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      ]);
-      const p = (prof?.plan as string) ?? "free";
-      setPlano(p);
-      setUsadas(count ?? 0);
-      if (p === "free" && (count ?? 0) >= 1) setBloqueado(true);
-    })();
-  }, [user]);
+    const { data: prof } = await supabase.from("profiles").select("plan").eq("id", user.id).maybeSingle();
+    const p = (prof?.plan as string) ?? "free";
+    setPlano(p);
+    const { data } = await supabase.rpc("pode_corrigir_redacao", { _user_id: user.id });
+    const r = (data ?? {}) as { pode?: boolean; motivo?: string; limite?: number; usadas?: number };
+    setBloqueado(!r.pode);
+    setMotivoBloqueio(r.motivo ?? "");
+    setLimite(r.limite ?? 1);
+    setUsadas(r.usadas ?? 0);
+  }
+
+  useEffect(() => { recarregarStatus(); /* eslint-disable-next-line */ }, [user]);
+
+  // Modo rígido só liberado para Pro, Full e Vitalício
+  const modoRigidoLiberado = ["pro", "full", "vitalicio"].includes(plano);
 
   async function handleSubmit() {
     if (bloqueado) {
-      toast.error("Você já usou sua correção gratuita.");
+      const msgs: Record<string, string> = {
+        limite_gratuito_atingido: "Você já usou sua correção gratuita. Escolha um plano para continuar.",
+        limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês. Faça upgrade para corrigir mais.`,
+        assinatura_expirada: "Sua assinatura expirou. Renove para continuar corrigindo.",
+      };
+      toast.error(msgs[motivoBloqueio] ?? "Acesso bloqueado.");
       return;
     }
     if (texto.trim().length < 50) {
       toast.error("Cole uma redação completa (mínimo 50 caracteres).");
+      return;
+    }
+    if (modoRigido && !modoRigidoLiberado) {
+      toast.error("Modo Professor Rígido está disponível apenas nos planos Pro, Full e Vitalício.");
       return;
     }
     setSubmitting(true);
@@ -102,9 +117,7 @@ function RedacaoPage() {
         feedback: r,
         modo_rigido: modoRigido,
       });
-      const novoTotal = usadas + 1;
-      setUsadas(novoTotal);
-      if (plano === "free" && novoTotal >= 1) setBloqueado(true);
+      await recarregarStatus();
       toast.success(`Correção concluída! Nota: ${r.nota_total}/1000`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao corrigir");
@@ -112,6 +125,20 @@ function RedacaoPage() {
       setSubmitting(false);
     }
   }
+
+  // Sugestões de como abordar o tema
+  const sugestoesTema = tema.trim().length > 4 ? [
+    `Comece a introdução contextualizando "${tema}" com um dado, citação histórica ou referência cultural relevante.`,
+    "Desenvolva 2 parágrafos argumentativos: 1 com causa/contexto e outro com consequência/impacto social.",
+    "Use repertórios concretos: Constituição de 1988, ODS da ONU, autores como Bauman, Foucault, Milton Santos.",
+    "Conecte parágrafos com conectivos avançados (todavia, ademais, por conseguinte, em virtude disso).",
+    "Proposta de intervenção COMPLETA: agente + ação + meio + finalidade + detalhamento. NUNCA esqueça os 5 elementos.",
+    `Cuidado para não fugir de "${tema}" — toda argumentação precisa retomar o tema explicitamente.`,
+    "Cite dados atuais (últimos 5 anos) ligados ao tema: IBGE, OMS, ONU dão autoridade ao texto.",
+    "Evite clichês ('desde os primórdios', 'no mundo atual'). Comece direto e específico.",
+    "Use 3ª pessoa, evite gírias e marcas pessoais ('eu acho', 'na minha opinião').",
+    "Releia: cada parágrafo precisa ter uma ideia central clara e estar conectado à tese.",
+  ] : [];
 
   const comps = resultado
     ? [
@@ -142,9 +169,16 @@ function RedacaoPage() {
                 <div className="flex items-start gap-3">
                   <Lock className="mt-0.5 h-5 w-5 text-primary" />
                   <div className="flex-1">
-                    <p className="text-sm font-semibold">Você usou sua correção gratuita.</p>
+                    <p className="text-sm font-semibold">
+                      {motivoBloqueio === "limite_gratuito_atingido" && "Você usou sua correção gratuita."}
+                      {motivoBloqueio === "limite_mensal_atingido" && `Limite mensal atingido (${usadas}/${limite}).`}
+                      {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
+                      {!motivoBloqueio && "Acesso bloqueado."}
+                    </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Escolha um plano para continuar evoluindo sua nota.
+                      {motivoBloqueio === "assinatura_expirada"
+                        ? "Renove sua assinatura para liberar o acesso novamente — mesmo email, mesma senha."
+                        : "Escolha um plano (ou faça upgrade) para continuar evoluindo sua nota."}
                     </p>
                     <Link to="/planos" className="mt-3 inline-block">
                       <Button size="sm" className="glow-blue"><Crown className="mr-1 h-3 w-3" /> Ver Planos</Button>
@@ -161,6 +195,14 @@ function RedacaoPage() {
               placeholder="Ex: Os desafios da educação digital no Brasil"
               className="mt-2"
             />
+            {sugestoesTema.length > 0 && (
+              <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
+                <p className="text-xs font-semibold text-primary">💡 Como abordar este tema (não fuja!):</p>
+                <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                  {sugestoesTema.map((s, i) => <li key={i} className="flex gap-2"><span className="text-primary">{i+1}.</span><span>{s}</span></li>)}
+                </ul>
+              </div>
+            )}
             <Label htmlFor="texto" className="mt-4 block">Sua redação</Label>
             <Textarea
               id="texto"
@@ -171,15 +213,19 @@ function RedacaoPage() {
             />
             <div className="mt-2 text-xs text-muted-foreground">{texto.length} caracteres</div>
 
-            <div className="mt-4 flex items-center justify-between rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+            <div className={`mt-4 flex items-center justify-between rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}>
               <div className="flex items-center gap-2">
-                <Flame className="h-4 w-4 text-destructive" />
+                {modoRigidoLiberado ? <Flame className="h-4 w-4 text-destructive" /> : <Lock className="h-4 w-4 text-muted-foreground" />}
                 <div>
-                  <Label htmlFor="rigido" className="cursor-pointer">Modo Professor Rígido</Label>
-                  <p className="text-xs text-muted-foreground">Comentários brutalmente honestos.</p>
+                  <Label htmlFor="rigido" className={modoRigidoLiberado ? "cursor-pointer" : ""}>
+                    Modo Professor Rígido {!modoRigidoLiberado && "(Pro / Full / Vitalício)"}
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {modoRigidoLiberado ? "Comentários brutalmente honestos." : "Disponível nos planos R$ 29,90, R$ 49,90 e Vitalício."}
+                  </p>
                 </div>
               </div>
-              <Switch id="rigido" checked={modoRigido} onCheckedChange={setModoRigido} />
+              <Switch id="rigido" checked={modoRigido} onCheckedChange={setModoRigido} disabled={!modoRigidoLiberado} />
             </div>
 
             <Button onClick={handleSubmit} disabled={submitting} size="lg" className="mt-4 w-full glow-blue">
