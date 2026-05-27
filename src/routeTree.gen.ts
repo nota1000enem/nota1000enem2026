@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
-import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
 import { Route as PlanosRouteImport } from './routes/planos'
+import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AulasRouteImport } from './routes/aulas'
@@ -28,14 +28,14 @@ const RankingRoute = RankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
-  id: '/plano-estudo',
-  path: '/plano-estudo',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlanosRoute = PlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
+  id: '/plano-estudo',
+  path: '/plano-estudo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -150,18 +150,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plano-estudo': {
-      id: '/plano-estudo'
-      path: '/plano-estudo'
-      fullPath: '/plano-estudo'
-      preLoaderRoute: typeof PlanoEstudoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/planos': {
       id: '/planos'
       path: '/planos'
       fullPath: '/planos'
       preLoaderRoute: typeof PlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plano-estudo': {
+      id: '/plano-estudo'
+      path: '/plano-estudo'
+      fullPath: '/plano-estudo'
+      preLoaderRoute: typeof PlanoEstudoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
