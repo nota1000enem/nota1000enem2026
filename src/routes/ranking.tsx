@@ -26,14 +26,14 @@ function RankingPage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("ranking_semanal").select("*").limit(20);
-      setRows((data as Row[]) ?? []);
+      const { data } = await supabase.from("ranking_global").select("*").limit(100);
+      setRows((data as unknown as Row[]) ?? []);
       setLoading(false);
     })();
   }, []);
 
   const podio = rows.slice(0, 3);
-  const resto = rows.slice(3);
+  const resto = rows.slice(3, 100);
 
   return (
     <div className="min-h-screen bg-background">
