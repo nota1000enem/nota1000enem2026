@@ -58,18 +58,47 @@ function AuthPage() {
     e.preventDefault();
     const erroSenha = validarSenha(password);
     if (erroSenha) return toast.error(erroSenha);
+    if (!name.trim()) return toast.error("Informe seu nome.");
+    if (!email.trim()) return toast.error("Informe seu email.");
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { emailRedirectTo: window.location.origin + "/dashboard", data: { full_name: name } },
-    });
-    setLoading(false);
-    if (error) return toast.error(traduzirErro(error.message));
-    toast.success("Conta criada com sucesso! Redirecionando...");
-    // auto-confirm está ativo, então já podemos logar direto
-    const { error: loginErr } = await supabase.auth.signInWithPassword({ email, password });
-    if (loginErr) return toast.error(traduzirErro(loginErr.message));
-    nav({ to: "/dashboard" });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          emailRedirectTo: window.location.origin + "/dashboard",
+          data: { full_name: name.trim() },
+        },
+      });
+      if (error) {
+        console.error("signUp error:", error);
+        setLoading(false);
+        return toast.error(traduzirErro(error.message));
+      }
+      // Se já existe sessão (auto-confirm), redireciona
+      if (data.session) {
+        toast.success("Conta criada! Redirecionando...");
+        setLoading(false);
+        return nav({ to: "/dashboard" });
+      }
+      // Caso contrário tenta login imediato (auto-confirm ligado)
+      const { error: loginErr } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+      setLoading(false);
+      if (loginErr) {
+        console.error("post-signup login error:", loginErr);
+        toast.success("Conta criada! Faça login para continuar.");
+        return;
+      }
+      toast.success("Conta criada com sucesso!");
+      nav({ to: "/dashboard" });
+    } catch (err) {
+      console.error("signUp exception:", err);
+      setLoading(false);
+      toast.error("Erro inesperado ao cadastrar. Tente novamente.");
+    }
   }
   async function google() {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
