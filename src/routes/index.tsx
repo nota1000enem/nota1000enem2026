@@ -39,15 +39,15 @@ function Index() {
               Descubra sua nota do <span className="gradient-text">ENEM</span> em segundos usando <span className="gradient-text text-glow">Inteligência Artificial</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Corrija redações, treine questões difíceis e estude com metodologia focada em aprovação.
+              <span className="font-semibold text-foreground">DESCUBRA O FUTURO AGORA MESMO!</span> Corrija redações, treine questões difíceis e estude com metodologia focada em aprovação. Vídeo aulas, corretor de redação, plano de estudos — TUDO focado na sua aprovação. <span className="font-semibold text-primary">TESTE GRÁTIS AGORA MESMO.</span>
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link to="/redacao"><Button size="lg" className="glow-blue">Testar Redação Grátis <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
+              <Link to="/redacao"><Button size="lg" className="glow-blue">Ver Minha Nota Grátis <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
               <Link to="/planos"><Button size="lg" variant="outline">Ver Planos</Button></Link>
             </div>
             <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1"><Star className="h-4 w-4 fill-primary text-primary" /> 4.9/5 alunos</div>
-              <div>+12 mil redações corrigidas</div>
+              <div>+ de 78 mil redações corrigidas</div>
               <div>Garantia 7 dias</div>
             </div>
           </div>
@@ -75,9 +75,9 @@ function Index() {
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: FileText, n: "01", title: "Cole sua redação", desc: "Cole o texto direto no editor. Sem upload, sem complicação." },
-              { icon: Brain, n: "02", title: "A IA analisa tudo", desc: "Gramática, coerência, argumentação e as 5 competências do ENEM." },
-              { icon: Trophy, n: "03", title: "Receba o resultado", desc: "Nota estimada, erros, sugestões, repertórios e melhorias detalhadas." },
+              { icon: FileText, n: "01", title: "Cole sua redação", desc: "Basta colar seu texto no editor e começar a análise imediatamente. Sem precisar enviar arquivos, criar documentos ou perder tempo com etapas complicadas." },
+              { icon: Brain, n: "02", title: "Nós avaliamos sua redação em profundidade", desc: "Analisamos gramática, ortografia, coesão, coerência, argumentação, repertório sociocultural e desenvolvimento das ideias, além das 5 competências cobradas oficialmente no ENEM." },
+              { icon: Trophy, n: "03", title: "Receba um feedback completo e estratégico", desc: "Veja sua nota estimada, entenda seus erros, descubra pontos fortes e receba sugestões detalhadas de melhoria, exemplos de repertórios e orientações para aumentar seu desempenho na redação." },
             ].map(({ icon: Icon, n, title, desc }) => (
               <Card key={n} className="card-glass p-6">
                 <div className="mb-4 flex items-center justify-between">
@@ -246,7 +246,7 @@ function Index() {
                 <Star className="mr-1 h-3 w-3 fill-primary" /> Mais histórias reais
               </Badge>
               <h3 className="mt-3 text-2xl font-bold md:text-3xl">
-                +12 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
+                + de 78 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
               </h3>
             </div>
             <Carousel opts={{ align: "start", loop: true }} plugins={[autoplay.current]} className="mx-auto max-w-6xl px-12 md:px-16">
