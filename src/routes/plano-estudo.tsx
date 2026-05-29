@@ -30,31 +30,41 @@ function PlanoEstudoPage() {
   const [diasSemana, setDiasSemana] = useState("6");
   const [fraquezas, setFraquezas] = useState("");
   const [meta, setMeta] = useState("Aprovação em medicina");
+  const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
-  const [plano, setPlano] = useState<string>("");
+  const [plano, setPlano] = useState<PlanoIA | null>(null);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
   }, [loading, user, router]);
 
   async function gerar() {
-    setCarregando(true); setPlano("");
+    setCarregando(true); setPlano(null);
     try {
-      const prompt = `Você é um mentor especialista em ENEM. Monte um plano de estudo SEMANAL altamente detalhado para um aluno com:
-- Horas disponíveis por dia: ${horasDia}h
-- Dias disponíveis por semana: ${diasSemana}
-- Pontos fracos: ${fraquezas || "não informados"}
-- Meta: ${meta}
-
-Retorne em markdown organizado por DIA da semana, com BLOCOS de 50min + 10min pausa (técnica Pomodoro), distribuindo: Matemática, Linguagens, Ciências Humanas, Ciências da Natureza, Redação e revisão. Inclua 1 redação semanal e 1 simulado quinzenal. Seja prático e específico.`;
-      const { data, error } = await supabase.functions.invoke("corrigir-redacao", {
-        body: { texto: prompt, tema: "Plano de estudo personalizado", modoRigido: false, modo: "plano-estudo" },
+      const { data, error } = await supabase.functions.invoke("gerar-plano-estudo", {
+        body: {
+          horasDia: Number(horasDia),
+          diasSemana: Number(diasSemana),
+          fraquezas,
+          meta,
+          diasAteProva: Number(diasAteProva),
+        },
       });
       if (error) throw error;
-      // O endpoint retorna no formato de redação; usamos o comentario_geral como plano.
-      const r = data as { comentario_geral?: string; error?: string };
+      const r = data as PlanoIA & { error?: string };
       if (r.error) throw new Error(r.error);
-      setPlano(r.comentario_geral || "A IA não conseguiu gerar o plano. Tente novamente.");
+      setPlano(r);
+      if (user) {
+        await supabase.from("planos_estudo").insert({
+          user_id: user.id,
+          horas_dia: Number(horasDia),
+          dias_semana: Number(diasSemana),
+          pontos_fracos: fraquezas,
+          meta,
+          cronograma: r as never,
+        });
+      }
+      toast.success("Plano de estudo gerado!");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao gerar plano");
     } finally {
@@ -89,6 +99,10 @@ Retorne em markdown organizado por DIA da semana, com BLOCOS de 50min + 10min pa
               </div>
             </div>
             <div className="mt-4">
+              <Label>Dias até a prova</Label>
+              <Input type="number" min={1} max={730} value={diasAteProva} onChange={e => setDiasAteProva(e.target.value)} />
+            </div>
+            <div className="mt-4">
               <Label>Meta de aprovação</Label>
               <Input value={meta} onChange={e => setMeta(e.target.value)} placeholder="Ex: medicina, engenharia, direito..." />
             </div>
@@ -115,7 +129,33 @@ Retorne em markdown organizado por DIA da semana, com BLOCOS de 50min + 10min pa
               </div>
             )}
             {plano && (
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">{plano}</div>
+              <div className="space-y-4">
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">{plano.resumo}</div>
+                {plano.dicas_gerais?.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold">Dicas estratégicas</h4>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+                      {plano.dicas_gerais.map((d, i) => <li key={i}>{d}</li>)}
+                    </ul>
+                  </div>
+                )}
+                <div className="space-y-3">
+                  {plano.cronograma?.map((dia, i) => (
+                    <div key={i} className="rounded-lg border border-border/60 bg-background/60 p-3">
+                      <h4 className="text-sm font-bold text-primary">{dia.dia}</h4>
+                      <div className="mt-2 space-y-1.5">
+                        {dia.blocos.map((b, j) => (
+                          <div key={j} className="flex items-start gap-2 text-xs">
+                            <span className="min-w-[90px] font-mono text-muted-foreground">{b.horario}</span>
+                            <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] uppercase text-primary">{b.tipo}</span>
+                            <span className="flex-1"><b>{b.materia}</b> — {b.topico}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </Card>
         </div>
@@ -124,3 +164,12 @@ Retorne em markdown organizado por DIA da semana, com BLOCOS de 50min + 10min pa
     </div>
   );
 }
+
+type PlanoIA = {
+  resumo: string;
+  dicas_gerais: string[];
+  cronograma: Array<{
+    dia: string;
+    blocos: Array<{ horario: string; materia: string; topico: string; tipo: string }>;
+  }>;
+};
