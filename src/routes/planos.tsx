@@ -25,7 +25,7 @@ const planos = [
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["Até 25 redações corrigidas por mês", "Matemática", "Português", "Redação", "1000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: ["30 redações por mês — 1 por dia", "Matemática", "Português", "Redação", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
@@ -34,7 +34,7 @@ const planos = [
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["Até 50 redações corrigidas por mês", "Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Repertórios automáticos", "Cronograma inteligente"],
+    items: ["60 redações por mês — 2 por dia", "Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
     name: "Full Acess ENEM",
@@ -43,7 +43,7 @@ const planos = [
     desc: "Tudo, sem limites.",
     popular: false,
     upgrade: false,
-    items: ["Até 100 redações corrigidas por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+    items: ["120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
   },
   {
     name: "Full Acess ENEM Vitalício",
@@ -52,7 +52,7 @@ const planos = [
     desc: "Pague uma vez, use para SEMPRE.",
     popular: false,
     upgrade: false,
-    items: ["Acesso ETERNO — sem mensalidade", "Até 100 redações corrigidas por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
+    items: ["Acesso ETERNO — sem mensalidade", "120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
   },
 ];
 

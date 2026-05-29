@@ -33,12 +33,29 @@ function PlanoEstudoPage() {
   const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
   const [plano, setPlano] = useState<PlanoIA | null>(null);
+  const [planoUsuario, setPlanoUsuario] = useState<string>("free");
+  const [vitalicio, setVitalicio] = useState<boolean>(false);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
   }, [loading, user, router]);
 
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
+      setPlanoUsuario((data?.plan as string) ?? "free");
+      setVitalicio(Boolean(data?.plan_vitalicio));
+    })();
+  }, [user]);
+
+  const liberado = vitalicio || ["light", "pro", "full", "vitalicio"].includes(planoUsuario);
+
   async function gerar() {
+    if (!liberado) {
+      toast.error("Plano de Estudo com IA está disponível apenas nas assinaturas pagas e no Vitalício.");
+      return;
+    }
     setCarregando(true); setPlano(null);
     try {
       const { data, error } = await supabase.functions.invoke("gerar-plano-estudo", {

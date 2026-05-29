@@ -157,7 +157,7 @@
               radial-gradient(ellipse at bottom, oklch(0.55 0.2 280 / 0.12), transparent 60%);
 }
 .gradient-text {
-  background: linear-gradient(90deg, oklch(0.85 0.18 235), oklch(0.72 0.22 235), oklch(0.65 0.25 280));
+  background: linear-gradient(90deg, oklch(0.78 0.26 240), oklch(0.68 0.30 270), oklch(0.62 0.32 300));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

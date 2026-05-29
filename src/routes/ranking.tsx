@@ -26,7 +26,7 @@ function RankingPage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("ranking_global").select("*").limit(100);
+      const { data } = await supabase.rpc("get_ranking_global");
       setRows((data as unknown as Row[]) ?? []);
       setLoading(false);
     })();
