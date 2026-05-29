@@ -14,6 +14,7 @@ import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
+import { Route as MinhaAssinaturaRouteImport } from './routes/minha-assinatura'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AulasRouteImport } from './routes/aulas'
@@ -44,6 +45,11 @@ const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
   path: '/plano-estudo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MinhaAssinaturaRoute = MinhaAssinaturaRouteImport.update({
+  id: '/minha-assinatura',
+  path: '/minha-assinatura',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/minha-assinatura': typeof MinhaAssinaturaRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/minha-assinatura': typeof MinhaAssinaturaRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/aulas': typeof AulasRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/minha-assinatura': typeof MinhaAssinaturaRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/minha-assinatura'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/minha-assinatura'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/auth'
     | '/dashboard'
+    | '/minha-assinatura'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   AulasRoute: typeof AulasRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  MinhaAssinaturaRoute: typeof MinhaAssinaturaRoute
   PlanoEstudoRoute: typeof PlanoEstudoRoute
   PlanosRoute: typeof PlanosRoute
   QuestoesRoute: typeof QuestoesRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanoEstudoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/minha-assinatura': {
+      id: '/minha-assinatura'
+      path: '/minha-assinatura'
+      fullPath: '/minha-assinatura'
+      preLoaderRoute: typeof MinhaAssinaturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   AulasRoute: AulasRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  MinhaAssinaturaRoute: MinhaAssinaturaRoute,
   PlanoEstudoRoute: PlanoEstudoRoute,
   PlanosRoute: PlanosRoute,
   QuestoesRoute: QuestoesRoute,
@@ -229,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

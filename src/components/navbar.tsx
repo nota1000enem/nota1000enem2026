@@ -40,6 +40,7 @@ export function Navbar() {
           {user ? (
             <>
               <Link to="/dashboard"><Button variant="ghost" size="sm">Dashboard</Button></Link>
+              <Link to="/minha-assinatura"><Button variant="ghost" size="sm">Assinatura</Button></Link>
               <Button size="sm" variant="outline" onClick={async () => { await supabase.auth.signOut(); router.navigate({ to: "/" }); }}>Sair</Button>
             </>
           ) : (
