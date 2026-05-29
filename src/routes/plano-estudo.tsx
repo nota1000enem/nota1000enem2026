@@ -61,7 +61,7 @@ function PlanoEstudoPage() {
           dias_semana: Number(diasSemana),
           pontos_fracos: fraquezas,
           meta,
-          cronograma: r as unknown as Record<string, unknown>,
+          cronograma: r as never,
         });
       }
       toast.success("Plano de estudo gerado!");
