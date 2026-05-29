@@ -397,33 +397,18 @@ export type Database = {
       }
     }
     Views: {
-      profiles_public: {
-        Row: {
-          id: string | null
-          primeiro_nome: string | null
-        }
-        Insert: {
-          id?: string | null
-          primeiro_nome?: never
-        }
-        Update: {
-          id?: string | null
-          primeiro_nome?: never
-        }
-        Relationships: []
-      }
-      ranking_global: {
-        Row: {
-          melhor_nota: number | null
-          nome: string | null
-          total_redacoes: number | null
-          ultima_redacao: string | null
-          user_id: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_ranking_global: {
+        Args: never
+        Returns: {
+          melhor_nota: number
+          nome: string
+          total_redacoes: number
+          user_id: string
+        }[]
+      }
       is_assinatura_ativa: { Args: { _user_id: string }; Returns: boolean }
       plano_ativo: { Args: { _user_id: string }; Returns: boolean }
       pode_corrigir_redacao: { Args: { _user_id: string }; Returns: Json }
