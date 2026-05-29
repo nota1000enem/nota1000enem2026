@@ -14,7 +14,7 @@ export function Navbar() {
     { to: "/", label: "Início" },
     { to: "/redacao", label: "Corrigir Redação" },
     { to: "/aulas", label: "Vídeo Aulas" },
-    { to: "/questoes", label: "100 Questões" },
+    { to: "/questoes", label: "1.000 Questões" },
     { to: "/plano-estudo", label: "Plano de Estudo" },
     { to: "/ranking", label: "Ranking" },
     { to: "/planos", label: "Planos" },

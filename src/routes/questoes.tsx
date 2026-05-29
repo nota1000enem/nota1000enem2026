@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/questoes")({
-  head: () => ({ meta: [{ title: "100 Questões ENEM – Nota 1000 ENEM" }] }),
+  head: () => ({ meta: [{ title: "1.000 Questões ENEM – Nota 1000 ENEM" }] }),
   component: QuestoesPage,
 });
 
@@ -19,8 +19,8 @@ function QuestoesPage() {
         <Badge variant="outline" className="border-primary/40 text-primary">
           <Sparkles className="mr-1 h-3 w-3" /> Simulado completo
         </Badge>
-        <h1 className="mt-3 text-3xl font-bold md:text-5xl">100 Questões <span className="gradient-text">ENEM</span></h1>
-        <p className="mt-2 max-w-2xl text-muted-foreground">2 provas de 50 questões cobrindo todas as áreas. Notas calculadas em escala ENEM (0-1000).</p>
+        <h1 className="mt-3 text-3xl font-bold md:text-5xl">1.000 Questões <span className="gradient-text">ENEM</span></h1>
+        <p className="mt-2 max-w-2xl text-muted-foreground">Provas de 50 questões cobrindo todas as áreas. Notas calculadas em escala ENEM (0-1000).</p>
 
         <Card className="card-glass mt-8 p-6 border-yellow-500/40 bg-yellow-500/5">
           <div className="flex items-start gap-3">
@@ -40,6 +40,16 @@ function QuestoesPage() {
               <Button disabled className="mt-4 w-full">Em breve</Button>
             </Card>
           ))}
+          {Array.from({ length: 18 }).map((_, idx) => {
+            const n = idx + 3;
+            return (
+              <Card key={`extra-${n}`} className="card-glass p-6 opacity-60">
+                <h3 className="text-xl font-bold">Prova {n} — 50 questões</h3>
+                <p className="mt-2 text-sm text-muted-foreground">Linguagens, Humanas, Natureza e Matemática (mistas).</p>
+                <Button disabled className="mt-4 w-full">Em breve</Button>
+              </Card>
+            );
+          })}
         </div>
 
         <p className="mt-8 text-xs text-muted-foreground">
