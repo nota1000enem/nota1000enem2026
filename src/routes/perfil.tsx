@@ -275,3 +275,38 @@ function PerfilPage() {
     </div>
   );
 }
+
+function NomeEditor({ currentName, userId, onSaved }: { currentName: string; userId: string; onSaved: (n: string) => void }) {
+  const [nome, setNome] = useState(currentName);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => { setNome(currentName); }, [currentName]);
+
+  const dirty = nome.trim() !== currentName.trim();
+  const valid = nome.trim().length >= 2 && nome.trim().length <= 60;
+
+  async function salvar() {
+    if (!valid || !dirty || !userId) return;
+    setSaving(true);
+    const novo = nome.trim();
+    const { error } = await supabase.from("profiles").update({ full_name: novo }).eq("id", userId);
+    setSaving(false);
+    if (error) { toast.error("Não foi possível salvar o nome."); return; }
+    toast.success("Nome atualizado! Já aparece no ranking e dashboard.");
+    onSaved(novo);
+  }
+
+  return (
+    <div>
+      <Label className="text-xs text-muted-foreground">Nome (aparece no ranking, dashboard e perfil)</Label>
+      <div className="mt-1 flex gap-2">
+        <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Seu nome" maxLength={60} />
+        <Button onClick={salvar} disabled={!dirty || !valid || saving} size="sm">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+        </Button>
+      </div>
+      {!valid && nome.length > 0 && (
+        <p className="mt-1 text-xs text-destructive">Nome precisa ter entre 2 e 60 caracteres.</p>
+      )}
+    </div>
+  );
+}
