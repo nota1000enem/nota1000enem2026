@@ -65,6 +65,12 @@ function PerfilPage() {
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("credits_remaining,status,current_period_end,plan_type")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setSubscription(sub as any);
       setLoading(false);
     })();
   }, [nav]);
