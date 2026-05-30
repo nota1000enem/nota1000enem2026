@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
@@ -20,6 +21,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AulasRouteImport } from './routes/aulas'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedacaoRoute = RedacaoRouteImport.update({
   id: '/redacao',
   path: '/redacao',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/reset-password'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/reset-password'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/reset-password'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,10 +170,18 @@ export interface RootRouteChildren {
   QuestoesRoute: typeof QuestoesRoute
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/redacao': {
       id: '/redacao'
       path: '/redacao'
@@ -246,17 +266,8 @@ const rootRouteChildren: RootRouteChildren = {
   QuestoesRoute: QuestoesRoute,
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

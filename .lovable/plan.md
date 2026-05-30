@@ -1,121 +1,71 @@
-
 # Plano de execução
 
-Vou dividir em 4 lotes (entregas) — cada lote é um commit funcional. Você pode aprovar tudo de uma vez ou pedir para cortar/reordenar.
+A lista é grande demais pra um único turno sem quebrar coisa. Vou dividir em **5 lotes**. Começo pelo **Lote 1** assim que você aprovar, e os outros saem em sequência (cada lote = 1 mensagem minha).
 
 ---
 
-## LOTE 1 — Correções rápidas e críticas (landing + segurança + cadastro + limites)
+## ⚠️ Antes de começar — preciso de você
 
-### 1.1 Textos da landing (`src/routes/index.tsx`)
-- "Testar Redação Grátis" → **"Ver Minha Nota Grátis"**
-- Subtítulo do H1 → novo texto longo com "DESCRUBRA O FUTURO AGORA MESMO!..."
-- "+12 mil redações corrigidas" → **"+ de 78 mil redações corrigidas"**
-- Reescrever os 3 cards "01/02/03" com os textos novos completos que você passou
-
-### 1.2 Segurança RLS — tabela `profiles`
-Hoje qualquer pessoa lê emails e planos. Migration:
-- Drop policy `"anyone can view profile names"`
-- Criar policy SELECT só para o próprio dono: `auth.uid() = id`
-- Para o ranking global (lote 3) criar uma **view pública** `ranking_global` que expõe SÓ `nome_publico` (primeiro nome) + `melhor_nota`, sem email/plano
-
-### 1.3 Cadastro por email não funciona
-Investigar: provavelmente trigger `handle_new_user` está falhando silenciosamente OU validação de senha forte está bloqueando sem feedback. Fix:
-- Trocar trigger para `SECURITY DEFINER` com `EXCEPTION WHEN OTHERS` que não bloqueia o signup
-- Melhorar mensagens de erro no `auth.tsx`
-- Garantir `auto_confirm_email` ligado (já está)
-
-### 1.4 Limite de 3 redações grátis + avisos visíveis (`src/routes/redacao.tsx`)
-- Atualizar RPC `pode_corrigir_redacao`: free agora = **3 totais** (não 1)
-- Quando bloqueado, ao clicar "Corrigir agora" → modal/toast forte: "Você usou suas 3 correções grátis. Compre um plano." com botão "Ver Planos"
-- Toggle "Modo Professor Rígido" para free → ao tentar ativar mostra modal: "Disponível só nos planos pagos"
+1. **Link do grupo do Telegram** "NOTA 1000 ENEM 2026" (`https://t.me/...`) → pro botão flutuante.
+2. **Confirmar Mercado Pago**: vou salvar `MERCADO_PAGO_ACCESS_TOKEN` e `MERCADO_PAGO_PUBLIC_KEY` como secrets (você cola os valores no formulário seguro — não me mande aqui no chat de novo, já apareceu uma vez, idealmente **rotacione** essas chaves no painel do MP por segurança).
+3. **Como te dar plano pago de teste**: depois do Lote 1 te mando o SQL exato (1 linha por plano) pra você rodar e desbloquear tudo na sua conta.
 
 ---
 
-## LOTE 2 — Plano de Estudo IA dedicada
+## 🟢 Lote 1 — Correções rápidas + segurança (faço primeiro)
 
-### 2.1 Nova edge function `gerar-plano-estudo`
-Hoje `/plano-estudo` chama `corrigir-redacao` (por isso responde como se fosse redação). Criar função separada com prompt específico:
-- Input: horas/dia disponíveis, dias até prova, matérias fracas, meta de nota
-- Output JSON: cronograma semanal detalhado (segunda a domingo), com matéria, tópico, duração, tipo (teoria/exercício/redação/revisão)
+- **3 erros do scanner de segurança** → rodar scan, corrigir RLS/views expostas.
+- **Login**: mensagens em vermelho — "Email ou senha incorretos" / "Conta não existe, cadastre-se primeiro".
+- **Esqueci minha senha** no `/auth` + página `/reset-password` (pública, fora do middleware).
+- **Cadeado visual no `/plano-estudo`** pra usuário Free (com CTA "Fazer upgrade").
+- **`maxLength={2500}`** no textarea da redação + contador visual + toast quando colar texto maior.
+- **Cards de planos**: trocar "Matemática/Português/etc" pelas nomenclaturas oficiais ENEM:
+  - Linguagens, Códigos e suas Tecnologias
+  - Ciências Humanas e suas Tecnologias
+  - Ciências da Natureza e suas Tecnologias
+  - Matemática e suas Tecnologias
+- **Home → "TOP NOTAS DA SEMANA"** consumindo `get_ranking_global()` filtrado pelos últimos 7 dias.
+- **Logout visível no mobile** (item no menu hambúrguer).
+- **Destaque visual de erros gramaticais**: renderizar as palavras erradas em vermelho/negrito dentro do feedback no dashboard.
+- **Prompt da IA**: adicionar regra "se não tem certeza, não invente erro" (anti-alucinação reforçada).
 
-### 2.2 Reescrever `src/routes/plano-estudo.tsx`
-- Form melhor: horas/dia, dias/semana, data do ENEM, pontos fracos (checkboxes), meta
-- Render bonito do cronograma em grid semanal
-- Salvar último plano em nova tabela `planos_estudo`
+## 🟡 Lote 2 — Página `/perfil` completa
 
----
+- Seção A: Dados pessoais (nome + email read-only do Supabase Auth).
+- Seção B: Alterar senha (senha atual obrigatória → reautenticar antes de `updateUser`).
+- Seção C: Plano atual + badge + botão "Fazer Upgrade" → `/planos`.
+- Link "Esqueceu sua senha?" → `resetPasswordForEmail`.
+- **Botão flutuante Telegram** global (precisa do link).
 
-## LOTE 3 — Sistema de Assinaturas + Ranking Global
+## 🔴 Lote 3 — Mercado Pago + sistema de créditos (PESADO)
 
-### 3.1 Banco de assinaturas (nova tabela `assinaturas`)
-Campos:
-- `user_id`, `plano` (light/pro/full/vitalicio), `valor_centavos`, `status` (ativa/pendente/expirada/cancelada)
-- `iniciou_em`, `vence_em`, `proxima_cobranca_em`, `cancelou_em`
-- `gateway` (manual/stripe/mercadopago), `gateway_id`, `metodo_pagamento`
-- `created_at`, `updated_at`
+- Migração: ajustar `assinaturas` pra suportar `credits_remaining`, `current_period_end`, `plan_type` (LIGHT/PRO/FULL/VITALICIO), `mp_customer_id` em profiles.
+- Edge function `criar-checkout-mp` (Preferência Pix + cartão, metadata com user_id+plan).
+- Edge function `webhook-mp` (idempotente, valida `approved`, soma 30 dias, zera/injeta créditos: 15/30/60/70).
+- RPC `consumir_credito_redacao()` → decrementa só quando modo rígido OU correção normal.
+- Hierarquia de vídeos: `access_tier` em `video_lessons` (PRO_BASIC / FULL_PREMIUM / FULL_ACESS).
+- Realtime no checkout (modal fecha sozinho quando webhook aprovar).
+- Gating `/aulas` por tier + cadeado de upgrade.
+- Cron job interno: marcar `EXPIRED` quando `current_period_end < now()`.
+- Te entrego no final a **URL pública do webhook** pra colar no painel MP.
 
-Tabela `cobrancas`:
-- `assinatura_id`, `valor_centavos`, `status` (paga/pendente/falhou), `vencimento`, `pago_em`, `tentativa` (1,2,3...)
+## 🟣 Lote 4 — Simulado 100 questões
 
-### 3.2 Lógica de expiração com 2h de carência
-Função `is_assinatura_ativa(user_id)`:
-- Vitalício → sempre true
-- Else → `now() < vence_em + interval '2 hours'`
+- Parser do PDF que você forneceu antes → seed em `questoes_simulado`.
+- Página `/simulado/:id` com 1 questão por vez + setas + correção final + nota TRI aproximada.
+- Dashboard secundário no `/dashboard` só pra notas de simulado.
 
-Cron job (pg_cron) diário marca como `expirada` quando passa da carência.
+## ⚪ Lote 5 — Polimento final
 
-### 3.3 Página `/minha-assinatura` (visível pelo usuário)
-- Plano atual, valor, próximo vencimento, dias restantes
-- Histórico de cobranças
-- Botão "Renovar" / "Cancelar"
-
-### 3.4 Ranking Global (`src/routes/ranking.tsx`)
-- Substituir view atual `ranking_semanal` por `ranking_global` (top 100 GERAL, qualquer redação, inclui free)
-- Top 3 → mesmos cards bonitos atuais
-- Posições 4-100 → lista compacta numerada
-- Público (RLS permite anon) mas só expõe primeiro nome + nota
-- Realtime: ao inserir redação, ranking atualiza
-
----
-
-## LOTE 4 — Simulado 100 Questões (PDF → app)
-
-### 4.1 Parsing do PDF
-Extrair as questões do `Simulado-ENEM-2020-2025.pdf` (rodar `document--parse_document`) e gerar **2 provas de 50 questões** cada, misturando as 4 áreas (Matemática, Linguagens, Humanas, Natureza) — metade em cada prova. Última folha do PDF tem gabarito → uso para popular respostas corretas.
-
-### 4.2 Banco
-- `simulados` (id, nome, descricao, total_questoes)
-- `questoes` (simulado_id, numero, area, enunciado, alt_a..alt_e, resposta_correta, peso)
-- `tentativas_simulado` (user_id, simulado_id, started_at, finished_at, nota_total, acertos)
-- `respostas_aluno` (tentativa_id, questao_id, resposta_marcada, correta boolean)
-
-Peso por questão: usar TRI simplificado — pesquisar valores reais ENEM (cada área vai de ~300 a ~900). Implementar fórmula: nota = (acertos / total) * 900 + bonus por dificuldade. (Real ENEM usa TRI completo, vou aproximar de forma justa).
-
-### 4.3 Página `/questoes` (nova entrada no menu, ao lado de "Vídeo Aulas")
-- Lista as 2 provas
-- Ao clicar: aviso "A última folha contém respostas — NÃO olhe antes de terminar"
-- Interface: 1 questão por vez, A-E clicáveis, seta direita para próxima, barra de progresso
-- Ao final: tela de resultado com nota, gabarito comentado
-- Salva tudo no banco
-
-### 4.4 Dashboard
-- Adicionar nova seção abaixo de "Redações" → "Minhas Provas" (lista de tentativas com nota, data, % acerto por área). **Sem ranking.**
-
-### 4.5 Menu
-`src/components/navbar.tsx` → adicionar link "100 Questões" ao lado de "Vídeo Aulas"
+- IA "auto-aprender" — na prática: salvar redações + correções e usar como few-shot examples no prompt (não é RLHF de verdade, é refinamento contínuo de prompt baseado em feedback).
+- Revisão geral, testes manuais.
 
 ---
 
-## Detalhes técnicos importantes
+## ❓ Confirme só 3 coisas e eu começo o Lote 1:
 
-- **Pagamento real**: não estou ativando Stripe agora — só montando a estrutura do banco. Quando você quiser, ativamos Stripe e plugamos. Por enquanto status muda manualmente.
-- **PDF parse**: rodo `document--parse_document` para extrair texto, depois um script Python local separa questões+gabarito e gera SQL de seed.
-- **Auto-confirm email** já está ligado; o problema do cadastro deve ser o trigger ou validação client.
-- **TRI ENEM real** é complexo; vou usar aproximação documentada (cada questão pesa 18 pontos numa escala 0-900, com bônus por dificuldade simulada).
+1. **Aprova essa ordem?** (1 → 2 → 3 → 4 → 5)
+2. **Manda o link do Telegram** (pode ser depois, só atrasa o botão).
+3. **Pode salvar os secrets do Mercado Pago** quando eu pedir no Lote 3?
 
----
-
-## Pergunta de bloqueio
-
-São ~4-6 horas de trabalho condensadas. Quer que eu execute **todos os 4 lotes em sequência sem parar**, ou prefere que eu entregue lote por lote para você revisar entre cada um? Recomendo lote por lote — é mais seguro e você não fica com um commit gigante difícil de reverter se algo quebrar.
+Responde "vai" que eu emendo o Lote 1 agora.

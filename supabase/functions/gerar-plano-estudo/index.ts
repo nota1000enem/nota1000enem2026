@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,6 +10,28 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // 🔒 AUTENTICAÇÃO + CHECAGEM DE PLANO PAGO
+    const authHeader = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Não autenticado." }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: { user }, error: uerr } = await admin.auth.getUser(authHeader);
+    if (uerr || !user) {
+      return new Response(JSON.stringify({ error: "Sessão inválida." }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
+    const liberado = prof?.plan_vitalicio === true || ["light", "pro", "full", "vitalicio"].includes((prof?.plan as string) ?? "free");
+    if (!liberado) {
+      return new Response(JSON.stringify({ error: "Plano de Estudo com IA disponível apenas para assinaturas pagas e Vitalício." }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { horasDia, diasSemana, fraquezas, meta, diasAteProva } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

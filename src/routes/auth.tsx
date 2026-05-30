@@ -9,7 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
+import { Sparkles, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Entrar – Nota 1000 ENEM" }] }),
@@ -22,6 +22,9 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [erroLogin, setErroLogin] = useState<string>("");
+  const [erroSignup, setErroSignup] = useState<string>("");
+  const [enviandoReset, setEnviandoReset] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
@@ -48,18 +51,19 @@ function AuthPage() {
   }
 
   async function signIn(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true);
+    e.preventDefault(); setLoading(true); setErroLogin("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) return toast.error(traduzirErro(error.message));
+    if (error) { setErroLogin(traduzirErro(error.message)); return; }
     nav({ to: "/dashboard" });
   }
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
+    setErroSignup("");
     const erroSenha = validarSenha(password);
-    if (erroSenha) return toast.error(erroSenha);
-    if (!name.trim()) return toast.error("Informe seu nome.");
-    if (!email.trim()) return toast.error("Informe seu email.");
+    if (erroSenha) { setErroSignup(erroSenha); return; }
+    if (!name.trim()) { setErroSignup("Informe seu nome."); return; }
+    if (!email.trim()) { setErroSignup("Informe seu email."); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -73,7 +77,8 @@ function AuthPage() {
       if (error) {
         console.error("signUp error:", error);
         setLoading(false);
-        return toast.error(traduzirErro(error.message));
+        setErroSignup(traduzirErro(error.message));
+        return;
       }
       // Se já existe sessão (auto-confirm), redireciona
       if (data.session) {
@@ -97,7 +102,23 @@ function AuthPage() {
     } catch (err) {
       console.error("signUp exception:", err);
       setLoading(false);
-      toast.error("Erro inesperado ao cadastrar. Tente novamente.");
+      setErroSignup("Erro inesperado ao cadastrar. Tente novamente.");
+    }
+  }
+  async function esqueciSenha() {
+    if (!email.trim()) {
+      setErroLogin("Digite seu email acima para receber o link de recuperação.");
+      return;
+    }
+    setEnviandoReset(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    setEnviandoReset(false);
+    if (error) {
+      setErroLogin(traduzirErro(error.message));
+    } else {
+      toast.success("Link de recuperação enviado! Confira seu email.");
     }
   }
   async function google() {
@@ -122,7 +143,21 @@ function AuthPage() {
               <form onSubmit={signIn} className="space-y-4">
                 <div><Label>Email</Label><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
                 <div><Label>Senha</Label><Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required /></div>
+                {erroLogin && (
+                  <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3">
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                    <p className="text-sm font-semibold text-destructive">{erroLogin}</p>
+                  </div>
+                )}
                 <Button disabled={loading} className="w-full glow-blue">Entrar</Button>
+                <button
+                  type="button"
+                  onClick={esqueciSenha}
+                  disabled={enviandoReset}
+                  className="block w-full text-center text-xs text-primary hover:underline disabled:opacity-50"
+                >
+                  {enviandoReset ? "Enviando..." : "Esqueci minha senha"}
+                </button>
               </form>
             </TabsContent>
             <TabsContent value="signup">
@@ -136,6 +171,12 @@ function AuthPage() {
                     Mínimo 6 caracteres com 1 MAIÚSCULA, 1 minúscula, 1 número e 1 caractere especial.
                   </p>
                 </div>
+                {erroSignup && (
+                  <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3">
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                    <p className="text-sm font-semibold text-destructive">{erroSignup}</p>
+                  </div>
+                )}
                 <Button disabled={loading} className="w-full glow-blue">Criar conta</Button>
               </form>
             </TabsContent>

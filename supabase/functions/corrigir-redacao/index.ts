@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,12 +10,47 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // 🔒 AUTENTICAÇÃO OBRIGATÓRIA
+    const authHeader = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Não autenticado." }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const supaUrl = Deno.env.get("SUPABASE_URL")!;
+    const supaService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const admin = createClient(supaUrl, supaService);
+    const { data: { user }, error: uerr } = await admin.auth.getUser(authHeader);
+    if (uerr || !user) {
+      return new Response(JSON.stringify({ error: "Sessão inválida. Faça login novamente." }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // 🛡️ CHECAR LIMITE E PLANO SERVER-SIDE
+    const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
+    const podeObj = pode as { pode?: boolean; motivo?: string } | null;
+    if (!podeObj?.pode) {
+      return new Response(JSON.stringify({ error: "Limite atingido ou assinatura expirada.", motivo: podeObj?.motivo }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
+    const planoUsuario = (prof?.plan as string) ?? "free";
+    const modoRigidoLiberado = prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
+
     const { texto, tema, modoRigido } = await req.json();
     if (!texto || typeof texto !== "string" || texto.trim().length < 50) {
       return new Response(JSON.stringify({ error: "Texto muito curto. Cole sua redação completa." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (texto.length > 2500) {
+      return new Response(JSON.stringify({ error: "Texto excede 2500 caracteres (limite ENEM ~30 linhas)." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // Modo rígido só se plano permite
+    const modoRigidoFinal = Boolean(modoRigido) && modoRigidoLiberado;
 
     // ============================================================
     // INSERIR API KEY OPENAI AQUI (futuro)
@@ -28,6 +64,12 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
     const systemPrompt = `Você é um corretor oficial de redação do ENEM, calibrado EXATAMENTE pela Cartilha do Participante / Matriz de Referência do INEP. Você NÃO é professor de cursinho exigente. Você NÃO corrige por gosto ou estilo. Você corrige pela GRADE FRIA DO INEP.
+
+REGRA ANTI-ALUCINAÇÃO (PRIORIDADE MÁXIMA):
+- Se você NÃO TEM CERTEZA ABSOLUTA de um erro, NÃO o aponte. Silêncio é melhor que invenção.
+- NUNCA invente erro gramatical para "preencher" a lista. Se o texto é correto, retorne erros_gramaticais = [].
+- Em "erros_gramaticais", cite SEMPRE a frase EXATA do aluno entre aspas (palavras textuais do texto). Se não consegue extrair a frase original, NÃO inclua o erro.
+- Em "erros_gramaticais", DESTAQUE a palavra ou trecho errado escrevendo-o entre **asteriscos duplos** (será renderizado em vermelho no frontend). Exemplo: "Na frase 'aonde as pessoas **rim** dos nordestinos', o correto é **riem** (3ª pessoa do plural do verbo rir)."
 
 REGRAS GERAIS — INVIOLÁVEIS:
 - Cada competência vai de 0 a 200, em múltiplos de 40 (0, 40, 80, 120, 160, 200). NUNCA use 160 como "média segura". Se o critério da banca é cumprido, dê 200.
@@ -82,7 +124,7 @@ FORMATO DE FEEDBACK:
 - "repertorios": só sugira se C2 < 200. Se já há repertório bom, retorne array vazio ou um elogio.
 - "erros_gramaticais": APENAS erros reais com a frase do aluno entre aspas + correção + regra. Se não há erro, array vazio.
 
-${modoRigido ? `MODO PROFESSOR RÍGIDO ATIVADO:
+${modoRigidoFinal ? `MODO PROFESSOR RÍGIDO ATIVADO:
 - Tom brutalmente honesto, irônico, comentários afiados (mas SEM inventar erro).
 - AGORA SIM você pode ZERAR uma redação se ela for desastrosa (sem acentos, palavras incompletas, sem parágrafos, sem pontuação) — não tenha dó.
 - AGORA SIM você pode dar 1000 se a redação for EXCELENTE de verdade.
