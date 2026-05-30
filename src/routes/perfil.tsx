@@ -161,19 +161,18 @@ function PerfilPage() {
               <CheckCircle2 className="h-3 w-3 text-green-400" /> Logado
             </Badge>
           </div>
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs text-muted-foreground">Nome</Label>
-              <Input value={profile?.full_name ?? ""} readOnly className="bg-muted/30" />
+          <NomeEditor
+            currentName={profile?.full_name ?? ""}
+            userId={profile?.id ?? ""}
+            onSaved={(n) => setProfile((p) => (p ? { ...p, full_name: n } : p))}
+          />
+          <div className="mt-4">
+            <Label className="text-xs text-muted-foreground">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input value={userEmail} readOnly className="bg-muted/30 pl-9" />
             </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input value={userEmail} readOnly className="bg-muted/30 pl-9" />
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta.</p>
-            </div>
+            <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta. Esse nome aparece no ranking, dashboard e nas suas correções.</p>
           </div>
         </Card>
 
