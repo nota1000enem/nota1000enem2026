@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { TelegramFab } from "@/components/telegram-fab";
 
 function NotFoundComponent() {
   return (
