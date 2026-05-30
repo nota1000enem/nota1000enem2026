@@ -137,11 +137,16 @@ function Planos() {
                 <span className="text-sm text-muted-foreground">{p.periodo}</span>
               </div>
               <Button
-                onClick={() => handleCheckout(p.name)}
+                onClick={() => handleCheckout(p.planType, p.name)}
+                disabled={loadingPlan !== null}
                 className={`mt-6 w-full ${p.popular ? "glow-blue" : ""}`}
                 variant={p.popular ? "default" : "outline"}
               >
-                Assinar {p.name}
+                {loadingPlan === p.planType ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…</>
+                ) : (
+                  <>Assinar {p.name}</>
+                )}
               </Button>
               {p.upgrade && (
                 <p className="mt-2 text-center text-xs text-primary">
