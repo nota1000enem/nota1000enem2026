@@ -66,6 +66,7 @@ export function Navbar() {
             {user ? (
               <>
                 <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Dashboard</Link>
+                <Link to="/perfil" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Meu Perfil</Link>
                 <Link to="/minha-assinatura" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Minha Assinatura</Link>
                 <button
                   onClick={async () => {
