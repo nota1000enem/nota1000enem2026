@@ -112,6 +112,39 @@ export type Database = {
           },
         ]
       }
+      payment_transactions: {
+        Row: {
+          created_at: string
+          id: string
+          mp_payment_id: string
+          plan_type: string
+          raw: Json | null
+          status: string
+          user_id: string
+          valor_centavos: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mp_payment_id: string
+          plan_type: string
+          raw?: Json | null
+          status: string
+          user_id: string
+          valor_centavos: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mp_payment_id?: string
+          plan_type?: string
+          raw?: Json | null
+          status?: string
+          user_id?: string
+          valor_centavos?: number
+        }
+        Relationships: []
+      }
       planos_estudo: {
         Row: {
           created_at: string
@@ -151,6 +184,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          mp_customer_id: string | null
           plan: string
           plan_expires_at: string | null
           plan_vitalicio: boolean
@@ -160,6 +194,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          mp_customer_id?: string | null
           plan?: string
           plan_expires_at?: string | null
           plan_vitalicio?: boolean
@@ -169,6 +204,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          mp_customer_id?: string | null
           plan?: string
           plan_expires_at?: string | null
           plan_vitalicio?: boolean
@@ -358,6 +394,39 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          current_period_end: string
+          id: string
+          plan_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          current_period_end: string
+          id?: string
+          plan_type: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          current_period_end?: string
+          id?: string
+          plan_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       tentativas_simulado: {
         Row: {
           acertos: number | null
@@ -401,6 +470,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      video_lessons: {
+        Row: {
+          access_tier: string
+          created_at: string
+          id: string
+          ordem: number
+          subject: string
+          title: string
+          video_url: string
+        }
+        Insert: {
+          access_tier: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          subject: string
+          title: string
+          video_url: string
+        }
+        Update: {
+          access_tier?: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          subject?: string
+          title?: string
+          video_url?: string
+        }
+        Relationships: []
       }
     }
     Views: {
