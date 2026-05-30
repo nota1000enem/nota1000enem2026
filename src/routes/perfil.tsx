@@ -36,6 +36,7 @@ function PerfilPage() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [subscription, setSubscription] = useState<{ credits_remaining: number; status: string; current_period_end: string; plan_type: string } | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
 
   // password change
@@ -65,6 +66,12 @@ function PerfilPage() {
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("credits_remaining,status,current_period_end,plan_type")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setSubscription(sub as any);
       setLoading(false);
     })();
   }, [nav]);
@@ -184,9 +191,25 @@ function PerfilPage() {
               <span className="text-xs text-muted-foreground">● Sem assinatura ativa</span>
             )}
             <Link to="/planos" className="ml-auto">
-              <Button size="sm" className="glow-blue">Fazer Upgrade</Button>
+              <Button size="sm" className="glow-blue">{ativo ? "Renovar / Trocar" : "Fazer Upgrade"}</Button>
             </Link>
           </div>
+          {subscription && (
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-lg border border-border/60 bg-card/40 p-3">
+                <div className="text-xs text-muted-foreground">Créditos de redação</div>
+                <div className="text-2xl font-bold text-primary">{subscription.credits_remaining}</div>
+              </div>
+              <div className="rounded-lg border border-border/60 bg-card/40 p-3">
+                <div className="text-xs text-muted-foreground">Ciclo termina em</div>
+                <div className="text-sm font-medium">
+                  {subscription.plan_type === "VITALICIO"
+                    ? "Nunca (vitalício)"
+                    : new Date(subscription.current_period_end).toLocaleDateString("pt-BR")}
+                </div>
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* Alterar senha */}

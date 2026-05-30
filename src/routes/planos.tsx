@@ -1,11 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, ShieldCheck } from "lucide-react";
+import { Check, Sparkles, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -17,48 +21,91 @@ export const Route = createFileRoute("/planos")({
   component: Planos,
 });
 
-const planos = [
+const planos: Array<{
+  name: string;
+  planType: PlanType;
+  price: string;
+  periodo: string;
+  desc: string;
+  popular: boolean;
+  upgrade: boolean;
+  items: string[];
+}> = [
   {
     name: "ENEM Light",
+    planType: "LIGHT",
     price: "19,90",
     periodo: "/mês",
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["30 redações por mês — 1 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: ["15 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
+    planType: "PRO",
     price: "29,90",
     periodo: "/mês",
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["60 redações por mês — 2 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
+    items: ["30 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
     name: "Full Acess ENEM",
+    planType: "FULL",
     price: "49,90",
     periodo: "/mês",
     desc: "Tudo, sem limites.",
     popular: false,
     upgrade: false,
-    items: ["120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+    items: ["60 redações por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
   },
   {
     name: "Full Acess ENEM Vitalício",
+    planType: "VITALICIO",
     price: "499",
     periodo: "uma vez",
     desc: "Pague uma vez, use para SEMPRE.",
     popular: false,
     upgrade: false,
-    items: ["Acesso ETERNO — sem mensalidade", "120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
+    items: ["Acesso ETERNO — sem mensalidade", "70 redações por mês (renova a cada 30 dias)", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
   },
 ];
 
 function Planos() {
-  function handleCheckout(plano: string) {
-    toast.info(`Checkout do plano ${plano} em breve – integração Mercado Pago.`);
+  const checkoutFn = useServerFn(createCheckout);
+  const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    if (status === "success") {
+      toast.success("Pagamento aprovado! Acesso liberado em instantes.", { duration: 6000 });
+    } else if (status === "pending") {
+      toast.info("Pagamento pendente. Assim que o Mercado Pago confirmar, seu acesso será liberado automaticamente.", { duration: 6000 });
+    } else if (status === "failure") {
+      toast.error("O pagamento não foi concluído. Tente novamente.");
+    }
+  }, []);
+
+  async function handleCheckout(planType: PlanType, label: string) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.error("Faça login antes de assinar um plano.");
+      window.location.href = "/auth?redirect=/planos";
+      return;
+    }
+    setLoadingPlan(planType);
+    try {
+      const res = await checkoutFn({ data: { planType } });
+      if (!res?.init_point) throw new Error("Resposta inválida do servidor");
+      window.location.href = res.init_point;
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message ?? `Não foi possível abrir o checkout de ${label}.`);
+      setLoadingPlan(null);
+    }
   }
   return (
     <div className="min-h-screen bg-background">
@@ -90,11 +137,16 @@ function Planos() {
                 <span className="text-sm text-muted-foreground">{p.periodo}</span>
               </div>
               <Button
-                onClick={() => handleCheckout(p.name)}
+                onClick={() => handleCheckout(p.planType, p.name)}
+                disabled={loadingPlan !== null}
                 className={`mt-6 w-full ${p.popular ? "glow-blue" : ""}`}
                 variant={p.popular ? "default" : "outline"}
               >
-                Assinar {p.name}
+                {loadingPlan === p.planType ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…</>
+                ) : (
+                  <>Assinar {p.name}</>
+                )}
               </Button>
               {p.upgrade && (
                 <p className="mt-2 text-center text-xs text-primary">
