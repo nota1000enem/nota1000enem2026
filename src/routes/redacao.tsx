@@ -238,19 +238,28 @@ function RedacaoPage() {
               <span className="text-muted-foreground">≈ 30 linhas (folha ENEM)</span>
             </div>
 
-            <div className={`mt-4 flex items-center justify-between rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}>
-              <div className="flex items-center gap-2">
-                {modoRigidoLiberado ? <Flame className="h-4 w-4 text-destructive" /> : <Lock className="h-4 w-4 text-muted-foreground" />}
-                <div>
-                  <Label htmlFor="rigido" className={modoRigidoLiberado ? "cursor-pointer" : ""}>
-                    Modo Professor Rígido {!modoRigidoLiberado && "(Pro / Full / Vitalício)"}
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    {modoRigidoLiberado ? "Comentários brutalmente honestos." : "Disponível nos planos R$ 29,90, R$ 49,90 e Vitalício."}
-                  </p>
+            <div className={`mt-4 rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  {modoRigidoLiberado ? <Flame className="h-4 w-4 text-destructive" /> : <Lock className="h-4 w-4 text-muted-foreground" />}
+                  <div>
+                    <Label htmlFor="rigido" className={modoRigidoLiberado ? "cursor-pointer" : ""}>
+                      Modo Professor Rígido {!modoRigidoLiberado && "(Pro / Full / Vitalício)"}
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {modoRigidoLiberado ? "Comentários brutalmente honestos." : "Disponível nos planos R$ 29,90, R$ 49,90 e Vitalício."}
+                    </p>
+                  </div>
                 </div>
+                <Switch id="rigido" checked={modoRigido} onCheckedChange={setModoRigido} disabled={!modoRigidoLiberado} />
               </div>
-              <Switch id="rigido" checked={modoRigido} onCheckedChange={setModoRigido} disabled={!modoRigidoLiberado} />
+              <div className="mt-3 flex items-start gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 p-2 text-[11px] text-yellow-200">
+                <Sparkles className="mt-0.5 h-3 w-3 shrink-0" />
+                <p>
+                  <strong>Aviso:</strong> o Modo Rígido usa linguagem direta, dura e sem rodeios — como um professor que não passa a mão na cabeça.
+                  É ótimo pra acelerar evolução, mas pode <strong>ferir alunos mais sensíveis</strong>. Se você prefere um tom acolhedor, mantenha desligado.
+                </p>
+              </div>
             </div>
 
             <Button onClick={handleSubmit} disabled={submitting} size="lg" className="mt-4 w-full glow-blue">
