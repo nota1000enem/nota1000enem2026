@@ -36,6 +36,7 @@ function PerfilPage() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [subscription, setSubscription] = useState<{ credits_remaining: number; status: string; current_period_end: string; plan_type: string } | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
 
   // password change
