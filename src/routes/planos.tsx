@@ -21,42 +21,55 @@ export const Route = createFileRoute("/planos")({
   component: Planos,
 });
 
-const planos = [
+const planos: Array<{
+  name: string;
+  planType: PlanType;
+  price: string;
+  periodo: string;
+  desc: string;
+  popular: boolean;
+  upgrade: boolean;
+  items: string[];
+}> = [
   {
     name: "ENEM Light",
+    planType: "LIGHT",
     price: "19,90",
     periodo: "/mês",
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["30 redações por mês — 1 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: ["15 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
+    planType: "PRO",
     price: "29,90",
     periodo: "/mês",
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["60 redações por mês — 2 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
+    items: ["30 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
     name: "Full Acess ENEM",
+    planType: "FULL",
     price: "49,90",
     periodo: "/mês",
     desc: "Tudo, sem limites.",
     popular: false,
     upgrade: false,
-    items: ["120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+    items: ["60 redações por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
   },
   {
     name: "Full Acess ENEM Vitalício",
+    planType: "VITALICIO",
     price: "499",
     periodo: "uma vez",
     desc: "Pague uma vez, use para SEMPRE.",
     popular: false,
     upgrade: false,
-    items: ["Acesso ETERNO — sem mensalidade", "120 redações por mês — 4 por dia", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
+    items: ["Acesso ETERNO — sem mensalidade", "70 redações por mês (renova a cada 30 dias)", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
   },
 ];
 
