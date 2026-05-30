@@ -77,23 +77,30 @@ function RedacaoPage() {
   const modoRigidoLiberado = ["pro", "full", "vitalicio"].includes(plano);
 
   async function handleSubmit() {
+    if (!user) {
+      toast.error("Você precisa estar logado para corrigir uma redação.");
+      router.navigate({ to: "/auth" });
+      return;
+    }
     if (bloqueado) {
       const msgs: Record<string, string> = {
-        limite_gratuito_atingido: "Você já usou sua correção gratuita. Escolha um plano para continuar.",
-        limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês. Faça upgrade para corrigir mais.`,
+        limite_gratuito_atingido: "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
+        limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês (${usadas}/${limite}). Faça upgrade para corrigir mais.`,
         assinatura_expirada: "Sua assinatura expirou. Renove para continuar corrigindo.",
+        profile_nao_encontrado: "Seu perfil ainda não foi criado. Faça logout e login novamente para sincronizar.",
       };
-      toast.error(msgs[motivoBloqueio] ?? "Acesso bloqueado.");
+      toast.error(msgs[motivoBloqueio] ?? `Acesso bloqueado (${motivoBloqueio || "motivo desconhecido"}). Entre em contato pelo Telegram se persistir.`);
       return;
     }
     if (texto.trim().length < 50) {
-      toast.error("Cole uma redação completa (mínimo 50 caracteres).");
+      toast.error(`Cole uma redação completa — mínimo 50 caracteres (você colou ${texto.trim().length}).`);
       return;
     }
     if (modoRigido && !modoRigidoLiberado) {
       toast.error("Modo Professor Rígido está disponível apenas nos planos Pro, Full e Vitalício.");
       return;
     }
+
     setSubmitting(true);
     setResultado(null);
     try {
