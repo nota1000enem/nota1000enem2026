@@ -555,6 +555,17 @@ export type Database = {
       }
     }
     Functions: {
+      get_minhas_tentativas: {
+        Args: { _user_id: string }
+        Returns: {
+          acertos: number
+          finished_at: string
+          id: string
+          nota_total: number
+          simulado_nome: string
+          total: number
+        }[]
+      }
       get_ranking_global: {
         Args: never
         Returns: {

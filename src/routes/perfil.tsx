@@ -161,19 +161,18 @@ function PerfilPage() {
               <CheckCircle2 className="h-3 w-3 text-green-400" /> Logado
             </Badge>
           </div>
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs text-muted-foreground">Nome</Label>
-              <Input value={profile?.full_name ?? ""} readOnly className="bg-muted/30" />
+          <NomeEditor
+            currentName={profile?.full_name ?? ""}
+            userId={profile?.id ?? ""}
+            onSaved={(n) => setProfile((p) => (p ? { ...p, full_name: n } : p))}
+          />
+          <div className="mt-4">
+            <Label className="text-xs text-muted-foreground">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input value={userEmail} readOnly className="bg-muted/30 pl-9" />
             </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input value={userEmail} readOnly className="bg-muted/30 pl-9" />
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta.</p>
-            </div>
+            <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta. Esse nome aparece no ranking, dashboard e nas suas correções.</p>
           </div>
         </Card>
 
@@ -273,6 +272,41 @@ function PerfilPage() {
           </div>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function NomeEditor({ currentName, userId, onSaved }: { currentName: string; userId: string; onSaved: (n: string) => void }) {
+  const [nome, setNome] = useState(currentName);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => { setNome(currentName); }, [currentName]);
+
+  const dirty = nome.trim() !== currentName.trim();
+  const valid = nome.trim().length >= 2 && nome.trim().length <= 60;
+
+  async function salvar() {
+    if (!valid || !dirty || !userId) return;
+    setSaving(true);
+    const novo = nome.trim();
+    const { error } = await supabase.from("profiles").update({ full_name: novo }).eq("id", userId);
+    setSaving(false);
+    if (error) { toast.error("Não foi possível salvar o nome."); return; }
+    toast.success("Nome atualizado! Já aparece no ranking e dashboard.");
+    onSaved(novo);
+  }
+
+  return (
+    <div>
+      <Label className="text-xs text-muted-foreground">Nome (aparece no ranking, dashboard e perfil)</Label>
+      <div className="mt-1 flex gap-2">
+        <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Seu nome" maxLength={60} />
+        <Button onClick={salvar} disabled={!dirty || !valid || saving} size="sm">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+        </Button>
+      </div>
+      {!valid && nome.length > 0 && (
+        <p className="mt-1 text-xs text-destructive">Nome precisa ter entre 2 e 60 caracteres.</p>
+      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, TrendingUp, Trophy, Sparkles, Plus } from "lucide-react";
+import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -19,17 +19,15 @@ export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
 });
 
-type Redacao = {
-  id: string;
-  tema: string | null;
-  nota_total: number | null;
-  created_at: string;
-};
+type Redacao = { id: string; tema: string | null; nota_total: number | null; created_at: string };
+type Tentativa = { id: string; simulado_nome: string; nota_total: number; acertos: number; total: number; finished_at: string };
 
 function Dashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [redacoes, setRedacoes] = useState<Redacao[]>([]);
+  const [tentativas, setTentativas] = useState<Tentativa[]>([]);
+  const [nome, setNome] = useState<string>("estudante");
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -39,20 +37,24 @@ function Dashboard() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase
-        .from("redacoes")
-        .select("id, tema, nota_total, created_at")
-        .order("created_at", { ascending: false })
-        .limit(20);
-      setRedacoes((data as Redacao[]) ?? []);
+      const [{ data: redData }, { data: tentData }, { data: prof }] = await Promise.all([
+        supabase.from("redacoes").select("id, tema, nota_total, created_at").order("created_at", { ascending: false }).limit(20),
+        supabase.rpc("get_minhas_tentativas", { _user_id: user.id }),
+        supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+      ]);
+      setRedacoes((redData as Redacao[]) ?? []);
+      setTentativas((tentData as Tentativa[]) ?? []);
+      const fn = (prof?.full_name as string | null)?.trim();
+      setNome(fn && fn.length ? fn.split(" ")[0] : "estudante");
       setFetching(false);
     })();
   }, [user]);
 
-  const media = redacoes.length
-    ? Math.round(redacoes.reduce((a, r) => a + (r.nota_total ?? 0), 0) / redacoes.length)
-    : 0;
+  const media = redacoes.length ? Math.round(redacoes.reduce((a, r) => a + (r.nota_total ?? 0), 0) / redacoes.length) : 0;
   const melhor = redacoes.reduce((m, r) => Math.max(m, r.nota_total ?? 0), 0);
+
+  const mediaSim = tentativas.length ? Math.round(tentativas.reduce((a, t) => a + Number(t.nota_total ?? 0), 0) / tentativas.length) : 0;
+  const melhorSim = tentativas.reduce((m, t) => Math.max(m, Number(t.nota_total ?? 0)), 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,16 +66,19 @@ function Dashboard() {
               <Sparkles className="mr-1 h-3 w-3" /> Sua jornada rumo ao 900+
             </Badge>
             <h1 className="mt-3 text-3xl font-bold md:text-4xl">
-              Olá, <span className="gradient-text">{user?.email?.split("@")[0] ?? "estudante"}</span>
+              Olá, <span className="gradient-text">{nome}</span>
             </h1>
             <p className="mt-1 text-muted-foreground">Aqui está o seu progresso recente.</p>
           </div>
-          <Link to="/redacao">
-            <Button className="glow-blue"><Plus className="mr-1 h-4 w-4" /> Nova redação</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/redacao"><Button className="glow-blue"><Plus className="mr-1 h-4 w-4" /> Nova redação</Button></Link>
+            <Link to="/questoes"><Button variant="outline"><Play className="mr-1 h-4 w-4" /> Fazer simulado</Button></Link>
+          </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        {/* Redação */}
+        <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground">Redação</h2>
+        <div className="grid gap-4 md:grid-cols-3">
           <Card className="card-glass p-6">
             <FileText className="h-5 w-5 text-primary" />
             <p className="mt-3 text-sm text-muted-foreground">Redações corrigidas</p>
@@ -91,6 +96,26 @@ function Dashboard() {
           </Card>
         </div>
 
+        {/* Classificação SEM (simulados) */}
+        <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <GraduationCap className="h-4 w-4 text-primary" /> Classificação SEM <span className="text-[10px] normal-case text-muted-foreground">(Simulado ENEM Misto)</span>
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className="card-glass p-6">
+            <p className="text-sm text-muted-foreground">Simulados feitos</p>
+            <p className="mt-1 text-3xl font-bold">{tentativas.length}</p>
+          </Card>
+          <Card className="card-glass p-6">
+            <p className="text-sm text-muted-foreground">Nota média</p>
+            <p className="mt-1 text-3xl font-bold gradient-text">{mediaSim}</p>
+          </Card>
+          <Card className="card-glass p-6">
+            <p className="text-sm text-muted-foreground">Melhor nota</p>
+            <p className="mt-1 text-3xl font-bold gradient-text">{melhorSim}</p>
+          </Card>
+        </div>
+
+        {/* Histórico redação */}
         <div className="mt-10">
           <h2 className="mb-4 text-xl font-semibold">Histórico de redações</h2>
           {fetching ? (
@@ -98,9 +123,7 @@ function Dashboard() {
           ) : redacoes.length === 0 ? (
             <Card className="card-glass p-10 text-center">
               <p className="text-muted-foreground">Você ainda não corrigiu nenhuma redação.</p>
-              <Link to="/redacao" className="mt-4 inline-block">
-                <Button className="glow-blue">Corrigir minha primeira redação</Button>
-              </Link>
+              <Link to="/redacao" className="mt-4 inline-block"><Button className="glow-blue">Corrigir minha primeira redação</Button></Link>
             </Card>
           ) : (
             <div className="grid gap-3">
@@ -108,12 +131,38 @@ function Dashboard() {
                 <Card key={r.id} className="card-glass flex items-center justify-between p-4">
                   <div>
                     <p className="font-medium">{r.tema ?? "Sem tema"}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(r.created_at).toLocaleDateString("pt-BR")}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("pt-BR")}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold gradient-text">{r.nota_total ?? "—"}</p>
+                    <p className="text-xs text-muted-foreground">/1000</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Histórico simulados */}
+        <div className="mt-10">
+          <h2 className="mb-4 text-xl font-semibold">Histórico de simulados</h2>
+          {fetching ? null : tentativas.length === 0 ? (
+            <Card className="card-glass p-10 text-center">
+              <p className="text-muted-foreground">Você ainda não fez nenhum simulado.</p>
+              <Link to="/questoes" className="mt-4 inline-block"><Button className="glow-blue">Começar agora</Button></Link>
+            </Card>
+          ) : (
+            <div className="grid gap-3">
+              {tentativas.map((t) => (
+                <Card key={t.id} className="card-glass flex items-center justify-between p-4">
+                  <div>
+                    <p className="font-medium">{t.simulado_nome}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t.acertos}/{t.total} acertos · {new Date(t.finished_at).toLocaleDateString("pt-BR")}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold gradient-text">{Math.round(Number(t.nota_total))}</p>
                     <p className="text-xs text-muted-foreground">/1000</p>
                   </div>
                 </Card>
