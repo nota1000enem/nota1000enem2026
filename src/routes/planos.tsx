@@ -25,7 +25,7 @@ const planos = [
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["30 redações por mês — 1 por dia", "Matemática", "Português", "Redação", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: ["30 redações por mês — 1 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
@@ -34,7 +34,7 @@ const planos = [
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["60 redações por mês — 2 por dia", "Matemática", "Português", "História", "Geografia", "Ciências da Natureza", "Redação", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
+    items: ["60 redações por mês — 2 por dia", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
     name: "Full Acess ENEM",

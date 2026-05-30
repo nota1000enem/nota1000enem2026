@@ -294,7 +294,17 @@ function RedacaoPage() {
                     <div key={k} className="rounded-lg border border-border/60 bg-background/60 p-4">
                       <h4 className="text-sm font-semibold">{titles[k]}</h4>
                       <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                        {arr.map((it, i) => <li key={i}>{it}</li>)}
+                        {arr.map((it, i) => (
+                          <li key={i}>
+                            {it.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
+                              part.startsWith("**") && part.endsWith("**") ? (
+                                <strong key={j} className="font-bold text-destructive">{part.slice(2, -2)}</strong>
+                              ) : (
+                                <span key={j}>{part}</span>
+                              )
+                            )}
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   );

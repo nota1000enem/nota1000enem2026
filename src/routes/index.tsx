@@ -8,7 +8,8 @@ import { Footer } from "@/components/footer";
 import { Sparkles, Zap, Brain, FileText, Trophy, Check, Star, ArrowRight, GraduationCap } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import aprovado1 from "@/assets/enem-aprovado-1.jpg";
 import aprovado2 from "@/assets/enem-aprovado-2.jpg";
 import aprovado3 from "@/assets/enem-aprovado-3.jpg";
@@ -29,6 +30,12 @@ export const Route = createFileRoute("/")({
 function Index() {
   const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }));
   const heroAutoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }));
+  const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number }>>([]);
+  useEffect(() => {
+    supabase.rpc("get_top_semana").then(({ data }) => {
+      if (data && Array.isArray(data)) setTopSemana(data.slice(0, 3));
+    });
+  }, []);
   const heroImgs = [
     { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
     { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
@@ -188,16 +195,24 @@ function Index() {
           </h2>
           <p className="mt-3 text-muted-foreground">Ranking ao vivo dos alunos com as melhores notas dos últimos 7 dias.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              { pos: "1º", nome: "Lucas", nota: 960, color: "text-yellow-400", ring: "ring-yellow-400/60", glow: "glow-blue" },
-              { pos: "2º", nome: "Ana", nota: 940, color: "text-slate-300", ring: "ring-slate-300/60", glow: "" },
-              { pos: "3º", nome: "Pedro", nota: 920, color: "text-orange-400", ring: "ring-orange-400/60", glow: "" },
-            ].map((p) => (
+            {(topSemana.length > 0
+              ? topSemana.map((t, i) => ({
+                  pos: `${i + 1}º`, nome: t.nome, nota: t.melhor_nota,
+                  color: i === 0 ? "text-yellow-400" : i === 1 ? "text-slate-300" : "text-orange-400",
+                  ring: i === 0 ? "ring-yellow-400/60" : i === 1 ? "ring-slate-300/60" : "ring-orange-400/60",
+                  glow: i === 0 ? "glow-blue" : "",
+                }))
+              : [
+                  { pos: "1º", nome: "—", nota: 0, color: "text-yellow-400", ring: "ring-yellow-400/60", glow: "glow-blue" },
+                  { pos: "2º", nome: "—", nota: 0, color: "text-slate-300", ring: "ring-slate-300/60", glow: "" },
+                  { pos: "3º", nome: "—", nota: 0, color: "text-orange-400", ring: "ring-orange-400/60", glow: "" },
+                ]
+            ).map((p) => (
               <Card key={p.pos} className={`card-glass p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
                 <Trophy className={`mx-auto h-8 w-8 ${p.color}`} />
                 <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">{p.pos} lugar</p>
                 <p className="mt-2 text-lg font-semibold">{p.nome}</p>
-                <p className="mt-2 text-4xl font-bold gradient-text text-glow">{p.nota}</p>
+                <p className="mt-2 text-4xl font-bold gradient-text text-glow">{p.nota || "—"}</p>
               </Card>
             ))}
           </div>
