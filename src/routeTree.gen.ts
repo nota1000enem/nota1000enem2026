@@ -15,6 +15,7 @@ import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as MinhaAssinaturaRouteImport } from './routes/minha-assinatura'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -51,6 +52,11 @@ const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
   path: '/plano-estudo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MinhaAssinaturaRoute = MinhaAssinaturaRouteImport.update({
   id: '/minha-assinatura',
   path: '/minha-assinatura',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
   '/questoes': typeof QuestoesRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/perfil'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/perfil'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/perfil'
     | '/plano-estudo'
     | '/planos'
     | '/questoes'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   MinhaAssinaturaRoute: typeof MinhaAssinaturaRoute
+  PerfilRoute: typeof PerfilRoute
   PlanoEstudoRoute: typeof PlanoEstudoRoute
   PlanosRoute: typeof PlanosRoute
   QuestoesRoute: typeof QuestoesRoute
@@ -217,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanoEstudoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/minha-assinatura': {
       id: '/minha-assinatura'
       path: '/minha-assinatura'
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   MinhaAssinaturaRoute: MinhaAssinaturaRoute,
+  PerfilRoute: PerfilRoute,
   PlanoEstudoRoute: PlanoEstudoRoute,
   PlanosRoute: PlanosRoute,
   QuestoesRoute: QuestoesRoute,
@@ -271,13 +292,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -40,6 +40,7 @@ export function Navbar() {
           {user ? (
             <>
               <Link to="/dashboard"><Button variant="ghost" size="sm">Dashboard</Button></Link>
+              <Link to="/perfil"><Button variant="ghost" size="sm">Perfil</Button></Link>
               <Link to="/minha-assinatura"><Button variant="ghost" size="sm">Assinatura</Button></Link>
               <Button size="sm" variant="outline" onClick={async () => { await supabase.auth.signOut(); router.navigate({ to: "/" }); }}>Sair</Button>
             </>
@@ -65,6 +66,7 @@ export function Navbar() {
             {user ? (
               <>
                 <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Dashboard</Link>
+                <Link to="/perfil" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Meu Perfil</Link>
                 <Link to="/minha-assinatura" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Minha Assinatura</Link>
                 <button
                   onClick={async () => {
