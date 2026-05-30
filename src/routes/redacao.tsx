@@ -77,23 +77,30 @@ function RedacaoPage() {
   const modoRigidoLiberado = ["pro", "full", "vitalicio"].includes(plano);
 
   async function handleSubmit() {
+    if (!user) {
+      toast.error("Você precisa estar logado para corrigir uma redação.");
+      router.navigate({ to: "/auth" });
+      return;
+    }
     if (bloqueado) {
       const msgs: Record<string, string> = {
-        limite_gratuito_atingido: "Você já usou sua correção gratuita. Escolha um plano para continuar.",
-        limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês. Faça upgrade para corrigir mais.`,
+        limite_gratuito_atingido: "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
+        limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês (${usadas}/${limite}). Faça upgrade para corrigir mais.`,
         assinatura_expirada: "Sua assinatura expirou. Renove para continuar corrigindo.",
+        profile_nao_encontrado: "Seu perfil ainda não foi criado. Faça logout e login novamente para sincronizar.",
       };
-      toast.error(msgs[motivoBloqueio] ?? "Acesso bloqueado.");
+      toast.error(msgs[motivoBloqueio] ?? `Acesso bloqueado (${motivoBloqueio || "motivo desconhecido"}). Entre em contato pelo Telegram se persistir.`);
       return;
     }
     if (texto.trim().length < 50) {
-      toast.error("Cole uma redação completa (mínimo 50 caracteres).");
+      toast.error(`Cole uma redação completa — mínimo 50 caracteres (você colou ${texto.trim().length}).`);
       return;
     }
     if (modoRigido && !modoRigidoLiberado) {
       toast.error("Modo Professor Rígido está disponível apenas nos planos Pro, Full e Vitalício.");
       return;
     }
+
     setSubmitting(true);
     setResultado(null);
     try {
@@ -170,14 +177,17 @@ function RedacaoPage() {
                   <Lock className="mt-0.5 h-5 w-5 text-primary" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
-                      {motivoBloqueio === "limite_gratuito_atingido" && "Você usou sua correção gratuita."}
+                      {motivoBloqueio === "limite_gratuito_atingido" && `Você usou suas 3 correções gratuitas (${usadas}/3).`}
                       {motivoBloqueio === "limite_mensal_atingido" && `Limite mensal atingido (${usadas}/${limite}).`}
                       {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
+                      {motivoBloqueio === "profile_nao_encontrado" && "Seu perfil ainda não foi sincronizado."}
                       {!motivoBloqueio && "Acesso bloqueado."}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {motivoBloqueio === "assinatura_expirada"
                         ? "Renove sua assinatura para liberar o acesso novamente — mesmo email, mesma senha."
+                        : motivoBloqueio === "profile_nao_encontrado"
+                        ? "Faça logout e login novamente. Se persistir, fale conosco pelo Telegram."
                         : "Escolha um plano (ou faça upgrade) para continuar evoluindo sua nota."}
                     </p>
                     <Link to="/planos" className="mt-3 inline-block">
@@ -187,6 +197,7 @@ function RedacaoPage() {
                 </div>
               </div>
             )}
+
             <Label htmlFor="tema">Tema (opcional)</Label>
             <Input
               id="tema"
