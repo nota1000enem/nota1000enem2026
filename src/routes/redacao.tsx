@@ -177,14 +177,17 @@ function RedacaoPage() {
                   <Lock className="mt-0.5 h-5 w-5 text-primary" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
-                      {motivoBloqueio === "limite_gratuito_atingido" && "Você usou sua correção gratuita."}
+                      {motivoBloqueio === "limite_gratuito_atingido" && `Você usou suas 3 correções gratuitas (${usadas}/3).`}
                       {motivoBloqueio === "limite_mensal_atingido" && `Limite mensal atingido (${usadas}/${limite}).`}
                       {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
+                      {motivoBloqueio === "profile_nao_encontrado" && "Seu perfil ainda não foi sincronizado."}
                       {!motivoBloqueio && "Acesso bloqueado."}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {motivoBloqueio === "assinatura_expirada"
                         ? "Renove sua assinatura para liberar o acesso novamente — mesmo email, mesma senha."
+                        : motivoBloqueio === "profile_nao_encontrado"
+                        ? "Faça logout e login novamente. Se persistir, fale conosco pelo Telegram."
                         : "Escolha um plano (ou faça upgrade) para continuar evoluindo sua nota."}
                     </p>
                     <Link to="/planos" className="mt-3 inline-block">
@@ -194,6 +197,7 @@ function RedacaoPage() {
                 </div>
               </div>
             )}
+
             <Label htmlFor="tema">Tema (opcional)</Label>
             <Input
               id="tema"
