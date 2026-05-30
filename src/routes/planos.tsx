@@ -74,8 +74,38 @@ const planos: Array<{
 ];
 
 function Planos() {
-  function handleCheckout(plano: string) {
-    toast.info(`Checkout do plano ${plano} em breve – integração Mercado Pago.`);
+  const checkoutFn = useServerFn(createCheckout);
+  const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    if (status === "success") {
+      toast.success("Pagamento aprovado! Acesso liberado em instantes.", { duration: 6000 });
+    } else if (status === "pending") {
+      toast.info("Pagamento pendente. Assim que o Mercado Pago confirmar, seu acesso será liberado automaticamente.", { duration: 6000 });
+    } else if (status === "failure") {
+      toast.error("O pagamento não foi concluído. Tente novamente.");
+    }
+  }, []);
+
+  async function handleCheckout(planType: PlanType, label: string) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.error("Faça login antes de assinar um plano.");
+      window.location.href = "/auth?redirect=/planos";
+      return;
+    }
+    setLoadingPlan(planType);
+    try {
+      const res = await checkoutFn({ data: { planType } });
+      if (!res?.init_point) throw new Error("Resposta inválida do servidor");
+      window.location.href = res.init_point;
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message ?? `Não foi possível abrir o checkout de ${label}.`);
+      setLoadingPlan(null);
+    }
   }
   return (
     <div className="min-h-screen bg-background">
