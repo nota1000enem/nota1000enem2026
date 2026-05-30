@@ -21,6 +21,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AulasRouteImport } from './routes/aulas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SimuladoIdRouteImport } from './routes/simulado.$id'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -83,6 +84,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SimuladoIdRoute = SimuladoIdRouteImport.update({
+  id: '/simulado/$id',
+  path: '/simulado/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
   id: '/api/public/mp-webhook',
   path: '/api/public/mp-webhook',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/simulado/$id'
     | '/api/public/mp-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/simulado/$id'
     | '/api/public/mp-webhook'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/simulado/$id'
     | '/api/public/mp-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SimuladoIdRoute: typeof SimuladoIdRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/simulado/$id': {
+      id: '/simulado/$id'
+      path: '/simulado/$id'
+      fullPath: '/simulado/$id'
+      preLoaderRoute: typeof SimuladoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mp-webhook': {
       id: '/api/public/mp-webhook'
       path: '/api/public/mp-webhook'
@@ -308,8 +328,19 @@ const rootRouteChildren: RootRouteChildren = {
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SimuladoIdRoute: SimuladoIdRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
