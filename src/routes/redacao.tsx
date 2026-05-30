@@ -207,11 +207,24 @@ function RedacaoPage() {
             <Textarea
               id="texto"
               value={texto}
+              maxLength={2500}
               onChange={(e) => setTexto(e.target.value)}
+              onPaste={(e) => {
+                const pasted = e.clipboardData.getData("text");
+                if (texto.length + pasted.length > 2500) {
+                  e.preventDefault();
+                  toast.error("Opa! Seu texto excedeu o limite equivalente às 30 linhas (2500 caracteres) do ENEM. Resuma seu argumento para se adequar à folha oficial!");
+                }
+              }}
               placeholder="Cole aqui sua redação completa..."
               className="mt-2 min-h-[400px]"
             />
-            <div className="mt-2 text-xs text-muted-foreground">{texto.length} caracteres</div>
+            <div className="mt-2 flex items-center justify-between text-xs">
+              <span className={texto.length >= 2500 ? "font-semibold text-destructive" : "text-muted-foreground"}>
+                {texto.length} / 2500 caracteres
+              </span>
+              <span className="text-muted-foreground">≈ 30 linhas (folha ENEM)</span>
+            </div>
 
             <div className={`mt-4 flex items-center justify-between rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}>
               <div className="flex items-center gap-2">

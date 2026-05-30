@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Brain, Calendar, Loader2, Sparkles } from "lucide-react";
+import { Brain, Calendar, Loader2, Sparkles, Lock, Crown } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -103,6 +104,25 @@ function PlanoEstudoPage() {
           Diga quantas horas você tem disponíveis e a IA monta um cronograma detalhado, focado nas suas fraquezas e na sua meta de aprovação.
         </p>
 
+        {!liberado && !loading && user && (
+          <Card className="card-glass mt-8 border-primary/40 p-8 text-center">
+            <Lock className="mx-auto h-12 w-12 text-primary" />
+            <h2 className="mt-4 text-2xl font-bold">
+              Disponível apenas para <span className="gradient-text">planos pagos</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
+              O Plano de Estudo com IA é exclusivo para assinantes <b>Light, Pro, Full</b> e <b>Vitalício</b>.
+              Faça upgrade e receba um cronograma personalizado, ajustado às suas horas disponíveis e fraquezas.
+            </p>
+            <Link to="/planos" className="mt-6 inline-block">
+              <Button size="lg" className="glow-blue">
+                <Crown className="mr-2 h-4 w-4" /> Ver planos e desbloquear
+              </Button>
+            </Link>
+          </Card>
+        )}
+
+        {liberado && (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <Card className="card-glass p-6">
             <div className="grid grid-cols-2 gap-3">
@@ -176,6 +196,7 @@ function PlanoEstudoPage() {
             )}
           </Card>
         </div>
+        )}
       </section>
       <Footer />
     </div>
