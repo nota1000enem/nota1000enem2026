@@ -309,6 +309,13 @@ export type Database = {
             foreignKeyName: "respostas_aluno_questao_id_fkey"
             columns: ["questao_id"]
             isOneToOne: false
+            referencedRelation: "questoes_publicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "respostas_aluno_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
             referencedRelation: "questoes_simulado"
             referencedColumns: ["id"]
           },
@@ -397,7 +404,56 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      questoes_publicas: {
+        Row: {
+          alt_a: string | null
+          alt_b: string | null
+          alt_c: string | null
+          alt_d: string | null
+          alt_e: string | null
+          area: string | null
+          enunciado: string | null
+          id: string | null
+          numero: number | null
+          peso: number | null
+          simulado_id: string | null
+        }
+        Insert: {
+          alt_a?: string | null
+          alt_b?: string | null
+          alt_c?: string | null
+          alt_d?: string | null
+          alt_e?: string | null
+          area?: string | null
+          enunciado?: string | null
+          id?: string | null
+          numero?: number | null
+          peso?: number | null
+          simulado_id?: string | null
+        }
+        Update: {
+          alt_a?: string | null
+          alt_b?: string | null
+          alt_c?: string | null
+          alt_d?: string | null
+          alt_e?: string | null
+          area?: string | null
+          enunciado?: string | null
+          id?: string | null
+          numero?: number | null
+          peso?: number | null
+          simulado_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questoes_simulado_simulado_id_fkey"
+            columns: ["simulado_id"]
+            isOneToOne: false
+            referencedRelation: "simulados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_ranking_global: {
@@ -406,6 +462,14 @@ export type Database = {
           melhor_nota: number
           nome: string
           total_redacoes: number
+          user_id: string
+        }[]
+      }
+      get_top_semana: {
+        Args: never
+        Returns: {
+          melhor_nota: number
+          nome: string
           user_id: string
         }[]
       }
