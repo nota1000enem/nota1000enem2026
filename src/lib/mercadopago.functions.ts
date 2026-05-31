@@ -84,21 +84,23 @@ export const createCheckout = createServerFn({ method: "POST" })
       throw new Error(`Falha ao criar checkout (${res.status}). Tente novamente em instantes.`);
     }
 
-    const json = (await res.json()) as { id: string; init_point: string; sandbox_init_point: string };
+    const json = (await res.json()) as {
+      id: string;
+      init_point: string;
+      sandbox_init_point: string;
+    };
 
     // Marca subscription como PENDING (sem dar acesso) só para registrar tentativa
-    await supabase
-      .from("subscriptions")
-      .upsert(
-        {
-          user_id: userId,
-          plan_type: data.planType,
-          status: "PENDING",
-          current_period_end: new Date().toISOString(),
-          credits_remaining: 0,
-        },
-        { onConflict: "user_id", ignoreDuplicates: true },
-      );
+    await supabase.from("subscriptions").upsert(
+      {
+        user_id: userId,
+        plan_type: data.planType,
+        status: "PENDING",
+        current_period_end: new Date().toISOString(),
+        credits_remaining: 0,
+      },
+      { onConflict: "user_id", ignoreDuplicates: true },
+    );
 
     return {
       init_point: json.init_point,
