@@ -368,7 +368,34 @@ function Planos() {
 
   return (
     <div className="min-h-screen bg-background">
+      {aguardandoPgto && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="card-glass max-w-md w-full p-8 text-center rounded-2xl">
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
+            <h2 className="mt-4 text-2xl font-bold">Aguardando pagamento…</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Finalize o pagamento na aba do Mercado Pago. Assim que confirmarmos,
+              você será redirecionado automaticamente para o painel.
+            </p>
+            <div className="mt-5 flex flex-col gap-2">
+              <Button
+                variant="outline"
+                onClick={() => window.open(aguardandoPgto.checkoutUrl, "_blank", "noopener,noreferrer")}
+              >
+                Reabrir checkout
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setAguardandoPgto(null)}>
+                Cancelar
+              </Button>
+            </div>
+            <p className="mt-4 text-xs text-muted-foreground">
+              Após pagar no PIX a confirmação leva poucos segundos.
+            </p>
+          </div>
+        </div>
+      )}
       <Navbar />
+
       <section className="mx-auto max-w-7xl px-4 py-16 text-center">
         <Badge variant="outline" className="border-primary/40 text-primary">
           <Sparkles className="mr-1 h-3 w-3" /> Garantia de 7 dias
