@@ -14,6 +14,12 @@ import aprovado1 from "@/assets/enem-aprovado-1.jpg";
 import aprovado2 from "@/assets/enem-aprovado-2.jpg";
 import aprovado3 from "@/assets/enem-aprovado-3.jpg";
 import aprovado4 from "@/assets/enem-aprovado-4.jpg";
+import printNota840 from "@/assets/print-nota-840.png";
+import printNota1000 from "@/assets/print-nota-1000.png";
+import { useServerFn } from "@tanstack/react-start";
+import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
