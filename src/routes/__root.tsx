@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { TelegramFab } from "@/components/telegram-fab";
@@ -145,6 +146,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        {/* Meta Pixel — fallback noscript */}
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1547784333801355&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         <Scripts />
       </body>
     </html>
@@ -153,6 +164,19 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  // Dispara PageView do Meta Pixel a cada navegação SPA (o primeiro PageView
+  // já é enviado pelo snippet no <head>).
+  useEffect(() => {
+    const unsub = router.subscribe("onResolved", () => {
+      try {
+        // @ts-ignore — fbq é injetado pelo snippet do Pixel
+        window.fbq?.("track", "PageView");
+      } catch {}
+    });
+    return () => unsub();
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
