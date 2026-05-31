@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play, Brain } from "lucide-react";
+import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -80,6 +81,8 @@ function Dashboard() {
           </div>
         </div>
 
+        <WeeklyRetentionSummary userId={user?.id} />
+
         {/* Redação */}
         <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground">Redação</h2>
         <div className="grid gap-4 md:grid-cols-3">
@@ -100,9 +103,9 @@ function Dashboard() {
           </Card>
         </div>
 
-        {/* Classificação SEM (simulados) */}
+        {/* Simulados */}
         <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <GraduationCap className="h-4 w-4 text-primary" /> Classificação SEM <span className="text-[10px] normal-case text-muted-foreground">(Simulado ENEM Misto)</span>
+          <GraduationCap className="h-4 w-4 text-primary" /> Simulados
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="card-glass p-6">
