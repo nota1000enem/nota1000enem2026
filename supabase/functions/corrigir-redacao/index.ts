@@ -77,8 +77,13 @@ serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (!tema || typeof tema !== "string" || tema.trim().length < 8) {
+      return new Response(JSON.stringify({ error: "O TEMA E OBRIGATÓRIO PRA PROSSEGUIR" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     if (texto.length > 2500) {
-      return new Response(JSON.stringify({ error: "Texto excede 2500 caracteres (limite ENEM ~30 linhas)." }), {
+      return new Response(JSON.stringify({ error: "Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
