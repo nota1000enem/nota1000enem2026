@@ -42,9 +42,10 @@ export const Route = createFileRoute("/planos")({
 });
 
 function useFakePromoTimer() {
+  // Contagem regressiva de 30 min sempre ativa: ao zerar, reinicia automaticamente
+  // (gera escassez constante sem janelas "mortas").
   const ACTIVE = 30 * 60;
-  const PAUSE = 10 * 60;
-  const KEY = "promo_start_ts";
+  const KEY = "promo_start_ts_v2";
   const [now, setNow] = useState(0);
   useEffect(() => {
     if (!localStorage.getItem(KEY)) {
@@ -54,15 +55,10 @@ function useFakePromoTimer() {
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
     return () => clearInterval(id);
   }, []);
-  if (!now) return { active: false, label: "00:00" };
+  if (!now) return { active: true, label: "30:00" };
   const start = Number(localStorage.getItem(KEY) ?? now);
-  const cycle = ACTIVE + PAUSE;
-  const elapsed = (now - start) % cycle;
-  const inActive = elapsed < ACTIVE;
-  if (!inActive) {
-    if (elapsed >= cycle - 1) localStorage.setItem(KEY, String(now + 1));
-    return { active: false, label: "00:00" };
-  }
+  const elapsed = (now - start) % ACTIVE;
+  if (elapsed >= ACTIVE - 1) localStorage.setItem(KEY, String(now + 1));
   const remaining = ACTIVE - elapsed;
   const m = String(Math.floor(remaining / 60)).padStart(2, "0");
   const s = String(remaining % 60).padStart(2, "0");
