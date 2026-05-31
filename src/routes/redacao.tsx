@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
 import { Lock, Crown, Zap } from "lucide-react";
 
@@ -21,7 +22,11 @@ export const Route = createFileRoute("/redacao")({
   head: () => ({
     meta: [
       { title: "Corrigir Redação com IA – Nota 1000 ENEM" },
-      { name: "description", content: "Cole sua redação do ENEM e receba correção completa pelas 5 competências em segundos." },
+      {
+        name: "description",
+        content:
+          "Cole sua redação do ENEM e receba correção completa pelas 5 competências em segundos.",
+      },
     ],
   }),
   component: RedacaoPage,
@@ -63,7 +68,13 @@ function RedacaoPage() {
   async function recarregarStatus() {
     if (!user) return;
     const { data } = await supabase.rpc("pode_corrigir_redacao", { _user_id: user.id });
-    const r = (data ?? {}) as { pode?: boolean; motivo?: string; limite?: number; usadas?: number; creditos?: number };
+    const r = (data ?? {}) as {
+      pode?: boolean;
+      motivo?: string;
+      limite?: number;
+      usadas?: number;
+      creditos?: number;
+    };
     setBloqueado(!r.pode);
     setMotivoBloqueio(r.motivo ?? "");
     setLimite(r.limite ?? 1);
@@ -71,7 +82,9 @@ function RedacaoPage() {
     setCreditos(r.creditos ?? 0);
   }
 
-  useEffect(() => { recarregarStatus(); /* eslint-disable-next-line */ }, [user]);
+  useEffect(() => {
+    recarregarStatus(); /* eslint-disable-next-line */
+  }, [user]);
 
   const modoRigidoLiberado = access.isPremium;
 
@@ -83,21 +96,35 @@ function RedacaoPage() {
     }
     if (bloqueado) {
       const msgs: Record<string, string> = {
-        limite_gratuito_atingido: "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
+        limite_gratuito_atingido:
+          "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
         limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês (${usadas}/${limite}). Faça upgrade para corrigir mais.`,
-        creditos_esgotados: "Seus créditos de redação acabaram neste ciclo. Renove seu plano para corrigir mais.",
+        creditos_esgotados:
+          "Seus créditos de redação acabaram neste ciclo. Renove seu plano para corrigir mais.",
         assinatura_expirada: "Sua assinatura expirou. Renove para continuar corrigindo.",
-        profile_nao_encontrado: "Seu perfil ainda não foi criado. Faça logout e login novamente para sincronizar.",
+        profile_nao_encontrado:
+          "Seu perfil ainda não foi criado. Faça logout e login novamente para sincronizar.",
       };
-      toast.error(msgs[motivoBloqueio] ?? `Acesso bloqueado (${motivoBloqueio || "motivo desconhecido"}). Entre em contato pelo Telegram se persistir.`);
+      toast.error(
+        msgs[motivoBloqueio] ??
+          `Acesso bloqueado (${motivoBloqueio || "motivo desconhecido"}). Entre em contato pelo Telegram se persistir.`,
+      );
       return;
     }
     if (!tema.trim() || tema.trim().length < 8) {
-      toast.error("Informe o tema da redação (mínimo 8 caracteres). Não existe redação ENEM sem tema.");
+      toast.error("O TEMA E OBRIGATÓRIO PRA PROSSEGUIR");
       return;
     }
     if (texto.trim().length < 50) {
-      toast.error(`Cole uma redação completa — mínimo 50 caracteres (você colou ${texto.trim().length}).`);
+      toast.error(
+        `Cole uma redação completa — mínimo 50 caracteres (você colou ${texto.trim().length}).`,
+      );
+      return;
+    }
+    if (texto.length > 2500) {
+      toast.error(
+        "Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres.",
+      );
       return;
     }
     if (modoRigido && !modoRigidoLiberado) {
@@ -138,18 +165,21 @@ function RedacaoPage() {
   }
 
   // Sugestões de como abordar o tema
-  const sugestoesTema = tema.trim().length > 4 ? [
-    `Comece a introdução contextualizando "${tema}" com um dado, citação histórica ou referência cultural relevante.`,
-    "Desenvolva 2 parágrafos argumentativos: 1 com causa/contexto e outro com consequência/impacto social.",
-    "Use repertórios concretos: Constituição de 1988, ODS da ONU, autores como Bauman, Foucault, Milton Santos.",
-    "Conecte parágrafos com conectivos avançados (todavia, ademais, por conseguinte, em virtude disso).",
-    "Proposta de intervenção COMPLETA: agente + ação + meio + finalidade + detalhamento. NUNCA esqueça os 5 elementos.",
-    `Cuidado para não fugir de "${tema}" — toda argumentação precisa retomar o tema explicitamente.`,
-    "Cite dados atuais (últimos 5 anos) ligados ao tema: IBGE, OMS, ONU dão autoridade ao texto.",
-    "Evite clichês ('desde os primórdios', 'no mundo atual'). Comece direto e específico.",
-    "Use 3ª pessoa, evite gírias e marcas pessoais ('eu acho', 'na minha opinião').",
-    "Releia: cada parágrafo precisa ter uma ideia central clara e estar conectado à tese.",
-  ] : [];
+  const sugestoesTema =
+    tema.trim().length > 4
+      ? [
+          `Comece a introdução contextualizando "${tema}" com um dado, citação histórica ou referência cultural relevante.`,
+          "Desenvolva 2 parágrafos argumentativos: 1 com causa/contexto e outro com consequência/impacto social.",
+          "Use repertórios concretos: Constituição de 1988, ODS da ONU, autores como Bauman, Foucault, Milton Santos.",
+          "Conecte parágrafos com conectivos avançados (todavia, ademais, por conseguinte, em virtude disso).",
+          "Proposta de intervenção COMPLETA: agente + ação + meio + finalidade + detalhamento. NUNCA esqueça os 5 elementos.",
+          `Cuidado para não fugir de "${tema}" — toda argumentação precisa retomar o tema explicitamente.`,
+          "Cite dados atuais (últimos 5 anos) ligados ao tema: IBGE, OMS, ONU dão autoridade ao texto.",
+          "Evite clichês ('desde os primórdios', 'no mundo atual'). Comece direto e específico.",
+          "Use 3ª pessoa, evite gírias e marcas pessoais ('eu acho', 'na minha opinião').",
+          "Releia: cada parágrafo precisa ter uma ideia central clara e estar conectado à tese.",
+        ]
+      : [];
 
   const comps = resultado
     ? [
@@ -171,7 +201,10 @@ function RedacaoPage() {
         <h1 className="mt-3 text-3xl font-bold md:text-4xl">
           Corrigir <span className="gradient-text">redação ENEM</span>
         </h1>
-        <p className="mt-2 text-muted-foreground">Cole abaixo e receba avaliação completa pelas 5 competências.</p>
+        <p className="mt-2 text-muted-foreground">
+          Cole abaixo e receba avaliação completa pelas 5 competências.
+        </p>
+        <WeeklyRetentionSummary userId={user?.id} />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <Card className="card-glass p-6">
@@ -181,21 +214,26 @@ function RedacaoPage() {
                   <Lock className="mt-0.5 h-5 w-5 text-primary" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
-                      {motivoBloqueio === "limite_gratuito_atingido" && `Você usou suas 3 correções gratuitas (${usadas}/3).`}
-                      {motivoBloqueio === "limite_mensal_atingido" && `Limite mensal atingido (${usadas}/${limite}).`}
+                      {motivoBloqueio === "limite_gratuito_atingido" &&
+                        `Você usou suas 3 correções gratuitas (${usadas}/3).`}
+                      {motivoBloqueio === "limite_mensal_atingido" &&
+                        `Limite mensal atingido (${usadas}/${limite}).`}
                       {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
-                      {motivoBloqueio === "profile_nao_encontrado" && "Seu perfil ainda não foi sincronizado."}
+                      {motivoBloqueio === "profile_nao_encontrado" &&
+                        "Seu perfil ainda não foi sincronizado."}
                       {!motivoBloqueio && "Acesso bloqueado."}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {motivoBloqueio === "assinatura_expirada"
                         ? "Renove sua assinatura para liberar o acesso novamente — mesmo email, mesma senha."
                         : motivoBloqueio === "profile_nao_encontrado"
-                        ? "Faça logout e login novamente. Se persistir, fale conosco pelo Telegram."
-                        : "Escolha um plano (ou faça upgrade) para continuar evoluindo sua nota."}
+                          ? "Faça logout e login novamente. Se persistir, fale conosco pelo Telegram."
+                          : "Escolha um plano (ou faça upgrade) para continuar evoluindo sua nota."}
                     </p>
                     <Link to="/planos" className="mt-3 inline-block">
-                      <Button size="sm" className="glow-blue"><Crown className="mr-1 h-3 w-3" /> Ver Planos</Button>
+                      <Button size="sm" className="glow-blue">
+                        <Crown className="mr-1 h-3 w-3" /> Ver Planos
+                      </Button>
                     </Link>
                   </div>
                 </div>
@@ -223,61 +261,109 @@ function RedacaoPage() {
             />
             {sugestoesTema.length > 0 && (
               <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
-                <p className="text-xs font-semibold text-primary">💡 Como abordar este tema (não fuja!):</p>
+                <p className="text-xs font-semibold text-primary">
+                  💡 Como abordar este tema (não fuja!):
+                </p>
                 <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                  {sugestoesTema.map((s, i) => <li key={i} className="flex gap-2"><span className="text-primary">{i+1}.</span><span>{s}</span></li>)}
+                  {sugestoesTema.map((s, i) => (
+                    <li key={i} className="flex gap-2">
+                      <span className="text-primary">{i + 1}.</span>
+                      <span>{s}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
-            <Label htmlFor="texto" className="mt-4 block">Sua redação</Label>
+            <Label htmlFor="texto" className="mt-4 block">
+              Sua redação
+            </Label>
             <Textarea
               id="texto"
               value={texto}
               maxLength={2500}
-              onChange={(e) => setTexto(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length >= 2500 && texto.length < 2500) {
+                  toast.error("Limite de caracteres excedido. O máximo é 2500 caracteres.");
+                }
+                setTexto(e.target.value);
+              }}
               onPaste={(e) => {
                 const pasted = e.clipboardData.getData("text");
                 if (texto.length + pasted.length > 2500) {
                   e.preventDefault();
-                  toast.error("Opa! Seu texto excedeu o limite equivalente às 30 linhas (2500 caracteres) do ENEM. Resuma seu argumento para se adequar à folha oficial!");
+                  toast.error(
+                    "Opa! Seu texto excedeu o limite equivalente às 30 linhas (2500 caracteres) do ENEM. Resuma seu argumento para se adequar à folha oficial!",
+                  );
                 }
               }}
               placeholder="Cole aqui sua redação completa..."
               className="mt-2 min-h-[400px]"
             />
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className={texto.length >= 2500 ? "font-semibold text-destructive" : "text-muted-foreground"}>
+              <span
+                className={
+                  texto.length >= 2500 ? "font-semibold text-destructive" : "text-muted-foreground"
+                }
+              >
                 {texto.length} / 2500 caracteres
               </span>
               <span className="text-muted-foreground">≈ 30 linhas (folha ENEM)</span>
             </div>
 
-            <div className={`mt-4 rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}>
+            <div
+              className={`mt-4 rounded-lg border p-3 ${modoRigidoLiberado ? "border-destructive/30 bg-destructive/5" : "border-border/40 bg-muted/20 opacity-70"}`}
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  {modoRigidoLiberado ? <Flame className="h-4 w-4 text-destructive" /> : <Lock className="h-4 w-4 text-muted-foreground" />}
+                  {modoRigidoLiberado ? (
+                    <Flame className="h-4 w-4 text-destructive" />
+                  ) : (
+                    <Lock className="h-4 w-4 text-muted-foreground" />
+                  )}
                   <div>
                     <Label htmlFor="rigido" className={modoRigidoLiberado ? "cursor-pointer" : ""}>
                       Modo Professor Rígido {!modoRigidoLiberado && "(Pro / Full / Vitalício)"}
                     </Label>
                     <p className="text-xs text-muted-foreground">
-                      {modoRigidoLiberado ? "Comentários brutalmente honestos." : "Disponível nos planos R$ 29,90, R$ 49,90 e Vitalício."}
+                      {modoRigidoLiberado
+                        ? "Comentários brutalmente honestos."
+                        : "Disponível nos planos R$ 29,90, R$ 49,90 e Vitalício."}
                     </p>
                   </div>
                 </div>
-                <Switch id="rigido" checked={modoRigido} onCheckedChange={setModoRigido} disabled={!modoRigidoLiberado} />
+                <Switch
+                  id="rigido"
+                  checked={modoRigido}
+                  onCheckedChange={setModoRigido}
+                  disabled={!modoRigidoLiberado}
+                />
               </div>
               <div className="mt-3 flex items-start gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 p-2 text-[11px] text-yellow-200">
                 <Sparkles className="mt-0.5 h-3 w-3 shrink-0" />
                 <p>
-                  <strong>Aviso:</strong> o Modo Rígido usa linguagem direta, dura e sem rodeios — como um professor que não passa a mão na cabeça.
-                  É ótimo pra acelerar evolução, mas pode <strong>ferir alunos mais sensíveis</strong>. Se você prefere um tom acolhedor, mantenha desligado.
+                  <strong>Aviso:</strong> o Modo Rígido usa linguagem direta, dura e sem rodeios —
+                  como um professor que não passa a mão na cabeça. É ótimo pra acelerar evolução,
+                  mas pode <strong>ferir alunos mais sensíveis</strong>. Se você prefere um tom
+                  acolhedor, mantenha desligado.
                 </p>
               </div>
             </div>
 
-            <Button onClick={handleSubmit} disabled={submitting} size="lg" className="mt-4 w-full glow-blue">
-              {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Corrigindo...</> : <><Brain className="mr-2 h-4 w-4" /> Corrigir agora</>}
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting}
+              size="lg"
+              className="mt-4 w-full glow-blue"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Corrigindo...
+                </>
+              ) : (
+                <>
+                  <Brain className="mr-2 h-4 w-4" /> Corrigir agora
+                </>
+              )}
             </Button>
           </Card>
 
@@ -291,21 +377,27 @@ function RedacaoPage() {
             {submitting && (
               <div className="grid h-full place-content-center text-center">
                 <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-                <p className="mt-3 text-sm text-muted-foreground">A IA está analisando sua redação...</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  A IA está analisando sua redação...
+                </p>
               </div>
             )}
             {resultado && (
               <div className="space-y-5">
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">Nota total</p>
-                  <p className="text-6xl font-bold gradient-text text-glow">{resultado.nota_total}</p>
+                  <p className="text-6xl font-bold gradient-text text-glow">
+                    {resultado.nota_total}
+                  </p>
                   <p className="text-sm text-muted-foreground">/ 1000</p>
                 </div>
                 <div className="space-y-3">
                   {comps.map((c) => (
                     <div key={c.n}>
                       <div className="mb-1 flex justify-between text-xs">
-                        <span>C{c.n} – {c.label}</span>
+                        <span>
+                          C{c.n} – {c.label}
+                        </span>
                         <span className="font-semibold">{c.v}/200</span>
                       </div>
                       <Progress value={(c.v / 200) * 100} />
@@ -316,35 +408,46 @@ function RedacaoPage() {
                   <h4 className="text-sm font-semibold">Comentário geral</h4>
                   <p className="mt-2 text-sm text-muted-foreground">{resultado.comentario_geral}</p>
                 </div>
-                {(["erros_gramaticais", "sugestoes", "melhorias", "repertorios"] as const).map((k) => {
-                  const titles: Record<string, string> = {
-                    erros_gramaticais: "Erros gramaticais",
-                    sugestoes: "Sugestões",
-                    melhorias: "Melhorias",
-                    repertorios: "Repertórios socioculturais",
-                  };
-                  const arr = resultado[k];
-                  if (!arr?.length) return null;
-                  return (
-                    <div key={k} className="rounded-lg border border-border/60 bg-background/60 p-4">
-                      <h4 className="text-sm font-semibold">{titles[k]}</h4>
-                      <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                        {arr.map((it, i) => (
-                          <li key={i}>
-                            {it.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
-                              part.startsWith("**") && part.endsWith("**") ? (
-                                <strong key={j} className="font-bold text-destructive">{part.slice(2, -2)}</strong>
-                              ) : (
-                                <span key={j}>{part}</span>
-                              )
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
-                <Link to="/dashboard"><Button variant="outline" className="w-full">Ver no dashboard</Button></Link>
+                {(["erros_gramaticais", "sugestoes", "melhorias", "repertorios"] as const).map(
+                  (k) => {
+                    const titles: Record<string, string> = {
+                      erros_gramaticais: "Erros gramaticais",
+                      sugestoes: "Sugestões",
+                      melhorias: "Melhorias",
+                      repertorios: "Repertórios socioculturais",
+                    };
+                    const arr = resultado[k];
+                    if (!arr?.length) return null;
+                    return (
+                      <div
+                        key={k}
+                        className="rounded-lg border border-border/60 bg-background/60 p-4"
+                      >
+                        <h4 className="text-sm font-semibold">{titles[k]}</h4>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                          {arr.map((it, i) => (
+                            <li key={i}>
+                              {it.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
+                                part.startsWith("**") && part.endsWith("**") ? (
+                                  <strong key={j} className="font-bold text-destructive">
+                                    {part.slice(2, -2)}
+                                  </strong>
+                                ) : (
+                                  <span key={j}>{part}</span>
+                                ),
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  },
+                )}
+                <Link to="/dashboard">
+                  <Button variant="outline" className="w-full">
+                    Ver no dashboard
+                  </Button>
+                </Link>
               </div>
             )}
           </Card>

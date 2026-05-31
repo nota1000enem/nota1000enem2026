@@ -8,17 +8,31 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Brain, Calendar, Loader2, Sparkles, Lock, Crown, History, AlertCircle } from "lucide-react";
+import {
+  Brain,
+  Calendar,
+  Loader2,
+  Sparkles,
+  Lock,
+  Crown,
+  History,
+  AlertCircle,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
+import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 
 export const Route = createFileRoute("/plano-estudo")({
   head: () => ({
     meta: [
       { title: "Plano de Estudo Semanal com IA – Nota 1000 ENEM" },
-      { name: "description", content: "Gere um plano de estudo SEMANAL personalizado para o ENEM com sequência pedagógica real, blocos curtos e foco nas suas fraquezas." },
+      {
+        name: "description",
+        content:
+          "Gere um plano de estudo SEMANAL personalizado para o ENEM com sequência pedagógica real, blocos curtos e foco nas suas fraquezas.",
+      },
     ],
   }),
   component: PlanoEstudoPage,
@@ -53,6 +67,7 @@ function PlanoEstudoPage() {
   const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
   const [plano, setPlano] = useState<PlanoIA | null>(null);
+  const [planoAbertoId, setPlanoAbertoId] = useState<string | null>(null);
   const { isPaid: liberado, loading: carregandoPlano } = usePlanAccess();
   const [historico, setHistorico] = useState<PlanoSalvo[]>([]);
 
@@ -63,10 +78,18 @@ function PlanoEstudoPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data: planos } = await supabase.from("planos_estudo").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5);
+      const { data: planos } = await supabase
+        .from("planos_estudo")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
       const lista = (planos as unknown as PlanoSalvo[] | null) ?? [];
       setHistorico(lista);
-      if (lista.length > 0) setPlano(lista[0].cronograma);
+      if (lista.length > 0) {
+        setPlano(lista[0].cronograma);
+        setPlanoAbertoId(lista[0].id);
+      }
     })();
   }, [user]);
 
@@ -86,13 +109,19 @@ function PlanoEstudoPage() {
       return;
     }
     if (!liberado) {
-      toast.error("Plano de Estudo com IA está disponível apenas nas assinaturas pagas e no Vitalício.");
+      toast.error(
+        "Plano de Estudo com IA está disponível apenas nas assinaturas pagas e no Vitalício.",
+      );
       return;
     }
     const erro = validar();
-    if (erro) { toast.error(erro); return; }
+    if (erro) {
+      toast.error(erro);
+      return;
+    }
 
-    setCarregando(true); setPlano(null);
+    setCarregando(true);
+    setPlano(null);
     try {
       const { data, error } = await supabase.functions.invoke("gerar-plano-estudo", {
         body: {
@@ -106,11 +135,23 @@ function PlanoEstudoPage() {
       if (error) throw error;
       const r = data as PlanoIA & { error?: string };
       if (r.error) throw new Error(r.error);
-      const planoGerado = { resumo: r.resumo, dicas_gerais: r.dicas_gerais, cronograma: r.cronograma };
+      const planoGerado = {
+        resumo: r.resumo,
+        dicas_gerais: r.dicas_gerais,
+        cronograma: r.cronograma,
+      };
       setPlano(planoGerado);
       const salvo = (data as PlanoIA & { plano_salvo?: PlanoSalvo | null }).plano_salvo;
-      if (salvo) setHistorico([salvo, ...historico].slice(0, 5));
+      setPlanoAbertoId(salvo?.id ?? "novo");
+      if (salvo) setHistorico([salvo, ...historico.filter((h) => h.id !== salvo.id)].slice(0, 5));
       toast.success("Plano semanal gerado e salvo!");
+      setTimeout(
+        () =>
+          document
+            .getElementById("plano-gerado")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        100,
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao gerar plano");
     } finally {
@@ -129,16 +170,18 @@ function PlanoEstudoPage() {
           Plano de Estudo <span className="gradient-text">com IA</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Gere um plano <b>novo a cada semana</b> de acordo com a sua evolução, sua agenda e seus pontos fracos do momento.
-          A IA monta uma sequência pedagógica real (teoria → exercício → revisão), em blocos curtos de 15-30 min,
-          cobrindo as 4 áreas do ENEM + redação.
+          Gere um plano <b>novo a cada semana</b> de acordo com a sua evolução, sua agenda e seus
+          pontos fracos do momento. A IA monta uma sequência pedagógica real (teoria → exercício →
+          revisão), em blocos curtos de 15-30 min, cobrindo as 4 áreas do ENEM + redação.
         </p>
+        <WeeklyRetentionSummary userId={user?.id} />
 
         <div className="mt-3 flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <p className="text-muted-foreground">
-            <b>Dica:</b> gere um novo plano todo <b>domingo</b> revisando o que aprendeu na semana anterior.
-            Seus planos antigos ficam salvos no histórico abaixo e também no seu Dashboard.
+            <b>Dica:</b> gere um novo plano todo <b>domingo</b> revisando o que aprendeu na semana
+            anterior. Seus planos antigos ficam salvos no histórico abaixo e também no seu
+            Dashboard.
           </p>
         </div>
 
@@ -149,7 +192,8 @@ function PlanoEstudoPage() {
               Disponível apenas para <span className="gradient-text">planos pagos</span>
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              O Plano de Estudo com IA é exclusivo para assinantes <b>Light, Pro, Full</b> e <b>Vitalício</b>.
+              O Plano de Estudo com IA é exclusivo para assinantes <b>Light, Pro, Full</b> e{" "}
+              <b>Vitalício</b>.
             </p>
             <Link to="/planos" className="mt-6 inline-block">
               <Button size="lg" className="glow-blue">
@@ -160,79 +204,146 @@ function PlanoEstudoPage() {
         )}
 
         {liberado && (
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <Card className="card-glass p-6">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Horas/dia <span className="text-xs text-muted-foreground">(mín 2h)</span></Label>
-                <Input type="number" min={2} max={8} value={horasDia} onChange={e => setHorasDia(e.target.value)} />
-              </div>
-              <div>
-                <Label>Dias/semana <span className="text-xs text-muted-foreground">(4–6)</span></Label>
-                <Input type="number" min={4} max={6} value={diasSemana} onChange={e => setDiasSemana(e.target.value)} />
-              </div>
-            </div>
-            <div className="mt-4">
-              <Label>Dias até a prova</Label>
-              <Input type="number" min={1} max={730} value={diasAteProva} onChange={e => setDiasAteProva(e.target.value)} />
-            </div>
-            <div className="mt-4">
-              <Label>Meta de aprovação</Label>
-              <Input value={meta} onChange={e => setMeta(e.target.value)} placeholder="Ex: medicina, engenharia, direito..." />
-            </div>
-            <div className="mt-4">
-              <Label>Pontos fracos (peso dobrado)</Label>
-              <Textarea value={fraquezas} onChange={e => setFraquezas(e.target.value)} placeholder="Ex: matemática (funções), redação (proposta), física..." className="min-h-[100px]" />
-            </div>
-            <Button onClick={gerar} disabled={carregando} size="lg" className="mt-4 w-full glow-blue">
-              {carregando ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</> : <><Brain className="mr-2 h-4 w-4" /> Gerar plano da semana</>}
-            </Button>
-          </Card>
-
-          <Card className="card-glass p-6">
-            {!plano && !carregando && (
-              <div className="grid h-full place-content-center text-center text-muted-foreground">
-                <Calendar className="mx-auto h-12 w-12 opacity-30" />
-                <p className="mt-3 text-sm">Seu plano semanal aparecerá aqui.</p>
-              </div>
-            )}
-            {carregando && (
-              <div className="grid h-full place-content-center text-center">
-                <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-                <p className="mt-3 text-sm text-muted-foreground">A IA está montando seu cronograma...</p>
-              </div>
-            )}
-            {plano && (
-              <div className="space-y-4">
-                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">{plano.resumo}</div>
-                {plano.dicas_gerais?.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold">Dicas estratégicas</h4>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
-                      {plano.dicas_gerais.map((d, i) => <li key={i}>{d}</li>)}
-                    </ul>
-                  </div>
-                )}
-                <div className="space-y-3">
-                  {plano.cronograma?.map((dia, i) => (
-                    <div key={i} className="rounded-lg border border-border/60 bg-background/60 p-3">
-                      <h4 className="text-sm font-bold text-primary">{dia.dia}</h4>
-                      <div className="mt-2 space-y-1.5">
-                        {dia.blocos.map((b, j) => (
-                          <div key={j} className="flex items-start gap-2 text-xs">
-                            <span className="min-w-[100px] font-mono text-muted-foreground">{b.horario}</span>
-                            <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] uppercase text-primary">{b.tipo}</span>
-                            <span className="flex-1"><b>{b.materia}</b> — {b.topico}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <Card id="plano-gerado" className="card-glass scroll-mt-24 p-6">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>
+                    Horas/dia <span className="text-xs text-muted-foreground">(mín 2h)</span>
+                  </Label>
+                  <Input
+                    type="number"
+                    min={2}
+                    max={8}
+                    value={horasDia}
+                    onChange={(e) => setHorasDia(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>
+                    Dias/semana <span className="text-xs text-muted-foreground">(4–6)</span>
+                  </Label>
+                  <Input
+                    type="number"
+                    min={4}
+                    max={6}
+                    value={diasSemana}
+                    onChange={(e) => setDiasSemana(e.target.value)}
+                  />
                 </div>
               </div>
-            )}
-          </Card>
-        </div>
+              <div className="mt-4">
+                <Label>Dias até a prova</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={730}
+                  value={diasAteProva}
+                  onChange={(e) => setDiasAteProva(e.target.value)}
+                />
+              </div>
+              <div className="mt-4">
+                <Label>Meta de aprovação</Label>
+                <Input
+                  value={meta}
+                  onChange={(e) => setMeta(e.target.value)}
+                  placeholder="Ex: medicina, engenharia, direito..."
+                />
+              </div>
+              <div className="mt-4">
+                <Label>Pontos fracos (peso dobrado)</Label>
+                <Textarea
+                  value={fraquezas}
+                  onChange={(e) => setFraquezas(e.target.value)}
+                  placeholder="Ex: matemática (funções), redação (proposta), física..."
+                  className="min-h-[100px]"
+                />
+              </div>
+              <Button
+                onClick={gerar}
+                disabled={carregando}
+                size="lg"
+                className="mt-4 w-full glow-blue"
+              >
+                {carregando ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="mr-2 h-4 w-4" /> Gerar plano da semana
+                  </>
+                )}
+              </Button>
+            </Card>
+
+            <Card className="card-glass p-6">
+              {!plano && !carregando && (
+                <div className="grid h-full place-content-center text-center text-muted-foreground">
+                  <Calendar className="mx-auto h-12 w-12 opacity-30" />
+                  <p className="mt-3 text-sm">Seu plano semanal aparecerá aqui.</p>
+                </div>
+              )}
+              {carregando && (
+                <div className="grid h-full place-content-center text-center">
+                  <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    A IA está montando seu cronograma...
+                  </p>
+                </div>
+              )}
+              {plano && (
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="text-lg font-semibold">Plano semanal salvo</h3>
+                    {planoAbertoId && (
+                      <Badge variant="outline" className="border-primary/40 text-primary">
+                        Aberto agora
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+                    {plano.resumo}
+                  </div>
+                  {plano.dicas_gerais?.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold">Dicas estratégicas</h4>
+                      <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+                        {plano.dicas_gerais.map((d, i) => (
+                          <li key={i}>{d}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    {plano.cronograma?.map((dia, i) => (
+                      <div
+                        key={i}
+                        className="rounded-lg border border-border/60 bg-background/60 p-3"
+                      >
+                        <h4 className="text-sm font-bold text-primary">{dia.dia}</h4>
+                        <div className="mt-2 space-y-1.5">
+                          {dia.blocos.map((b, j) => (
+                            <div key={j} className="flex items-start gap-2 text-xs">
+                              <span className="min-w-[100px] font-mono text-muted-foreground">
+                                {b.horario}
+                              </span>
+                              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] uppercase text-primary">
+                                {b.tipo}
+                              </span>
+                              <span className="flex-1">
+                                <b>{b.materia}</b> — {b.topico}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Card>
+          </div>
         )}
 
         {liberado && historico.length > 0 && (
@@ -242,16 +353,39 @@ function PlanoEstudoPage() {
             </h2>
             <div className="grid gap-2">
               {historico.map((p) => (
-                <Card key={p.id} className="card-glass flex flex-wrap items-center justify-between gap-2 p-3">
+                <Card
+                  key={p.id}
+                  className="card-glass flex flex-wrap items-center justify-between gap-2 p-3"
+                >
                   <div>
                     <p className="text-sm font-medium">
                       {p.dias_semana} dias × {p.horas_dia}h — meta: {p.meta || "—"}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(p.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
+                      {new Date(p.created_at).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
-                  <Button size="sm" variant="outline" onClick={() => setPlano(p.cronograma)}>Ver plano</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setPlano(p.cronograma);
+                      setPlanoAbertoId(p.id);
+                      setTimeout(
+                        () =>
+                          document
+                            .getElementById("plano-gerado")
+                            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                        50,
+                      );
+                    }}
+                  >
+                    Ver plano
+                  </Button>
                 </Card>
               ))}
             </div>

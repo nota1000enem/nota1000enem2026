@@ -48,45 +48,79 @@ serve(async (req) => {
     const authHeader = req.headers.get("authorization")?.replace("Bearer ", "");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Não autenticado." }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const supaUrl = Deno.env.get("SUPABASE_URL")!;
     const supaService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const admin = createClient(supaUrl, supaService);
-    const { data: { user }, error: uerr } = await admin.auth.getUser(authHeader);
+    const {
+      data: { user },
+      error: uerr,
+    } = await admin.auth.getUser(authHeader);
     if (uerr || !user) {
       return new Response(JSON.stringify({ error: "Sessão inválida. Faça login novamente." }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
     const podeObj = pode as { pode?: boolean; motivo?: string } | null;
     if (!podeObj?.pode) {
-      return new Response(JSON.stringify({ error: "Limite atingido ou assinatura expirada.", motivo: podeObj?.motivo }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Limite atingido ou assinatura expirada.",
+          motivo: podeObj?.motivo,
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
-    const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
+    const { data: prof } = await admin
+      .from("profiles")
+      .select("plan, plan_vitalicio")
+      .eq("id", user.id)
+      .maybeSingle();
     const planoUsuario = (prof?.plan as string) ?? "free";
-    const modoRigidoLiberado = prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
+    const modoRigidoLiberado =
+      prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
 
     const { texto, tema, modoRigido } = await req.json();
     if (!texto || typeof texto !== "string" || texto.trim().length < 50) {
-      return new Response(JSON.stringify({ error: "Texto muito curto. Cole sua redação completa." }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return new Response(
+        JSON.stringify({ error: "Texto muito curto. Cole sua redação completa." }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+    if (!tema || typeof tema !== "string" || tema.trim().length < 8) {
+      return new Response(JSON.stringify({ error: "O TEMA E OBRIGATÓRIO PRA PROSSEGUIR" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     if (texto.length > 2500) {
-      return new Response(JSON.stringify({ error: "Texto excede 2500 caracteres (limite ENEM ~30 linhas)." }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error:
+            "Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
     const modoRigidoFinal = Boolean(modoRigido) && modoRigidoLiberado;
 
     // Rotaciona 8 repertórios aleatórios do pool para evitar vício em Bauman/Foucault
     const shuffled = [...POOL_REPERTORIOS].sort(() => Math.random() - 0.5).slice(0, 8);
-    const repertoriosSugeridos = shuffled.map(r => `- ${r}`).join("\n");
+    const repertoriosSugeridos = shuffled.map((r) => `- ${r}`).join("\n");
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
@@ -101,6 +135,13 @@ Antes de pontuar, classifique o texto MENTALMENTE em UMA destas faixas e ancore 
 - Boa redação com poucos repertórios, intervenção com 2-3 elementos: 600–800
 - Boa redação com repertório legítimo + intervenção com 4 elementos: 800–920
 - Excelente: tese forte + 2+ repertórios produtivos + intervenção completa (5 elementos) + coesão impecável: 920–1000
+
+==== CALIBRAGEM FINA POR EXEMPLOS (PADRÃO ENEM REAL) ====
+- Texto bom/tradicional, seguro, organizado, sem erros graves, com tese clara e intervenção completa NÃO deve cair para 680 só por ter repertório simples. Faixa típica: 760–880; se o repertório estiver integrado e a intervenção completa, pode chegar a 900+.
+- Texto simples mas organizado, sem repertório legitimado, com parágrafos previsíveis e proposta vaga NÃO pode ser inflado só porque tem introdução/desenvolvimento/conclusão. Faixa típica: 320–520; se a argumentação for quase inexistente e a intervenção genérica, fique perto de 300–400.
+- Texto muito bom com repertório orgânico (ex.: Sérgio Buarque/Aristóteles/Transparência Internacional bem conectados), progressão clara e intervenção completa deve liberar 880–960. Segure C3/C4 em 160 apenas quando faltar camada analítica, contraponto ou progressão impecável.
+- Não premie repertório jogado: citação sem ligação explícita com a tese vale pouco. Repertório integrado, mesmo simples, vale mais que nome sofisticado solto.
+- A meta é distinguir 760 / 840 / 920: 760 = bom mas previsível; 840 = bom com repertório e intervenção fortes; 920 = muito bom, repertório orgânico, proposta completa e poucas falhas finas.
 
 ==== REGRA ANTI-NOTA-EQUILIBRADA ====
 Corretores humanos NÃO dão 80/80/80/80/80. Eles desequilibram. Se a redação tem ótima gramática mas argumentação fraca, a diferença entre C1 e C3 deve aparecer (ex.: C1=200, C3=120). Se tem boas ideias mas escrita ruim, idem invertido. Evite o padrão "todas iguais" — só seja uniforme se o texto realmente for uniforme.
@@ -149,12 +190,14 @@ C2 — Tema + tipo dissertativo:
 
 C3 — Argumentação (JUSTIFICATIVA ESPECÍFICA OBRIGATÓRIA):
 - 200: argumentos bem desenvolvidos + organização lógica + progressão clara.
+- Em textos bons, tradicionais e coerentes, não derrube C3 para 80/120 apenas por falta de sofisticação acadêmica. Use 160 quando há causa/consequência claras mas pouca camada analítica; use 120 quando as ideias são repetitivas ou quase só afirmativas.
 - Ao tirar pontos, NUNCA escreva genérico tipo "desenvolver mais profundamente" ou "aprofundar argumentação". Em vez disso, cite QUAL argumento ficou raso e COMO aprofundar — mostre mecanismos, consequências, contraponto. Ex.: "Embora o argumento sobre fake news seja pertinente, a discussão permanece previsível: o texto não explora os MECANISMOS de propagação (algoritmos, câmaras de eco) nem as CONSEQUÊNCIAS sociopolíticas concretas (eleições, polarização, saúde pública), o que reduz a sofisticação exigida para a nota máxima."
 - 160: organização ok com 1 argumento raso. 120: previsíveis/superficiais.
 
 C4 — Coesão (CONTAGEM OBJETIVA):
 - Conte conectivos interparágrafos + intraparágrafos.
 - 200: ≥2 inter variados + ≥1 intra/parágrafo, sem repetição grosseira.
+- Texto organizado com conectivos comuns, mas funcionais, deve ficar em 160; só dê 120 se houver escassez, repetição forte ou saltos de sentido.
 - 160: quase tudo com 1 repetição. 120 só com escassez crônica.
 - Sugestões CONCRETAS: liste conectivos alternativos específicos.
 
@@ -176,12 +219,16 @@ Cite com aplicação concreta. Ex.: "Para reforçar a tese sobre desigualdade di
 - "repertorios": só se C2 < 200; vazio ou elogio se já tem repertório bom.
 - "erros_gramaticais": SÓ erros REAIS com frase + correção + regra. RELEIA a lista de falsos positivos antes de incluir qualquer item. Vazio é melhor que erro inventado.
 
-${modoRigidoFinal ? `==== MODO PROFESSOR RÍGIDO ====
+${
+  modoRigidoFinal
+    ? `==== MODO PROFESSOR RÍGIDO ====
 - Tom brutalmente honesto, irônico mas NUNCA inventando erro.
 - Pode ZERAR redação desastrosa sem dó.
 - Pode dar 1000 se for excelente de verdade.
 - Continue na grade INEP — rigidez = não passar a mão na cabeça, NÃO é caçar erros inexistentes.
-- Ex.: "Seu argumento começou forte mas virou passeio no parque no segundo parágrafo — desenvolva o impacto, não apenas mencione."` : `Tom construtivo e MOTIVADOR, mas FIEL à grade INEP. Não infle, não invente, não use template. Comentários específicos ao texto, com tom humano (sem "como modelo de IA"), curtos e diretos.`}
+- Ex.: "Seu argumento começou forte mas virou passeio no parque no segundo parágrafo — desenvolva o impacto, não apenas mencione."`
+    : `Tom construtivo e MOTIVADOR, mas FIEL à grade INEP. Não infle, não invente, não use template. Comentários específicos ao texto, com tom humano (sem "como modelo de IA"), curtos e diretos.`
+}
 
 Retorne SEMPRE via tool_call estruturado.`;
 
@@ -194,41 +241,68 @@ Retorne SEMPRE via tool_call estruturado.`;
           { role: "system", content: systemPrompt },
           { role: "user", content: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` },
         ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "avaliar_redacao",
-            description: "Avalia uma redação do ENEM",
-            parameters: {
-              type: "object",
-              properties: {
-                competencia_1: { type: "integer" },
-                competencia_2: { type: "integer" },
-                competencia_3: { type: "integer" },
-                competencia_4: { type: "integer" },
-                competencia_5: { type: "integer" },
-                nota_total: { type: "integer" },
-                comentario_geral: { type: "string" },
-                erros_gramaticais: { type: "array", items: { type: "string" } },
-                sugestoes: { type: "array", items: { type: "string" } },
-                melhorias: { type: "array", items: { type: "string" } },
-                repertorios: { type: "array", items: { type: "string" } },
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "avaliar_redacao",
+              description: "Avalia uma redação do ENEM",
+              parameters: {
+                type: "object",
+                properties: {
+                  competencia_1: { type: "integer" },
+                  competencia_2: { type: "integer" },
+                  competencia_3: { type: "integer" },
+                  competencia_4: { type: "integer" },
+                  competencia_5: { type: "integer" },
+                  nota_total: { type: "integer" },
+                  comentario_geral: { type: "string" },
+                  erros_gramaticais: { type: "array", items: { type: "string" } },
+                  sugestoes: { type: "array", items: { type: "string" } },
+                  melhorias: { type: "array", items: { type: "string" } },
+                  repertorios: { type: "array", items: { type: "string" } },
+                },
+                required: [
+                  "competencia_1",
+                  "competencia_2",
+                  "competencia_3",
+                  "competencia_4",
+                  "competencia_5",
+                  "nota_total",
+                  "comentario_geral",
+                  "erros_gramaticais",
+                  "sugestoes",
+                  "melhorias",
+                  "repertorios",
+                ],
+                additionalProperties: false,
               },
-              required: ["competencia_1","competencia_2","competencia_3","competencia_4","competencia_5","nota_total","comentario_geral","erros_gramaticais","sugestoes","melhorias","repertorios"],
-              additionalProperties: false,
             },
           },
-        }],
+        ],
         tool_choice: { type: "function", function: { name: "avaliar_redacao" } },
       }),
     });
 
     if (!resp.ok) {
-      if (resp.status === 429) return new Response(JSON.stringify({ error: "Limite de requisições atingido. Tente novamente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "Créditos da IA esgotados." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 429)
+        return new Response(
+          JSON.stringify({
+            error: "Limite de requisições atingido. Tente novamente em instantes.",
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      if (resp.status === 402)
+        return new Response(JSON.stringify({ error: "Créditos da IA esgotados." }), {
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "Erro na IA" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Erro na IA" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const data = await resp.json();
@@ -237,7 +311,12 @@ Retorne SEMPRE via tool_call estruturado.`;
     const parsed = JSON.parse(args);
 
     // Garante soma correta
-    const soma = (parsed.competencia_1|0)+(parsed.competencia_2|0)+(parsed.competencia_3|0)+(parsed.competencia_4|0)+(parsed.competencia_5|0);
+    const soma =
+      (parsed.competencia_1 | 0) +
+      (parsed.competencia_2 | 0) +
+      (parsed.competencia_3 | 0) +
+      (parsed.competencia_4 | 0) +
+      (parsed.competencia_5 | 0);
     parsed.nota_total = soma;
 
     return new Response(JSON.stringify(parsed), {
@@ -245,8 +324,12 @@ Retorne SEMPRE via tool_call estruturado.`;
     });
   } catch (e) {
     console.error(e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 });

@@ -14,7 +14,13 @@ export const Route = createFileRoute("/questoes")({
   component: QuestoesPage,
 });
 
-type Sim = { id: string; nome: string; descricao: string | null; total_questoes: number; ordem: number };
+type Sim = {
+  id: string;
+  nome: string;
+  descricao: string | null;
+  total_questoes: number;
+  ordem: number;
+};
 
 function QuestoesPage() {
   const navigate = useNavigate();
@@ -24,7 +30,11 @@ function QuestoesPage() {
 
   useEffect(() => {
     (async () => {
-      const { data: simData } = await supabase.from("simulados").select("*").eq("ativo", true).order("ordem");
+      const { data: simData } = await supabase
+        .from("simulados")
+        .select("*")
+        .eq("ativo", true)
+        .order("ordem");
       setSims((simData as Sim[]) ?? []);
     })();
   }, []);
@@ -44,9 +54,12 @@ function QuestoesPage() {
         <Badge variant="outline" className="border-primary/40 text-primary">
           <Sparkles className="mr-1 h-3 w-3" /> Simulado completo
         </Badge>
-        <h1 className="mt-3 text-3xl font-bold md:text-5xl">1.000 Questões <span className="gradient-text">ENEM</span></h1>
+        <h1 className="mt-3 text-3xl font-bold md:text-5xl">
+          1.000 Questões <span className="gradient-text">ENEM</span>
+        </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Provas mistas cobrindo Linguagens, Humanas, Natureza e Matemática. Nota calculada na escala ENEM (0–1000).
+          Provas mistas cobrindo Linguagens, Humanas, Natureza e Matemática. Nota calculada na
+          escala ENEM (0–1000).
         </p>
 
         <Card className="card-glass mt-8 p-5 border-yellow-500/40 bg-yellow-500/5">
@@ -55,7 +68,14 @@ function QuestoesPage() {
             <div className="text-sm">
               <p className="font-semibold">Como funciona</p>
               <p className="mt-1 text-muted-foreground">
-                Uma pergunta por vez (A–E). Use a seta para avançar. No fim, sua nota é calculada na escala 0–1000 e fica salva no seu dashboard, na seção <strong>Classificação SEM</strong>.
+                Uma pergunta por vez (A–E). Use a seta para avançar. No fim, sua nota é calculada na
+                escala 0–1000 e fica salva no seu dashboard, na seção{" "}
+                <strong>Classificação SEM</strong>.
+              </p>
+              <p className="mt-2 text-muted-foreground">
+                As provas 5,6,7 e 8 possuem questões algumas de super raciocínio, com perguntas
+                muito curtas pra testar a inteligência de cada um em condições inviáveis/difíceis !
+                BOAS PROVAS
               </p>
             </div>
           </div>
@@ -68,17 +88,25 @@ function QuestoesPage() {
               <div className="text-sm flex-1">
                 <p className="font-semibold">Simulados são exclusivos para alunos com plano pago</p>
                 <p className="mt-1 text-muted-foreground">
-                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as provas.
+                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as
+                  provas.
                 </p>
               </div>
-              <Link to="/planos"><Button size="sm" className="glow-blue">Ver planos</Button></Link>
+              <Link to="/planos">
+                <Button size="sm" className="glow-blue">
+                  Ver planos
+                </Button>
+              </Link>
             </div>
           </Card>
         )}
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {sims.map((s) => (
-            <Card key={s.id} className={`card-glass p-6 relative ${!planoPago ? "overflow-hidden" : ""}`}>
+            <Card
+              key={s.id}
+              className={`card-glass p-6 relative ${!planoPago ? "overflow-hidden" : ""}`}
+            >
               {!planoPago && (
                 <div className="absolute top-3 right-3">
                   <Badge variant="outline" className="border-primary/40 text-primary">
@@ -97,9 +125,13 @@ function QuestoesPage() {
                 variant={planoPago ? "default" : "outline"}
               >
                 {planoPago ? (
-                  <><Play className="mr-1 h-4 w-4" /> Iniciar prova</>
+                  <>
+                    <Play className="mr-1 h-4 w-4" /> Iniciar prova
+                  </>
                 ) : (
-                  <><Lock className="mr-1 h-4 w-4" /> Desbloquear aulas premium</>
+                  <>
+                    <Lock className="mr-1 h-4 w-4" /> Desbloquear aulas premium
+                  </>
                 )}
               </Button>
             </Card>

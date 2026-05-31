@@ -10,12 +10,16 @@ import { Check, Sparkles, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
+import planosImg from "@/assets/planos-img.png";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
     meta: [
       { title: "Planos – Nota 1000 ENEM" },
-      { name: "description", content: "Escolha o plano ideal para sua aprovação no ENEM. A partir de R$ 19,90/mês." },
+      {
+        name: "description",
+        content: "Escolha o plano ideal para sua aprovação no ENEM. A partir de R$ 19,90/mês.",
+      },
     ],
   }),
   component: Planos,
@@ -39,7 +43,17 @@ const planos: Array<{
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["15 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: [
+      "15 redações por mês",
+      "Linguagens, Códigos e suas Tecnologias",
+      "Ciências da Natureza e suas Tecnologias",
+      "1.000 questões e simulados",
+      "Plano de Estudo com IA",
+      "PDF metodologia de estudos",
+      "Cronograma de 30 dias",
+      "Templates de redação nota 1000",
+      "Acesso básico IA",
+    ],
   },
   {
     name: "ENEM Pro",
@@ -49,7 +63,21 @@ const planos: Array<{
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["30 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
+    items: [
+      "30 redações por mês",
+      "Tudo do Light",
+      "Ciências Humanas e suas Tecnologias",
+      "Matemática e suas Tecnologias",
+      "As 4 áreas do ENEM liberadas",
+      "20 vídeo aulas",
+      "1.000 questões para passar",
+      "Simulados",
+      "Correção IA avançada",
+      "IA Professor Rígido",
+      "Plano de Estudo com IA",
+      "Repertórios automáticos",
+      "Cronograma inteligente",
+    ],
   },
   {
     name: "Full Acess ENEM",
@@ -59,7 +87,23 @@ const planos: Array<{
     desc: "Tudo, sem limites.",
     popular: false,
     upgrade: false,
-    items: ["60 redações por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+    items: [
+      "60 redações por mês",
+      "Tudo do Pro",
+      "Redação completa",
+      "BÔNUS — 9 segredos para aprovação no vestibular",
+      "Correção IA ilimitada",
+      "1.000 questões avançadas",
+      "Vídeo aulas completas",
+      "Simulados ilimitados",
+      "Templates premium",
+      "Ranking de alunos",
+      "IA Professor Rígido",
+      "Plano de Estudo com IA",
+      "Repertórios automáticos",
+      "Estratégias de aprovação",
+      "Atualizações futuras",
+    ],
   },
   {
     name: "Full Acess ENEM Vitalício",
@@ -69,7 +113,25 @@ const planos: Array<{
     desc: "Pague uma vez, use para SEMPRE.",
     popular: false,
     upgrade: false,
-    items: ["Acesso ETERNO — sem mensalidade", "70 redações por mês (renova a cada 30 dias)", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
+    items: [
+      "Acesso ETERNO — sem mensalidade",
+      "70 redações por mês (renova a cada 30 dias)",
+      "Tudo do Full Acess",
+      "Redação completa",
+      "BÔNUS — 9 segredos para aprovação no vestibular",
+      "Correção IA ilimitada",
+      "1.000 questões avançadas",
+      "Vídeo aulas completas",
+      "Simulados ilimitados",
+      "Templates premium",
+      "Ranking de alunos",
+      "IA Professor Rígido vitalício",
+      "Plano de Estudo com IA vitalício",
+      "Repertórios automáticos",
+      "Estratégias de aprovação",
+      "Atualizações futuras incluídas",
+      "Sem renovação, sem cobrança recorrente",
+    ],
   },
 ];
 
@@ -83,14 +145,19 @@ function Planos() {
     if (status === "success") {
       toast.success("Pagamento aprovado! Acesso liberado em instantes.", { duration: 6000 });
     } else if (status === "pending") {
-      toast.info("Pagamento pendente. Assim que o Mercado Pago confirmar, seu acesso será liberado automaticamente.", { duration: 6000 });
+      toast.info(
+        "Pagamento pendente. Assim que o Mercado Pago confirmar, seu acesso será liberado automaticamente.",
+        { duration: 6000 },
+      );
     } else if (status === "failure") {
       toast.error("O pagamento não foi concluído. Tente novamente.");
     }
   }, []);
 
   async function handleCheckout(planType: PlanType, label: string) {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) {
       toast.error("Faça login antes de assinar um plano.");
       window.location.href = "/auth?redirect=/planos";
@@ -101,9 +168,11 @@ function Planos() {
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida do servidor");
       window.location.href = res.init_point;
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      toast.error(e?.message ?? `Não foi possível abrir o checkout de ${label}.`);
+      toast.error(
+        e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`,
+      );
       setLoadingPlan(null);
     }
   }
@@ -117,13 +186,24 @@ function Planos() {
         <h1 className="mt-3 text-4xl font-bold md:text-5xl">
           Invista no seu <span className="gradient-text">futuro</span>
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          Planos pensados para diferentes momentos do seu estudo. Cancele quando quiser.
+        <p className="mx-auto mt-3 max-w-3xl text-muted-foreground">
+          Planos pensados para diferentes momentos do seu estudo, o SONHO da NOTA 1000 está PRÓXIMO.
+          Cancele quando quiser. NÃO PRECISA CARTÃO DE CRÉDITO
         </p>
+
+        <img
+          src={planosImg}
+          alt="Correção de redações ENEM com inteligência artificial Nota 1000 ENEM"
+          className="mx-auto mt-8 w-full max-w-6xl rounded-2xl border border-primary/30 object-cover shadow-2xl shadow-primary/20"
+          loading="lazy"
+        />
 
         <div className="mt-12 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-4">
           {planos.map((p) => (
-            <Card key={p.name} className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}>
+            <Card
+              key={p.name}
+              className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}
+            >
               {p.popular && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                   MAIS VENDIDO
@@ -143,7 +223,9 @@ function Planos() {
                 variant={p.popular ? "default" : "outline"}
               >
                 {loadingPlan === p.planType ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…</>
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…
+                  </>
                 ) : (
                   <>Assinar {p.name}</>
                 )}
@@ -165,13 +247,19 @@ function Planos() {
         </div>
 
         <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Garantia de 7 dias</div>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-primary" /> Garantia de 7 dias
+          </div>
           <div>Pague com cartão, Pix ou boleto</div>
           <div>Cancele quando quiser</div>
         </div>
 
         <p className="mt-8 text-sm text-muted-foreground">
-          Ainda em dúvida? <Link to="/redacao" className="text-primary underline">Teste uma correção grátis</Link>.
+          Ainda em dúvida?{" "}
+          <Link to="/redacao" className="text-primary underline">
+            Teste uma correção grátis
+          </Link>
+          .
         </p>
       </section>
       <Footer />
