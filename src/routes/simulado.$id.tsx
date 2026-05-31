@@ -100,15 +100,10 @@ function SimuladoPage() {
       return;
     }
 
-    // salva respostas
-    const rows = questoes.map((q) => ({
-      tentativa_id: tent.id,
-      user_id: user.id,
-      questao_id: q.id,
-      resposta_marcada: respostas[q.id] ?? null,
-      correta: respostas[q.id] ? respostas[q.id].toUpperCase() === q.resposta_correta.toUpperCase() : false,
-    }));
-    await supabase.from("respostas_aluno").insert(rows);
+    // Respostas detalhadas NÃO são persistidas: o gabarito mostrado no final
+    // usa o estado local. Isso evita ocupar espaço no banco — apenas a nota
+    // e os acertos por área (em tentativas_simulado) ficam salvos para o dashboard.
+
 
     setResultado({ nota, acertos, total, porArea });
     setFinished(true);
