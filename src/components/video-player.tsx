@@ -136,11 +136,25 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     } catch {}
   }
 
-  function fullscreen() {
+  async function fullscreen() {
     const el = wrapRef.current;
     if (!el) return;
-    if (document.fullscreenElement) document.exitFullscreen();
-    else el.requestFullscreen?.();
+    if (document.fullscreenElement) {
+      try {
+        // @ts-ignore
+        screen.orientation?.unlock?.();
+      } catch {}
+      await document.exitFullscreen();
+    } else {
+      try {
+        await el.requestFullscreen?.();
+        // Em celular, força landscape para o vídeo ocupar a tela inteira "deitado".
+        try {
+          // @ts-ignore — disponível em mobile
+          await screen.orientation?.lock?.("landscape");
+        } catch {}
+      } catch {}
+    }
   }
 
   if (!videoId) return null;
@@ -154,7 +168,11 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             <div ref={ref} className="h-full w-full pointer-events-none" />
           </div>
 
-          <div className="pointer-events-none absolute inset-0" />
+          {/* Máscaras pretas para esconder chrome do YouTube (título do vídeo, nome do canal,
+              botão de compartilhar, contador de tempo e a barrinha de "playlist/mais vídeos"
+              que o YT exibe sobre o player mesmo com controls=0). */}
+          <div className="pointer-events-none absolute left-0 right-0 top-0 h-12 bg-black" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-14 h-10 bg-gradient-to-t from-black/80 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 flex flex-wrap items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3">
             <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={toggle}>
