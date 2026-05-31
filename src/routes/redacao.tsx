@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
 import { Lock, Crown, Zap } from "lucide-react";
 
@@ -93,11 +94,15 @@ function RedacaoPage() {
       return;
     }
     if (!tema.trim() || tema.trim().length < 8) {
-      toast.error("Informe o tema da redação (mínimo 8 caracteres). Não existe redação ENEM sem tema.");
+      toast.error("O TEMA E OBRIGATÓRIO PRA PROSSEGUIR");
       return;
     }
     if (texto.trim().length < 50) {
       toast.error(`Cole uma redação completa — mínimo 50 caracteres (você colou ${texto.trim().length}).`);
+      return;
+    }
+    if (texto.length > 2500) {
+      toast.error("Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres.");
       return;
     }
     if (modoRigido && !modoRigidoLiberado) {
@@ -172,6 +177,7 @@ function RedacaoPage() {
           Corrigir <span className="gradient-text">redação ENEM</span>
         </h1>
         <p className="mt-2 text-muted-foreground">Cole abaixo e receba avaliação completa pelas 5 competências.</p>
+        <WeeklyRetentionSummary userId={user?.id} />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <Card className="card-glass p-6">
@@ -234,7 +240,12 @@ function RedacaoPage() {
               id="texto"
               value={texto}
               maxLength={2500}
-              onChange={(e) => setTexto(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length >= 2500 && texto.length < 2500) {
+                  toast.error("Limite de caracteres excedido. O máximo é 2500 caracteres.");
+                }
+                setTexto(e.target.value);
+              }}
               onPaste={(e) => {
                 const pasted = e.clipboardData.getData("text");
                 if (texto.length + pasted.length > 2500) {
