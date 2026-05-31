@@ -25,9 +25,26 @@ export type PlanAccess = {
 };
 
 function normalize(p?: string | null): PlanTier {
-  const s = (p ?? "free").toLowerCase().trim();
-  if (s === "light" || s === "pro" || s === "full" || s === "vitalicio") return s;
+  const s = (p ?? "free")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\s_-]+/g, "")
+    .trim();
+  if (s.includes("vitalicio")) return "vitalicio";
+  if (s.includes("full")) return "full";
+  if (s.includes("pro")) return "pro";
+  if (s.includes("light") || s.includes("basic")) return "light";
   return "free";
+}
+
+function isActiveStatus(status?: string | null) {
+  const s = (status ?? "").toLowerCase().trim();
+  return ["active", "ativa", "approved", "aprovado"].includes(s);
+}
+
+function isFuture(date?: string | null) {
+  return !!date && new Date(date).getTime() > Date.now();
 }
 
 export function usePlanAccess(): PlanAccess {
@@ -50,22 +67,25 @@ export function usePlanAccess(): PlanAccess {
       setState((s) => ({ ...s, loading: false, loggedIn: false, isPaid: false, isPremium: false }));
       return;
     }
-    const [{ data: prof }, { data: sub }] = await Promise.all([
+    const [{ data: prof }, { data: sub }, { data: assinatura }] = await Promise.all([
       supabase.from("profiles").select("plan, plan_vitalicio, plan_expires_at").eq("id", user.id).maybeSingle(),
       supabase.from("subscriptions").select("plan_type, status, current_period_end, credits_remaining").eq("user_id", user.id).maybeSingle(),
+      supabase.from("assinaturas").select("plano, status, vence_em").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
 
     const tierFromProf = normalize(prof?.plan);
     const tierFromSub = normalize(sub?.plan_type);
+    const tierFromAssinatura = normalize(assinatura?.plano);
     // pega o "melhor" tier conhecido
     const order: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];
-    const tier = order[Math.max(order.indexOf(tierFromProf), order.indexOf(tierFromSub))] as PlanTier;
+    const tier = order[Math.max(order.indexOf(tierFromProf), order.indexOf(tierFromSub), order.indexOf(tierFromAssinatura))] as PlanTier;
 
     const vitalicio = Boolean(prof?.plan_vitalicio) || tier === "vitalicio";
-    const expiresAt = prof?.plan_expires_at ? new Date(prof.plan_expires_at) : sub?.current_period_end ? new Date(sub.current_period_end) : null;
-    const dentroDoPrazo = vitalicio || (!!expiresAt && expiresAt.getTime() > Date.now());
-    const subAtiva = !sub || sub.status === "ACTIVE";
-    const isPaid = tier !== "free" && dentroDoPrazo && subAtiva;
+    const expiresAt = prof?.plan_expires_at ? new Date(prof.plan_expires_at) : sub?.current_period_end ? new Date(sub.current_period_end) : assinatura?.vence_em ? new Date(assinatura.vence_em) : null;
+    const perfilAtivo = tierFromProf !== "free" && (Boolean(prof?.plan_vitalicio) || isFuture(prof?.plan_expires_at));
+    const subAtiva = tierFromSub !== "free" && isActiveStatus(sub?.status) && (tierFromSub === "vitalicio" || isFuture(sub?.current_period_end));
+    const assinaturaAtiva = tierFromAssinatura !== "free" && isActiveStatus(assinatura?.status) && (tierFromAssinatura === "vitalicio" || isFuture(assinatura?.vence_em));
+    const isPaid = tier !== "free" && (vitalicio || perfilAtivo || subAtiva || assinaturaAtiva);
     const isPremium = isPaid && (tier === "pro" || tier === "full" || tier === "vitalicio");
     const daysLeft = expiresAt && !vitalicio ? Math.max(0, Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)) : null;
 
