@@ -161,12 +161,14 @@ C2 — Tema + tipo dissertativo:
 
 C3 — Argumentação (JUSTIFICATIVA ESPECÍFICA OBRIGATÓRIA):
 - 200: argumentos bem desenvolvidos + organização lógica + progressão clara.
+- Em textos bons, tradicionais e coerentes, não derrube C3 para 80/120 apenas por falta de sofisticação acadêmica. Use 160 quando há causa/consequência claras mas pouca camada analítica; use 120 quando as ideias são repetitivas ou quase só afirmativas.
 - Ao tirar pontos, NUNCA escreva genérico tipo "desenvolver mais profundamente" ou "aprofundar argumentação". Em vez disso, cite QUAL argumento ficou raso e COMO aprofundar — mostre mecanismos, consequências, contraponto. Ex.: "Embora o argumento sobre fake news seja pertinente, a discussão permanece previsível: o texto não explora os MECANISMOS de propagação (algoritmos, câmaras de eco) nem as CONSEQUÊNCIAS sociopolíticas concretas (eleições, polarização, saúde pública), o que reduz a sofisticação exigida para a nota máxima."
 - 160: organização ok com 1 argumento raso. 120: previsíveis/superficiais.
 
 C4 — Coesão (CONTAGEM OBJETIVA):
 - Conte conectivos interparágrafos + intraparágrafos.
 - 200: ≥2 inter variados + ≥1 intra/parágrafo, sem repetição grosseira.
+- Texto organizado com conectivos comuns, mas funcionais, deve ficar em 160; só dê 120 se houver escassez, repetição forte ou saltos de sentido.
 - 160: quase tudo com 1 repetição. 120 só com escassez crônica.
 - Sugestões CONCRETAS: liste conectivos alternativos específicos.
 
