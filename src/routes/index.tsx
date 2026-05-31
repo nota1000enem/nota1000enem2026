@@ -118,8 +118,8 @@ function Index() {
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida");
       window.location.href = res.init_point;
-    } catch (e: any) {
-      toast.error(e?.message ?? "Não foi possível abrir o checkout.");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível abrir o checkout.");
       setLoadingPlan(null);
     }
   }

@@ -168,9 +168,9 @@ function Planos() {
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida do servidor");
       window.location.href = res.init_point;
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      toast.error(e?.message ?? `Não foi possível abrir o checkout de ${label}.`);
+      toast.error(e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`);
       setLoadingPlan(null);
     }
   }
