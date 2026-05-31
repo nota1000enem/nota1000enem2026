@@ -163,10 +163,14 @@ export const Route = createFileRoute("/api/public/mp-webhook")({
             return new Response("ok", { status: 200 });
           }
 
-          // Processa async (responde 200 imediatamente)
-          processPayment(String(paymentId)).catch((e) =>
-            console.error("Webhook MP erro async:", e),
-          );
+          // CRÍTICO: em Cloudflare Workers o runtime termina após o Response.
+          // Precisamos aguardar o processamento antes de responder, senão
+          // a transação nunca é salva (bug que deixou pagamentos reais sem ativar plano).
+          try {
+            await processPayment(String(paymentId));
+          } catch (e) {
+            console.error("Webhook MP erro processamento:", e);
+          }
 
           return new Response("ok", { status: 200 });
         } catch (e) {
