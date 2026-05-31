@@ -25,8 +25,14 @@ function AuthPage() {
   const [erroLogin, setErroLogin] = useState<string>("");
   const [erroSignup, setErroSignup] = useState<string>("");
   const [enviandoReset, setEnviandoReset] = useState(false);
+  const [tab, setTab] = useState<"login" | "signup">("login");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("erro") === "sem_conta") {
+      setErroLogin("Esta conta ainda não existe. Use a aba 'Cadastrar' para criar primeiro.");
+      setTab("signup");
+    }
     supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
   }, [nav]);
 
