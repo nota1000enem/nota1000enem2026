@@ -59,8 +59,20 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             allowFullScreen
             frameBorder={0}
           />
-          <div className="pointer-events-auto absolute bottom-10 left-4 z-10 h-16 w-20 bg-transparent" aria-hidden="true" />
-          <div className="pointer-events-auto absolute bottom-10 right-4 z-10 h-16 w-72 max-w-[40%] bg-transparent" aria-hidden="true" />
+          <button
+            type="button"
+            tabIndex={-1}
+            className="absolute bottom-11 left-4 z-10 h-14 w-20 cursor-default bg-transparent"
+            aria-hidden="true"
+            onClick={(e) => e.preventDefault()}
+          />
+          <button
+            type="button"
+            tabIndex={-1}
+            className="absolute bottom-11 right-4 z-10 h-16 w-72 max-w-[42%] cursor-default bg-transparent"
+            aria-hidden="true"
+            onClick={(e) => e.preventDefault()}
+          />
         </div>
       </DialogContent>
     </Dialog>
