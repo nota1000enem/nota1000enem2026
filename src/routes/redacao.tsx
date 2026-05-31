@@ -202,12 +202,23 @@ function RedacaoPage() {
               </div>
             )}
 
-            <Label htmlFor="tema">Tema (opcional)</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="tema" className="flex items-center gap-1">
+                Tema <span className="text-destructive">*</span>
+              </Label>
+              <span className="flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                <Zap className="h-3 w-3" />
+                {access.isPaid
+                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
+                  : `${Math.max(0, 3 - usadas)}/3 grátis`}
+              </span>
+            </div>
             <Input
               id="tema"
               value={tema}
               onChange={(e) => setTema(e.target.value)}
               placeholder="Ex: Os desafios da educação digital no Brasil"
+              required
               className="mt-2"
             />
             {sugestoesTema.length > 0 && (
