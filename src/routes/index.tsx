@@ -140,9 +140,9 @@ function Index() {
                   <CarouselItem key={i} className="basis-[80%]">
                     <div className="relative">
                       <img src={img.src} alt={img.alt} width={1024} height={1024}
-                        className="aspect-square w-full rounded-2xl border border-primary/30 object-cover glow-blue"
+                        className="aspect-square w-full rounded-2xl border border-primary/30 object-contain bg-background/40 glow-blue"
                         loading={i === 0 ? "eager" : "lazy"} />
-                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">{i+1}/4</span>
+                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">{i+1}/{heroImgs.length}</span>
                     </div>
                   </CarouselItem>
                 ))}
