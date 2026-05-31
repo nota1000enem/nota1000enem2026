@@ -199,8 +199,6 @@ function AuthPage() {
               </form>
             </TabsContent>
           </Tabs>
-          <div className="my-4 flex items-center gap-2"><div className="h-px flex-1 bg-border" /><span className="text-xs text-muted-foreground">ou</span><div className="h-px flex-1 bg-border" /></div>
-          <Button variant="outline" className="w-full" onClick={google}>Entrar com Google</Button>
         </Card>
       </div>
     </div>
