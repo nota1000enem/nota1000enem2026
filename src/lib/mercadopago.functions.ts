@@ -20,7 +20,11 @@ export const createCheckout = createServerFn({ method: "POST" })
   .inputValidator((input) => checkoutInput.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context as {
-      supabase: any;
+      supabase: {
+        from: (table: string) => {
+          upsert: (values: unknown, options?: unknown) => Promise<unknown>;
+        };
+      };
       userId: string;
       claims: { email?: string };
     };
