@@ -69,7 +69,7 @@ function PlanoEstudoPage() {
       ]);
       setPlanoUsuario((prof?.plan as string) ?? "free");
       setVitalicio(Boolean(prof?.plan_vitalicio));
-      const lista = (planos as PlanoSalvo[] | null) ?? [];
+      const lista = (planos as unknown as PlanoSalvo[] | null) ?? [];
       setHistorico(lista);
       if (lista.length > 0) setPlano(lista[0].cronograma);
     })();
@@ -119,7 +119,7 @@ function PlanoEstudoPage() {
           meta,
           cronograma: r as never,
         }).select("*").single();
-        if (inserted) setHistorico([inserted as PlanoSalvo, ...historico].slice(0, 5));
+        if (inserted) setHistorico([inserted as unknown as PlanoSalvo, ...historico].slice(0, 5));
       }
       toast.success("Plano semanal gerado e salvo!");
     } catch (e) {
