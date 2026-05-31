@@ -33,17 +33,67 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function useFakePromoTimer() {
+  // 30 min de oferta; zera por 10 min; reinicia. Persiste em localStorage.
+  const ACTIVE = 30 * 60;
+  const PAUSE = 10 * 60;
+  const KEY = "promo_start_ts";
+  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
+  useEffect(() => {
+    if (!localStorage.getItem(KEY)) {
+      localStorage.setItem(KEY, String(Math.floor(Date.now() / 1000)));
+    }
+    const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const start = Number(localStorage.getItem(KEY) ?? now);
+  const cycle = ACTIVE + PAUSE;
+  const elapsed = (now - start) % cycle;
+  const inActive = elapsed < ACTIVE;
+  if (!inActive) {
+    // Pausa: reinicia o ciclo quando voltar
+    if (elapsed >= cycle - 1) localStorage.setItem(KEY, String(now + 1));
+    return { active: false, label: "00:00" };
+  }
+  const remaining = ACTIVE - elapsed;
+  const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+  const s = String(remaining % 60).padStart(2, "0");
+  return { active: true, label: `${m}:${s}` };
+}
+
 function Index() {
   const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }));
   const heroAutoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }));
   const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number }>>([]);
+  const checkoutFn = useServerFn(createCheckout);
+  const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
+  const promo = useFakePromoTimer();
   useEffect(() => {
     supabase.rpc("get_top_semana").then(({ data }) => {
       if (data && Array.isArray(data)) setTopSemana(data.slice(0, 3));
     });
   }, []);
+  async function handleBuy(planType: PlanType) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = `/auth?redirect=/planos`;
+      return;
+    }
+    setLoadingPlan(planType);
+    try {
+      const res = await checkoutFn({ data: { planType } });
+      if (!res?.init_point) throw new Error("Resposta inválida");
+      window.location.href = res.init_point;
+    } catch (e: any) {
+      toast.error(e?.message ?? "Não foi possível abrir o checkout.");
+      setLoadingPlan(null);
+    }
+  }
+  // Intercala: print, aluno, print, aluno...
   const heroImgs = [
+    { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
     { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
+    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
     { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
     { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
     { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
