@@ -118,8 +118,18 @@ serve(async (req) => {
     }
     const modoRigidoFinal = Boolean(modoRigido) && modoRigidoLiberado;
 
-    // Rotaciona 8 repertórios aleatórios do pool para evitar vício em Bauman/Foucault
-    const shuffled = [...POOL_REPERTORIOS].sort(() => Math.random() - 0.5).slice(0, 8);
+    // DETERMINISMO: hash do texto+tema gera seed estável → mesma redação = mesma nota
+    // (não usa Math.random — sempre seleciona os mesmos 8 repertórios pra essa redação)
+    const seedStr = `${tema}::${texto}::${modoRigidoFinal ? "R" : "N"}`;
+    let seedHash = 0;
+    for (let i = 0; i < seedStr.length; i++) {
+      seedHash = ((seedHash << 5) - seedHash + seedStr.charCodeAt(i)) | 0;
+    }
+    const seed = Math.abs(seedHash);
+    // Shuffle determinístico baseado no seed
+    const indexed = POOL_REPERTORIOS.map((r, i) => ({ r, k: (seed * (i + 1)) % 9973 }));
+    indexed.sort((a, b) => a.k - b.k);
+    const shuffled = indexed.slice(0, 8).map((x) => x.r);
     const repertoriosSugeridos = shuffled.map((r) => `- ${r}`).join("\n");
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -237,6 +247,9 @@ Retorne SEMPRE via tool_call estruturado.`;
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
+        temperature: 0,
+        top_p: 0.1,
+        seed,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` },

@@ -192,9 +192,16 @@ function Aulas() {
         </p>
 
         <div className="mt-10 space-y-14">
-          {trilhas.map((tr) => (
-            <div key={tr.area}>
+          {[...trilhas]
+            .sort((a, b) => {
+              const aLib = planoPago && canAccessArea(tier, a.area) ? 0 : 1;
+              const bLib = planoPago && canAccessArea(tier, b.area) ? 0 : 1;
+              return aLib - bLib;
+            })
+            .map((tr) => (
+              <div key={tr.area}>
               <div className="mb-4 flex items-end justify-between gap-3">
+
                 <div>
                   <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
                   <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
@@ -239,9 +246,10 @@ function Aulas() {
                 <CarouselPrevious className="left-0" />
                 <CarouselNext className="right-0" />
               </Carousel>
-            </div>
-          ))}
+              </div>
+            ))}
         </div>
+
 
         <Card className="card-glass mt-12 p-8 text-center">
           <h3 className="text-2xl font-bold">Faça parte da nossa comunidade</h3>
