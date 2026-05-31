@@ -19,7 +19,45 @@ import { toast } from "sonner";
  * Exemplo: "Estrutura dissertativo-argumentativa perfeita": "https://www.youtube.com/watch?v=XXXXX"
  */
 const VIDEO_LINKS: Record<string, string> = {
-  // Adicionar links aqui conforme forem enviados.
+  // Matemática e suas Tecnologias
+  "🧠 SEMANA DA MATEMÁTICA BÁSICA!! Aulão Completo": "https://youtu.be/MgeQ_Cf7WWg",
+  "TUDO DE MATEMÁTICA PARA O ENEM - Aula completa": "https://youtu.be/MA_ZrgV2xws",
+  "📈 INTERPRETAÇÃO DE GRÁFICOS, EQUAÇÕES E FUNÇÕES: Aula Completa": "https://youtu.be/yFjm_ObxOzo",
+  "TUDO DE PROBABILIDADE E ANÁLISE COMBINATÓRIA (Ensino Médio e ENEM)": "https://youtu.be/GDf8TkPh59k",
+  "TUDO DE GEOMETRIA E TRIGONOMETRIA PARA O ENEM 2024!!": "https://youtu.be/EieOYCmWHHM",
+  "TUDO de Matemática do Ensino FUNDAMENTAL pro ENEM 2026 (pra quem tem MUITA DIFICULDADE)": "https://youtu.be/JQfJMJrV5Bk",
+  "AULÃO ENEM: O que mais cai em FÍSICA no Enem": "https://www.youtube.com/live/DYpF0DJHfk0",
+  "TUDO de QUÍMICA GERAL pro ENEM 2026 (GANHE MUITOS ACERTOS)": "https://youtu.be/S5O-_kHn3W0",
+  // Linguagens, Códigos e suas Tecnologias
+  "10 horas de aulas (Linguagens códigos e suas tecnologias)": "https://youtu.be/KwtFbA6QLWI",
+  "TODOS OS EXERCÍCIOS - LINGUAGENS": "https://youtu.be/sTqMFMEMxr8",
+  "11 Horas de Aula (Linguagens códigos e suas tecnologias)": "https://youtu.be/EcFsAkgu-_A",
+  // Ciências Humanas e suas Tecnologias
+  "Ciências Humanas e suas Tecnologias no ENEM": "https://www.youtube.com/live/53fJePeNMRA",
+  "ENEM 2026 | REVISÃO COMPLETA DE CIÊNCIAS HUMANAS": "https://youtu.be/ka2w_C8rJfQ",
+  "✅ MACETES de HUMANAS para o ENEM 2026 (+800 PONTOS com eles!)": "https://youtu.be/SX8fSMUTLGU",
+  "Aulão de Revisão Enem: Ciências Humanas e suas Tecnologias": "https://www.youtube.com/live/e2ARULf5zIU",
+  "CORREÇÃO ENEM 2025 | LINGUAGENS, CIÊNCIAS HUMANAS E REDAÇÃO": "https://www.youtube.com/live/ApF2ckyAMgQ",
+  "Revisão Final ENEM (PROVA 2021) - Ciências Humanas": "https://youtu.be/mN5xjPTQl4Q",
+  // Ciências da Natureza e suas Tecnologias
+  "RESOLUÇÃO 2º simulado enem SAS 2026 - NATUREZA PARTE I": "https://youtu.be/sTqMFMEMxr8",
+  "INTENSIVÃO ENEM: Revisão COMPLETA de Ciências da Natureza": "https://www.youtube.com/live/4_BBzVvXg18",
+  "💪 CORREÇÃO DO ENEM NATUREZA 2025 (45 Acertos) - Ciências da Natureza": "https://www.youtube.com/live/pYQpeY-i2gk",
+  "Como GABARITAR Ciências da NATUREZA do Enem 2026 na PRÁTICA": "https://youtu.be/t-JNhC5Vvm0",
+  "🍀🤯 Ciências da Natureza e suas Tecnologias para o ENEM 2026: Revisão Completa 3 ANOS EM 4 HORAS!!": "https://youtu.be/NOBaD0hCGYU",
+  // Redação completa
+  "Como começar uma REDAÇÃO ENEM 2026 (900+)": "https://youtu.be/LAfiDT4TpHY",
+  "AULÃO DE REDAÇÃO PARA O ENEM: como alcançar a nota 1000": "https://youtu.be/cVlfWDcIAfo",
+  "AULÃO ENEM DE LITERATURA E REDAÇÃO: OS TEMAS QUE MAIS CAEM | AULÃO ENEM 2025": "https://www.youtube.com/live/u8NOTQQglew",
+  "NOVO MODELO REDAÇÃO ENEM 2026 (+900 em QUALQUER TEMA)": "https://youtu.be/wYkCtbXVUZU",
+  "COMO FAZER UMA REDAÇÃO NOTA MÁXIMA? ENEM 2026": "https://youtu.be/mYmrLdf5AWE",
+  // Bônus
+  "RESOLVENDO LINGUAGENS DO ENEM 2023 AO VIVO - Live BÔNUS": "https://www.youtube.com/live/z-7F_ulvD90",
+  "QUÍMICA ORGÂNICA no ENEM 2026: Tudo o que Cai (AULA COMPLETA)": "https://www.youtube.com/live/dIpxNWr4ZDI",
+  "🔴 [ENEM 2025] GABARITO EXTRAOFICIAL Matemática": "https://www.youtube.com/live/Kcz3Y5fmweE",
+  "🍀 CORREÇÃO COMPLETA BIOLOGIA #Enem 2021: Questões resolvidas PASSO A PASSO": "https://youtu.be/N72FaKjGP6M",
+  "🚗 TUDO DE CINEMÁTICA PARA O ENEM!! - Física Básica Completa": "https://youtu.be/NCxNuTLIu9Y",
+  "TUDO de HISTÓRIA DO BRASIL pro ENEM 2026 (teoria + questões)": "https://www.youtube.com/live/7HEKqvV2JiU",
 };
 
 export const Route = createFileRoute("/aulas")({
