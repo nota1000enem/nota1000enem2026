@@ -14,6 +14,12 @@ import aprovado1 from "@/assets/enem-aprovado-1.jpg";
 import aprovado2 from "@/assets/enem-aprovado-2.jpg";
 import aprovado3 from "@/assets/enem-aprovado-3.jpg";
 import aprovado4 from "@/assets/enem-aprovado-4.jpg";
+import printNota840 from "@/assets/print-nota-840.png";
+import printNota1000 from "@/assets/print-nota-1000.png";
+import { useServerFn } from "@tanstack/react-start";
+import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,17 +33,67 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function useFakePromoTimer() {
+  // 30 min de oferta; zera por 10 min; reinicia. Persiste em localStorage.
+  const ACTIVE = 30 * 60;
+  const PAUSE = 10 * 60;
+  const KEY = "promo_start_ts";
+  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
+  useEffect(() => {
+    if (!localStorage.getItem(KEY)) {
+      localStorage.setItem(KEY, String(Math.floor(Date.now() / 1000)));
+    }
+    const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const start = Number(localStorage.getItem(KEY) ?? now);
+  const cycle = ACTIVE + PAUSE;
+  const elapsed = (now - start) % cycle;
+  const inActive = elapsed < ACTIVE;
+  if (!inActive) {
+    // Pausa: reinicia o ciclo quando voltar
+    if (elapsed >= cycle - 1) localStorage.setItem(KEY, String(now + 1));
+    return { active: false, label: "00:00" };
+  }
+  const remaining = ACTIVE - elapsed;
+  const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+  const s = String(remaining % 60).padStart(2, "0");
+  return { active: true, label: `${m}:${s}` };
+}
+
 function Index() {
   const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }));
   const heroAutoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }));
   const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number }>>([]);
+  const checkoutFn = useServerFn(createCheckout);
+  const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
+  const promo = useFakePromoTimer();
   useEffect(() => {
     supabase.rpc("get_top_semana").then(({ data }) => {
       if (data && Array.isArray(data)) setTopSemana(data.slice(0, 3));
     });
   }, []);
+  async function handleBuy(planType: PlanType) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = `/auth?redirect=/planos`;
+      return;
+    }
+    setLoadingPlan(planType);
+    try {
+      const res = await checkoutFn({ data: { planType } });
+      if (!res?.init_point) throw new Error("Resposta inválida");
+      window.location.href = res.init_point;
+    } catch (e: any) {
+      toast.error(e?.message ?? "Não foi possível abrir o checkout.");
+      setLoadingPlan(null);
+    }
+  }
+  // Intercala: print, aluno, print, aluno...
   const heroImgs = [
+    { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
     { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
+    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
     { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
     { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
     { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
@@ -84,9 +140,9 @@ function Index() {
                   <CarouselItem key={i} className="basis-[80%]">
                     <div className="relative">
                       <img src={img.src} alt={img.alt} width={1024} height={1024}
-                        className="aspect-square w-full rounded-2xl border border-primary/30 object-cover glow-blue"
+                        className="aspect-square w-full rounded-2xl border border-primary/30 object-contain bg-background/40 glow-blue"
                         loading={i === 0 ? "eager" : "lazy"} />
-                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">{i+1}/4</span>
+                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">{i+1}/{heroImgs.length}</span>
                     </div>
                   </CarouselItem>
                 ))}
@@ -308,17 +364,30 @@ function Index() {
             <Badge variant="outline">Planos</Badge>
             <h2 className="mt-3 text-3xl font-bold md:text-4xl">Escolha seu caminho para a <span className="gradient-text">aprovação</span></h2>
           </div>
+          {promo.active && (
+            <div className="mb-8 mx-auto max-w-xl rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-center">
+              <p className="text-sm font-semibold text-destructive">
+                🔥 Promoção relâmpago — termina em <span className="font-mono text-base">{promo.label}</span>
+              </p>
+            </div>
+          )}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              { name: "ENEM Light", price: "19,90", periodo: "/mês", cta: "Começar Agora", popular: false, items: ["30 redações por mês — 1 por dia","Matemática","Português","Redação","1.000 questões","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA"] },
-              { name: "ENEM Pro", price: "29,90", periodo: "/mês", cta: "Quero o Pro", popular: true, items: ["60 redações por mês — 2 por dia","Matemática","Português","História","Geografia","Ciências da Natureza","Redação","20 vídeo aulas","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente"] },
-              { name: "Full Acess ENEM", price: "49,90", periodo: "/mês", cta: "Quero Acesso Total", popular: false, items: ["120 redações por mês — 4 por dia","Matemática","Linguagens e Códigos","Ciências Humanas","Ciências da Natureza","Redação completa","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras"] },
-              { name: "Full Acess ENEM Vitalício", price: "499", periodo: "uma vez", cta: "Quero Vitalício", popular: false, items: ["Acesso ETERNO — sem mensalidade","120 redações por mês — 4 por dia","Tudo do Full Acess","IA Professor Rígido vitalício","Plano de Estudo com IA vitalício","Atualizações futuras incluídas","Sem renovação, sem cobrança recorrente"] },
-            ].map((p) => (
+            {([
+              { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "19,90", oldPrice: null, periodo: "/mês", cta: "Começar Agora", popular: false, items: ["15 redações por mês","Linguagens, Códigos e suas Tecnologias","Ciências Humanas e suas Tecnologias","Redação completa","1.000 questões","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA"] },
+              { name: "ENEM Pro", planType: "PRO" as PlanType, price: "29,90", oldPrice: "39,90", periodo: "/mês", cta: "Quero o Pro", popular: true, items: ["30 redações por mês","Linguagens, Códigos e suas Tecnologias","Ciências Humanas e suas Tecnologias","Matemática e suas Tecnologias","Redação completa","20 vídeo aulas","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente"] },
+              { name: "Full Acess ENEM", planType: "FULL" as PlanType, price: "49,90", oldPrice: null, periodo: "/mês", cta: "Quero Acesso Total", popular: false, items: ["60 redações por mês","Matemática e suas Tecnologias","Linguagens, Códigos e suas Tecnologias","Ciências Humanas e suas Tecnologias","Ciências da Natureza e suas Tecnologias","Redação completa","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras"] },
+              { name: "Full Acess ENEM Vitalício", planType: "VITALICIO" as PlanType, price: "499", oldPrice: null, periodo: "uma vez", cta: "Quero Vitalício", popular: false, items: ["Acesso ETERNO — sem mensalidade","70 redações por mês","Tudo do Full Acess","IA Professor Rígido vitalício","Plano de Estudo com IA vitalício","Atualizações futuras incluídas","Sem renovação, sem cobrança recorrente"] },
+            ]).map((p) => (
               <Card key={p.name} className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}>
                 {p.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">MAIS VENDIDO</Badge>}
                 <h3 className="text-xl font-bold">{p.name}</h3>
-                <div className="mt-2 flex items-baseline gap-1">
+                {p.oldPrice && promo.active && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground line-through">R$ {p.oldPrice}</span>
+                    <Badge className="bg-destructive/20 text-destructive border border-destructive/40">-25%</Badge>
+                  </div>
+                )}
+                <div className="mt-1 flex items-baseline gap-1">
                   <span className="text-sm text-muted-foreground">R$</span>
                   <span className="text-4xl font-bold">{p.price}</span>
                   <span className="text-sm text-muted-foreground">{p.periodo}</span>
@@ -328,9 +397,14 @@ function Index() {
                     <li key={it} className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {it}</li>
                   ))}
                 </ul>
-                <Link to="/planos" className="mt-6 block">
-                  <Button className={`w-full ${p.popular ? "glow-blue" : ""}`} variant={p.popular ? "default" : "outline"}>{p.cta}</Button>
-                </Link>
+                <Button
+                  onClick={() => handleBuy(p.planType)}
+                  disabled={loadingPlan !== null}
+                  className={`mt-6 w-full ${p.popular ? "glow-blue" : ""}`}
+                  variant={p.popular ? "default" : "outline"}
+                >
+                  {loadingPlan === p.planType ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…</>) : p.cta}
+                </Button>
               </Card>
             ))}
           </div>
