@@ -259,6 +259,8 @@ function PlanoEstudoPage() {
                     <b>Ajuste os valores:</b> {avisoMinimos} O cronograma só pode ser gerado dentro
                     desses limites pedagógicos.
                   </span>
+                </div>
+              )}
               <div className="mt-4">
                 <Label>
                   Horário livre — COMEÇO{" "}
@@ -275,7 +277,6 @@ function PlanoEstudoPage() {
                   A IA monta os blocos hora a hora a partir desse horário. Ex.: 13h às 14h, 14h às 15h…
                 </p>
               </div>
-              )}
               <div className="mt-4">
                 <Label>Dias até a prova</Label>
                 <Input
