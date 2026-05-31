@@ -57,6 +57,9 @@ function QuestoesPage() {
               <p className="mt-1 text-muted-foreground">
                 Uma pergunta por vez (A–E). Use a seta para avançar. No fim, sua nota é calculada na escala 0–1000 e fica salva no seu dashboard, na seção <strong>Classificação SEM</strong>.
               </p>
+              <p className="mt-2 text-muted-foreground">
+                As provas 5,6,7 e 8 possuem questões algumas de super raciocínio, com perguntas muito curtas pra testar a inteligência de cada um em condições inviáveis/difíceis ! BOAS PROVAS
+              </p>
             </div>
           </div>
         </Card>
