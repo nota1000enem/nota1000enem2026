@@ -184,6 +184,13 @@ const planos: Array<{
   },
 ];
 
+const PLAN_VALUES: Record<PlanType, number> = {
+  LIGHT: 19.9,
+  PRO: 29.9,
+  FULL: 49.9,
+  VITALICIO: 499,
+};
+
 const galeria = [
   { src: planosImg, alt: "Correção de redações ENEM com inteligência artificial Nota 1000 ENEM" },
   { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
@@ -237,6 +244,8 @@ function Planos() {
           content_name: label,
           content_category: "subscription",
           content_ids: [planType],
+          currency: "BRL",
+          value: PLAN_VALUES[planType],
         });
       } catch {}
       const res = await checkoutFn({ data: { planType } });
