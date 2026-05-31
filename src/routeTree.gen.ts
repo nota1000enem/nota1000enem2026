@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
@@ -24,6 +25,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SimuladoIdRouteImport } from './routes/simulado.$id'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/redacao'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
   fileRoutesById: FileRoutesById
@@ -208,12 +220,20 @@ export interface RootRouteChildren {
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SimuladoIdRoute: typeof SimuladoIdRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SimuladoIdRoute: SimuladoIdRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
 }
