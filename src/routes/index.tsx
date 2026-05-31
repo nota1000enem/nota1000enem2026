@@ -193,9 +193,6 @@ function Index() {
                         className="aspect-square w-full rounded-2xl object-cover"
                         loading={i === 0 ? "eager" : "lazy"}
                       />
-                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">
-                        {i + 1}/{heroImgs.length}
-                      </span>
                     </div>
                   </CarouselItem>
                 ))}
@@ -700,10 +697,10 @@ function Index() {
             const renderCard = (p: typeof planosArr[number]) => (
               <Card
                 key={p.name}
-                className={`relative h-full p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}
+                className={`relative h-full p-6 ${p.popular ? "card-glass border-primary/50 glow-blue pt-9" : "card-glass"}`}
               >
                 {p.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
+                  <Badge className="absolute top-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
                     MAIS VENDIDO
                   </Badge>
                 )}
