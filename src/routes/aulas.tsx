@@ -246,9 +246,10 @@ function Aulas() {
                 <CarouselPrevious className="left-0" />
                 <CarouselNext className="right-0" />
               </Carousel>
-            </div>
-          ))}
+              </div>
+            ))}
         </div>
+
 
         <Card className="card-glass mt-12 p-8 text-center">
           <h3 className="text-2xl font-bold">Faça parte da nossa comunidade</h3>
