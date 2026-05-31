@@ -19,15 +19,8 @@ export const createCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => checkoutInput.parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase, userId, claims } = context as {
-      supabase: {
-        from: (table: string) => {
-          upsert: (values: unknown, options?: unknown) => Promise<unknown>;
-        };
-      };
-      userId: string;
-      claims: { email?: string };
-    };
+    const { supabase, userId } = context;
+    const { claims } = context as unknown as { claims?: { email?: string } };
 
     const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     if (!token) {
