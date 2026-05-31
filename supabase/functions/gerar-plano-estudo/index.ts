@@ -56,7 +56,7 @@ serve(async (req) => {
       planoPerfil === "vitalicio" ||
       planoSub === "vitalicio" ||
       planoAssinatura === "vitalicio" ||
-      (planoPerfil !== "free" && futuro(prof?.plan_expires_at)) ||
+      (planoPerfil !== "free" && (!prof?.plan_expires_at || futuro(prof?.plan_expires_at))) ||
       (planoSub !== "free" && statusAtivo(sub?.status) && futuro(sub?.current_period_end)) ||
       (planoAssinatura !== "free" && statusAtivo(assinatura?.status) && futuro(assinatura?.vence_em));
     if (!liberado) {
