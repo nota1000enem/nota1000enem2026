@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 /**
  * Reprodutor de vídeo: usa o player nativo do YouTube com controles originais
  * (play/pause, barra de progresso, tempo, volume, velocidade, qualidade, fullscreen).
- * Apenas remove vídeos relacionados de outros canais (rel=0) e usa modestbranding.
- * Sem overlays, sem máscaras pretas, sem controles customizados.
+ * Reduz overlays nativos do YouTube e bloqueia navegação para fora do site,
+ * mantendo os controles originais do player.
  */
 
 function extractId(url: string): string | null {
@@ -29,6 +29,8 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
 
   const params = new URLSearchParams({
     autoplay: "1",
+    cc_load_policy: "0",
+    color: "white",
     controls: "1",
     disablekb: "0",
     fs: "1",
@@ -52,12 +54,13 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             title={title}
             className="h-full w-full"
             referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-presentation"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
             frameBorder={0}
           />
-          <div className="pointer-events-auto absolute bottom-0 left-0 z-10 h-24 w-24 bg-transparent" aria-hidden="true" />
-          <div className="pointer-events-auto absolute bottom-0 right-0 z-10 h-24 w-44 bg-transparent" aria-hidden="true" />
+          <div className="pointer-events-auto absolute bottom-10 left-4 z-10 h-16 w-20 bg-transparent" aria-hidden="true" />
+          <div className="pointer-events-auto absolute bottom-10 right-4 z-10 h-16 w-72 max-w-[40%] bg-transparent" aria-hidden="true" />
         </div>
       </DialogContent>
     </Dialog>
