@@ -55,7 +55,7 @@ function Dashboard() {
     if (isBrandNew) {
       (async () => {
         await supabase.auth.signOut();
-        router.navigate({ to: "/auth", search: { erro: "sem_conta" } as never });
+        window.location.href = "/auth?erro=sem_conta";
       })();
     }
   }, [user, router]);
