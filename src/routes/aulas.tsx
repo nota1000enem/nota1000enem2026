@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 
 /**
  * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).

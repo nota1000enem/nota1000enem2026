@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, AlertTriangle, BookOpen, Play, Lock, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/questoes")({
   head: () => ({ meta: [{ title: "1.000 Questões ENEM – Nota 1000 ENEM" }] }),
@@ -18,29 +19,13 @@ type Sim = { id: string; nome: string; descricao: string | null; total_questoes:
 function QuestoesPage() {
   const navigate = useNavigate();
   const [sims, setSims] = useState<Sim[]>([]);
-  const [planoPago, setPlanoPago] = useState<boolean>(false);
-  const [carregado, setCarregado] = useState(false);
+  const { isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const carregado = !planLoading;
 
   useEffect(() => {
     (async () => {
       const { data: simData } = await supabase.from("simulados").select("*").eq("ativo", true).order("ordem");
       setSims((simData as Sim[]) ?? []);
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: prof } = await supabase
-          .from("profiles")
-          .select("plan, plan_vitalicio, plan_expires_at")
-          .eq("id", user.id)
-          .maybeSingle();
-        const ativo =
-          !!prof &&
-          prof.plan !== "free" &&
-          (prof.plan_vitalicio === true ||
-            (prof.plan_expires_at && new Date(prof.plan_expires_at) > new Date()));
-        setPlanoPago(!!ativo);
-      }
-      setCarregado(true);
     })();
   }, []);
 
