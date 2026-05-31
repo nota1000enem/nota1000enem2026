@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,34 +13,35 @@ function formatDate(date: Date) {
 export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) {
   const [redacoes, setRedacoes] = useState<number[]>([]);
   const [simulados, setSimulados] = useState<number[]>([]);
+  const [periodo, setPeriodo] = useState<{ inicio: Date; fim: Date } | null>(null);
 
-  const { inicio, fim } = useMemo(() => {
+  useEffect(() => {
     const start = new Date();
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
-    return { inicio: start, fim: end };
+    setPeriodo({ inicio: start, fim: end });
   }, []);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !periodo) return;
     (async () => {
       const [{ data: redData }, { data: tentData }] = await Promise.all([
         supabase
           .from("redacoes")
           .select("nota_total, created_at")
           .eq("user_id", userId)
-          .gte("created_at", inicio.toISOString()),
+          .gte("created_at", periodo.inicio.toISOString()),
         supabase.rpc("get_minhas_tentativas", { _user_id: userId }),
       ]);
 
       setRedacoes(((redData as Array<{ nota_total: number | null }> | null) ?? []).map((r) => Number(r.nota_total ?? 0)).filter(Boolean));
       setSimulados(((tentData as TentativaResumo[] | null) ?? [])
-        .filter((t) => new Date(t.finished_at) >= inicio)
+        .filter((t) => new Date(t.finished_at) >= periodo.inicio)
         .map((t) => Number(t.nota_total ?? 0))
         .filter(Boolean));
     })();
-  }, [fim, inicio, userId]);
+  }, [periodo, userId]);
 
   const mediaRedacao = redacoes.length ? Math.round(redacoes.reduce((a, n) => a + n, 0) / redacoes.length) : 0;
   const mediaSimulado = simulados.length ? Math.round(simulados.reduce((a, n) => a + n, 0) / simulados.length) : 0;
@@ -52,7 +53,7 @@ export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) 
         <div className="flex-1">
           <p className="text-sm font-semibold">Notas e planos ficam salvos por 1 semana e depois resetam.</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Semana 1: dia {formatDate(inicio)} a {formatDate(fim)}
+            {periodo ? `Semana 1: dia ${formatDate(periodo.inicio)} a ${formatDate(periodo.fim)}` : "Semana 1: carregando período..."}
           </p>
           <div className="mt-3 grid gap-3 text-xs sm:grid-cols-2">
             <div className="rounded-lg border border-border/50 bg-background/50 p-3">
