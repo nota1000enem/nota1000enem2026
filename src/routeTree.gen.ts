@@ -17,6 +17,7 @@ import { Route as QuestoesRouteImport } from './routes/questoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PdfsRouteImport } from './routes/pdfs'
 import { Route as MinhaAssinaturaRouteImport } from './routes/minha-assinatura'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -64,6 +65,11 @@ const PlanoEstudoRoute = PlanoEstudoRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfsRoute = PdfsRouteImport.update({
+  id: '/pdfs',
+  path: '/pdfs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinhaAssinaturaRoute = MinhaAssinaturaRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/pdfs': typeof PdfsRoute
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/pdfs': typeof PdfsRoute
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/minha-assinatura': typeof MinhaAssinaturaRoute
+  '/pdfs': typeof PdfsRoute
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/pdfs'
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/pdfs'
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/minha-assinatura'
+    | '/pdfs'
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
@@ -226,6 +238,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   MinhaAssinaturaRoute: typeof MinhaAssinaturaRoute
+  PdfsRoute: typeof PdfsRoute
   PerfilRoute: typeof PerfilRoute
   PlanoEstudoRoute: typeof PlanoEstudoRoute
   PlanosRoute: typeof PlanosRoute
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pdfs': {
+      id: '/pdfs'
+      path: '/pdfs'
+      fullPath: '/pdfs'
+      preLoaderRoute: typeof PdfsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/minha-assinatura': {
       id: '/minha-assinatura'
       path: '/minha-assinatura'
@@ -362,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   MinhaAssinaturaRoute: MinhaAssinaturaRoute,
+  PdfsRoute: PdfsRoute,
   PerfilRoute: PerfilRoute,
   PlanoEstudoRoute: PlanoEstudoRoute,
   PlanosRoute: PlanosRoute,

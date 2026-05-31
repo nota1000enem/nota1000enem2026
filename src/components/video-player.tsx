@@ -7,7 +7,7 @@ import { Play, Pause, Maximize, Gauge, Settings, X, RotateCcw, RotateCw } from "
  * Reprodutor YouTube com controles customizados.
  * Mantém o aluno na plataforma — esconde controles nativos (controls=0),
  * sem link "Ver no YouTube", sem vídeos relacionados externos.
- * Controles disponíveis: Pausar/Play, pular 10s, velocidade, qualidade, tela cheia.
+ * Controles auto-escondem após 5s; clique na tela mostra novamente.
  */
 
 declare global {
@@ -54,17 +54,35 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [qualities, setQualities] = useState<string[]>([]);
   const [quality, setQuality] = useState("auto");
   const [showSpeed, setShowSpeed] = useState(false);
   const [showQual, setShowQual] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
   const videoId = extractId(videoUrl);
+
+  function scheduleHide() {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => {
+      setControlsVisible(false);
+      setShowSpeed(false);
+      setShowQual(false);
+    }, 5000);
+  }
+
+  function revealControls() {
+    setControlsVisible(true);
+    scheduleHide();
+  }
 
   useEffect(() => {
     if (!open || !videoId) return;
     let destroyed = false;
+    setControlsVisible(true);
+    scheduleHide();
     loadAPI().then(() => {
       if (destroyed || !ref.current) return;
       playerRef.current = new window.YT.Player(ref.current, {
@@ -98,6 +116,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     });
     return () => {
       destroyed = true;
+      if (hideTimer.current) clearTimeout(hideTimer.current);
       try {
         playerRef.current?.destroy?.();
       } catch {}
@@ -105,6 +124,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
       setPlaying(false);
       setSpeed(1);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, videoId]);
 
   function toggle() {
@@ -148,7 +168,6 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     } else {
       try {
         await el.requestFullscreen?.();
-        // Em celular, força landscape para o vídeo ocupar a tela inteira "deitado".
         try {
           // @ts-ignore — disponível em mobile
           await screen.orientation?.lock?.("landscape");
@@ -168,13 +187,27 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             <div ref={ref} className="h-full w-full pointer-events-none" />
           </div>
 
-          {/* Máscaras pretas para esconder chrome do YouTube (título do vídeo, nome do canal,
-              botão de compartilhar, contador de tempo e a barrinha de "playlist/mais vídeos"
-              que o YT exibe sobre o player mesmo com controls=0). */}
-          <div className="pointer-events-none absolute left-0 right-0 top-0 h-12 bg-black" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-14 h-10 bg-gradient-to-t from-black/80 to-transparent" />
+          {/* Overlay clicável que cobre o player inteiro: usado para mostrar
+              controles novamente e impedir clique no chrome do YouTube. */}
+          <div
+            className="absolute inset-0 cursor-pointer"
+            onClick={revealControls}
+            onMouseMove={revealControls}
+          />
 
-          <div className="absolute bottom-0 left-0 right-0 flex flex-wrap items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3">
+          {/* Máscaras pretas para esconder chrome do YouTube:
+              - topo: título, canal, botão compartilhar
+              - direita: playlist/sugestões "Mais vídeos" e thumbs do final
+              - "Mais vídeos" pill bottom-right */}
+          <div className="pointer-events-none absolute left-0 right-0 top-0 h-14 bg-black" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-black" />
+          <div className="pointer-events-none absolute right-0 bottom-14 h-16 w-56 bg-black" />
+
+          <div
+            className={`absolute bottom-0 left-0 right-0 flex flex-wrap items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3 transition-opacity duration-300 ${
+              controlsVisible ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          >
             <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={toggle}>
               {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </Button>
@@ -255,4 +288,3 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     </Dialog>
   );
 }
-
