@@ -95,9 +95,27 @@ function PlanoEstudoPage() {
     const d = Number(diasSemana);
     if (!h || h < 2) return "Mínimo de 2h por dia.";
     if (h > 8) return "Máximo de 8h por dia (evite burnout).";
-    if (!d || d < 4) return "Mínimo de 4 dias por semana.";
+    if (!d || d < 5) return "Mínimo de 5 dias por semana.";
     if (d > 6) return "Máximo de 6 dias por semana (1 dia de descanso é essencial).";
     return null;
+  }
+
+  // Aviso inline mostrado abaixo dos inputs (sempre visível enquanto inválido)
+  const avisoMinimos = validar();
+
+  async function apagarPlano(id: string) {
+    if (!confirm("Apagar este plano? Essa ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("planos_estudo").delete().eq("id", id);
+    if (error) {
+      toast.error("Não foi possível apagar o plano.");
+      return;
+    }
+    setHistorico((h) => h.filter((p) => p.id !== id));
+    if (planoAbertoId === id) {
+      setPlano(null);
+      setPlanoAbertoId(null);
+    }
+    toast.success("Plano apagado.");
   }
 
   async function gerar() {
