@@ -22,7 +22,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
-import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
+
 
 export const Route = createFileRoute("/plano-estudo")({
   head: () => ({
@@ -86,10 +86,7 @@ function PlanoEstudoPage() {
         .limit(5);
       const lista = (planos as unknown as PlanoSalvo[] | null) ?? [];
       setHistorico(lista);
-      if (lista.length > 0) {
-        setPlano(lista[0].cronograma);
-        setPlanoAbertoId(lista[0].id);
-      }
+      // Não auto-abre plano antigo — usuário precisa clicar em "Ver plano" ou gerar novo
     })();
   }, [user]);
 
@@ -174,7 +171,7 @@ function PlanoEstudoPage() {
           pontos fracos do momento. A IA monta uma sequência pedagógica real (teoria → exercício →
           revisão), em blocos curtos de 15-30 min, cobrindo as 4 áreas do ENEM + redação.
         </p>
-        <WeeklyRetentionSummary userId={user?.id} />
+        
 
         <div className="mt-3 flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />

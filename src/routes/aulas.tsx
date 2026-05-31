@@ -244,11 +244,20 @@ function Aulas() {
         </div>
 
         <Card className="card-glass mt-12 p-8 text-center">
-          <h3 className="text-2xl font-bold">Desbloqueie todas as aulas</h3>
-          <p className="mt-2 text-muted-foreground">Light libera Linguagens e Natureza. Pro libera as 4 áreas. Full e Vitalício liberam redação completa e bônus.</p>
-          <Link to="/planos" className="mt-4 inline-block">
-            <Button size="lg" className="glow-blue">Ver planos</Button>
-          </Link>
+          <h3 className="text-2xl font-bold">Faça parte da nossa comunidade</h3>
+          <p className="mt-2 text-muted-foreground">
+            <a
+              href="https://t.me/+wr3mUBagkQkyODYx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-primary underline-offset-4 hover:underline"
+            >
+              Entre no GRUPO VIP do ENEM no Telegram pra fazer network e aprender ainda mais
+            </a>
+          </p>
+          <a href="https://t.me/+wr3mUBagkQkyODYx" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block">
+            <Button size="lg" className="glow-blue">Entrar no Telegram</Button>
+          </a>
         </Card>
       </section>
 
@@ -258,15 +267,33 @@ function Aulas() {
             <div className="mx-auto mb-3 grid h-14 w-14 place-content-center rounded-full bg-primary/10 ring-2 ring-primary/40">
               <Crown className="h-7 w-7 text-primary" />
             </div>
-            <DialogTitle className="text-center text-2xl">Escolha um plano para começar!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">
+              {planoPago ? "Faça upgrade para liberar" : "Escolha um plano para começar!"}
+            </DialogTitle>
             <DialogDescription className="text-center">
               A aula <span className="font-medium text-foreground">"{aulaSelecionada}"</span> faz parte do conteúdo premium.
+              {planoPago && " Faça upgrade para um plano superior para acessar."}
             </DialogDescription>
           </DialogHeader>
           <div className="mt-2 grid gap-2">
-            <Link to="/planos"><Button className="w-full" variant="outline">Ver Plano Light — R$ 19,90</Button></Link>
-            <Link to="/planos"><Button className="w-full glow-blue">Ver Plano Pro — R$ 29,90</Button></Link>
-            <Link to="/planos"><Button className="w-full" variant="outline">Ver Plano Full — R$ 49,90</Button></Link>
+            {(() => {
+              const upgrades = [
+                { tier: "light" as PlanTier, label: "Ver Plano Light — R$ 19,90", variant: "outline" as const },
+                { tier: "pro" as PlanTier, label: "Ver Plano Pro — R$ 29,90", variant: "default" as const, glow: true },
+                { tier: "full" as PlanTier, label: "Ver Plano Full — R$ 49,90", variant: "outline" as const },
+                { tier: "vitalicio" as PlanTier, label: "Ver Vitalício — R$ 499", variant: "outline" as const },
+              ];
+              const order: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];
+              const currentIdx = order.indexOf(tier);
+              const opcoes = upgrades.filter((u) => order.indexOf(u.tier) > currentIdx);
+              return opcoes.map((u) => (
+                <Link key={u.tier} to="/planos">
+                  <Button className={`w-full ${u.glow ? "glow-blue" : ""}`} variant={u.variant}>
+                    {u.label}
+                  </Button>
+                </Link>
+              ));
+            })()}
           </div>
         </DialogContent>
       </Dialog>
