@@ -53,7 +53,7 @@ function PlanoEstudoPage() {
   const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
   const [plano, setPlano] = useState<PlanoIA | null>(null);
-  const { isPaid: liberado } = usePlanAccess();
+  const { isPaid: liberado, loading: carregandoPlano } = usePlanAccess();
   const [historico, setHistorico] = useState<PlanoSalvo[]>([]);
 
   useEffect(() => {
@@ -81,6 +81,10 @@ function PlanoEstudoPage() {
   }
 
   async function gerar() {
+    if (carregandoPlano) {
+      toast.error("Ainda estamos verificando sua assinatura. Tente novamente em alguns segundos.");
+      return;
+    }
     if (!liberado) {
       toast.error("Plano de Estudo com IA está disponível apenas nas assinaturas pagas e no Vitalício.");
       return;
@@ -103,17 +107,8 @@ function PlanoEstudoPage() {
       const r = data as PlanoIA & { error?: string };
       if (r.error) throw new Error(r.error);
       setPlano(r);
-      if (user) {
-        const { data: inserted } = await supabase.from("planos_estudo").insert({
-          user_id: user.id,
-          horas_dia: Number(horasDia),
-          dias_semana: Number(diasSemana),
-          pontos_fracos: fraquezas,
-          meta,
-          cronograma: r as never,
-        }).select("*").single();
-        if (inserted) setHistorico([inserted as unknown as PlanoSalvo, ...historico].slice(0, 5));
-      }
+      const salvo = (data as PlanoIA & { plano_salvo?: PlanoSalvo | null }).plano_salvo;
+      if (salvo) setHistorico([salvo, ...historico].slice(0, 5));
       toast.success("Plano semanal gerado e salvo!");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao gerar plano");
@@ -146,7 +141,7 @@ function PlanoEstudoPage() {
           </p>
         </div>
 
-        {!liberado && !loading && user && (
+        {!liberado && !carregandoPlano && !loading && user && (
           <Card className="card-glass mt-8 border-primary/40 p-8 text-center">
             <Lock className="mx-auto h-12 w-12 text-primary" />
             <h2 className="mt-4 text-2xl font-bold">
