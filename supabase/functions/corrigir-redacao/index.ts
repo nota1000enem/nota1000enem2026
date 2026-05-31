@@ -342,14 +342,26 @@ Retorne SEMPRE via tool_call estruturado.`;
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
-    // Garante soma correta
-    const soma =
-      (parsed.competencia_1 | 0) +
-      (parsed.competencia_2 | 0) +
-      (parsed.competencia_3 | 0) +
-      (parsed.competencia_4 | 0) +
-      (parsed.competencia_5 | 0);
-    parsed.nota_total = soma;
+    // ANULAÇÃO: se IA marcou anulada=true, zera tudo (regra INEP)
+    if (parsed.anulada === true) {
+      parsed.competencia_1 = 0;
+      parsed.competencia_2 = 0;
+      parsed.competencia_3 = 0;
+      parsed.competencia_4 = 0;
+      parsed.competencia_5 = 0;
+      parsed.nota_total = 0;
+      const motivo = parsed.motivo_anulacao || "Situação de zero automático do INEP";
+      parsed.comentario_geral = `⚠️ REDAÇÃO ANULADA — Nota 0/1000.\n\nMotivo: ${motivo}\n\n${parsed.comentario_geral || ""}`.trim();
+    } else {
+      // Garante soma correta
+      const soma =
+        (parsed.competencia_1 | 0) +
+        (parsed.competencia_2 | 0) +
+        (parsed.competencia_3 | 0) +
+        (parsed.competencia_4 | 0) +
+        (parsed.competencia_5 | 0);
+      parsed.nota_total = soma;
+    }
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
