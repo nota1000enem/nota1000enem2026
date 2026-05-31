@@ -198,12 +198,12 @@ function AuthPage() {
               </form>
             </TabsContent>
             <TabsContent value="signup">
-              <form onSubmit={signUp} className="space-y-4">
-                <div><Label>Nome</Label><Input value={name} onChange={e=>setName(e.target.value)} required /></div>
-                <div><Label>Email</Label><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
+              <form onSubmit={signUp} className="space-y-4" autoComplete="off">
+                <div><Label>Nome</Label><Input name="signup-name" autoComplete="off" value={name} onChange={e=>setName(e.target.value)} required /></div>
+                <div><Label>Email</Label><Input type="email" name="signup-email" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
                 <div>
                   <Label>Senha</Label>
-                  <Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} />
+                  <Input type="password" name="signup-password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} />
                   <p className="mt-1 text-[11px] text-muted-foreground">
                     Mínimo 6 caracteres com 1 MAIÚSCULA, 1 minúscula, 1 número e 1 caractere especial.
                   </p>
