@@ -9,6 +9,23 @@ const corsHeaders = {
 // Ordem dos dias da semana (PT-BR canônico)
 const DIAS_SEMANA = ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
 
+function normalizarPlano(plano?: string | null) {
+  const s = (plano ?? "free").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_-]+/g, "").trim();
+  if (s.includes("vitalicio")) return "vitalicio";
+  if (s.includes("full")) return "full";
+  if (s.includes("pro")) return "pro";
+  if (s.includes("light") || s.includes("basic")) return "light";
+  return "free";
+}
+
+function statusAtivo(status?: string | null) {
+  return ["active", "ativa", "approved", "aprovado"].includes((status ?? "").toLowerCase().trim());
+}
+
+function futuro(data?: string | null) {
+  return !!data && new Date(data).getTime() > Date.now();
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -26,8 +43,22 @@ serve(async (req) => {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
-    const liberado = prof?.plan_vitalicio === true || ["light", "pro", "full", "vitalicio"].includes((prof?.plan as string) ?? "free");
+    const [{ data: prof }, { data: sub }, { data: assinatura }] = await Promise.all([
+      admin.from("profiles").select("plan, plan_vitalicio, plan_expires_at").eq("id", user.id).maybeSingle(),
+      admin.from("subscriptions").select("plan_type, status, current_period_end").eq("user_id", user.id).maybeSingle(),
+      admin.from("assinaturas").select("plano, status, vence_em").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    ]);
+    const planoPerfil = normalizarPlano(prof?.plan);
+    const planoSub = normalizarPlano(sub?.plan_type);
+    const planoAssinatura = normalizarPlano(assinatura?.plano);
+    const liberado =
+      prof?.plan_vitalicio === true ||
+      planoPerfil === "vitalicio" ||
+      planoSub === "vitalicio" ||
+      planoAssinatura === "vitalicio" ||
+      (planoPerfil !== "free" && futuro(prof?.plan_expires_at)) ||
+      (planoSub !== "free" && statusAtivo(sub?.status) && futuro(sub?.current_period_end)) ||
+      (planoAssinatura !== "free" && statusAtivo(assinatura?.status) && futuro(assinatura?.vence_em));
     if (!liberado) {
       return new Response(JSON.stringify({ error: "Plano de Estudo com IA disponível apenas para assinaturas pagas e Vitalício." }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -194,7 +225,17 @@ O cronograma deve trazer os 7 dias da semana, mas só os ${diasSemana} dias ativ
       });
     }
 
-    return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { data: planoSalvo, error: salvarErro } = await admin.from("planos_estudo").insert({
+      user_id: user.id,
+      horas_dia: horasDia,
+      dias_semana: diasSemana,
+      pontos_fracos: fraquezas,
+      meta,
+      cronograma: parsed,
+    }).select("*").single();
+    if (salvarErro) console.error("Erro ao salvar plano", salvarErro);
+
+    return new Response(JSON.stringify({ ...parsed, plano_salvo: planoSalvo ?? null }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error(e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Erro" }), {
