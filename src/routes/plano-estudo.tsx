@@ -393,23 +393,34 @@ function PlanoEstudoPage() {
                       })}
                     </p>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setPlano(p.cronograma);
-                      setPlanoAbertoId(p.id);
-                      setTimeout(
-                        () =>
-                          document
-                            .getElementById("plano-gerado")
-                            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-                        50,
-                      );
-                    }}
-                  >
-                    Ver plano
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setPlano(p.cronograma);
+                        setPlanoAbertoId(p.id);
+                        setTimeout(
+                          () =>
+                            document
+                              .getElementById("plano-gerado")
+                              ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                          50,
+                        );
+                      }}
+                    >
+                      Ver plano
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive hover:bg-destructive/10"
+                      onClick={() => apagarPlano(p.id)}
+                      aria-label="Apagar plano"
+                    >
+                      Apagar
+                    </Button>
+                  </div>
                 </Card>
               ))}
             </div>
