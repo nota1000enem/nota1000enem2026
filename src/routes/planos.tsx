@@ -397,6 +397,30 @@ function Planos() {
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <Button
+                className="bg-green-600 hover:bg-green-500 font-bold"
+                disabled={confirmando}
+                onClick={async () => {
+                  setConfirmando(true);
+                  try {
+                    const r = await confirmarFn({});
+                    if (r.ok) {
+                      toast.success("Pagamento confirmado! Liberando acesso...");
+                      window.location.href = `/dashboard?status=success&plan=${aguardandoPgto.plan}`;
+                    } else {
+                      toast.error(
+                        "Ainda não recebemos a confirmação do Mercado Pago. Se você acabou de pagar via PIX, aguarde uns segundos e tente de novo.",
+                      );
+                    }
+                  } catch (e) {
+                    toast.error(e instanceof Error ? e.message : "Erro ao consultar pagamento.");
+                  } finally {
+                    setConfirmando(false);
+                  }
+                }}
+              >
+                {confirmando ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verificando…</>) : "✅ Já paguei — verificar agora"}
+              </Button>
+              <Button
                 variant="outline"
                 onClick={() => window.open(aguardandoPgto.checkoutUrl, "_blank", "noopener,noreferrer")}
               >
@@ -407,7 +431,7 @@ function Planos() {
               </Button>
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              Após pagar no PIX a confirmação leva poucos segundos.
+              Após pagar no PIX, clique em <b>“Já paguei”</b> para liberar o acesso imediatamente.
             </p>
           </div>
         </div>
