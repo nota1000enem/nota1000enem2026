@@ -57,9 +57,9 @@ export const createCheckout = createServerFn({ method: "POST" })
         installments: 12,
       },
       back_urls: {
-        success: `${origin}/dashboard?status=success`,
-        failure: `${origin}/planos?status=failure`,
-        pending: `${origin}/planos?status=pending`,
+        success: `${origin}/dashboard?status=success&plan=${encodeURIComponent(data.planType)}`,
+        failure: `${origin}/planos?status=failure&plan=${encodeURIComponent(data.planType)}`,
+        pending: `${origin}/planos?status=pending&plan=${encodeURIComponent(data.planType)}`,
       },
       auto_return: "approved",
       notification_url: notificationUrl,
