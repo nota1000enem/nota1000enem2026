@@ -1,0 +1,34 @@
+# Nota 1000 ENEM
+
+> Plataforma brasileira de preparação para o ENEM com correção de redação por Inteligência Artificial, simulados, banco de questões, vídeo aulas e plano de estudo personalizado. Foco em alta performance e nota 1000.
+
+Idioma do site: Português (Brasil).
+Domínio oficial: https://nota1000enem.online
+
+## O que o site oferece
+
+- Correção de redação ENEM por IA (modo padrão e modo Professor Rígido) com nota nas 5 competências e devolutiva detalhada.
+- Banco com mais de 1.000 questões do ENEM organizadas por área e tema.
+- Simulados ENEM cronometrados com ranking nacional dos alunos.
+- Vídeo aulas das 4 áreas do ENEM + Redação completa + bônus de aprovação.
+- Plano de estudo semanal gerado por IA baseado na rotina e nos objetivos do aluno.
+- Planos de assinatura: Light, Pro, Full Access e Vitalício.
+
+## Páginas principais
+
+- [Página inicial](https://nota1000enem.online/): visão geral da plataforma e planos.
+- [Corretor de Redação ENEM com IA](https://nota1000enem.online/redacao): envio de redação e correção automática nota 0-1000.
+- [Banco de Questões ENEM](https://nota1000enem.online/questoes): mais de 1.000 questões resolvidas.
+- [Vídeo Aulas ENEM](https://nota1000enem.online/aulas): trilhas por área do conhecimento.
+- [Plano de Estudo com IA](https://nota1000enem.online/plano-estudo): cronograma personalizado de estudos.
+- [Ranking ENEM](https://nota1000enem.online/ranking): classificação dos alunos por desempenho.
+- [Planos e Preços](https://nota1000enem.online/planos): comparativo dos planos.
+- [Entrar / Criar conta](https://nota1000enem.online/auth): autenticação dos alunos.
+
+## Público-alvo
+
+Estudantes brasileiros do Ensino Médio e vestibulandos que vão prestar o ENEM, pré-vestibulandos, treineiros e alunos que querem melhorar a nota da redação.
+
+## Palavras-chave
+
+ENEM, redação ENEM, corretor de redação, correção de redação por IA, nota 1000 ENEM, simulado ENEM, questões ENEM, vídeo aulas ENEM, plano de estudo ENEM, aprovação no vestibular.
