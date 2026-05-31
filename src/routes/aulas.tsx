@@ -40,14 +40,14 @@ type VideoLesson = { title: string; video_url: string; access_tier: string };
 
 function canAccessArea(tier: PlanTier, area: string) {
   if (tier === "full" || tier === "vitalicio") return true;
-  if (tier === "pro") return ["Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza"].includes(area);
-  if (tier === "light") return ["Linguagens e Códigos", "Ciências da Natureza"].includes(area);
+  if (tier === "pro") return ["Matemática e suas Tecnologias", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Ciências da Natureza e suas Tecnologias"].includes(area);
+  if (tier === "light") return ["Linguagens, Códigos e suas Tecnologias", "Ciências da Natureza e suas Tecnologias"].includes(area);
   return false;
 }
 
 const trilhas = [
   {
-    area: "Matemática",
+    area: "Matemática e suas Tecnologias",
     cor: "from-blue-500/30 to-blue-500/5",
     aulas: gerar([
       "As 10 questões que sempre caem no ENEM",
@@ -63,7 +63,7 @@ const trilhas = [
     ]),
   },
   {
-    area: "Linguagens e Códigos",
+    area: "Linguagens, Códigos e suas Tecnologias",
     cor: "from-fuchsia-500/30 to-fuchsia-500/5",
     aulas: gerar([
       "Interpretação de texto que não falha",
@@ -79,7 +79,7 @@ const trilhas = [
     ]),
   },
   {
-    area: "Ciências Humanas",
+    area: "Ciências Humanas e suas Tecnologias",
     cor: "from-amber-500/30 to-amber-500/5",
     aulas: gerar([
       "História do Brasil: República em 1 aula",
@@ -95,7 +95,7 @@ const trilhas = [
     ]),
   },
   {
-    area: "Ciências da Natureza",
+    area: "Ciências da Natureza e suas Tecnologias",
     cor: "from-emerald-500/30 to-emerald-500/5",
     aulas: gerar([
       "Física: mecânica essencial para o ENEM",
