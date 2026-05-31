@@ -146,6 +146,7 @@ function PlanoEstudoPage() {
         body: {
           horasDia: Number(horasDia),
           diasSemana: Number(diasSemana),
+          horaInicio: Number(horaInicio),
           fraquezas,
           meta,
           diasAteProva: Number(diasAteProva),
