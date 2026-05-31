@@ -82,7 +82,7 @@ export function usePlanAccess(): PlanAccess {
 
     const vitalicio = Boolean(prof?.plan_vitalicio) || tier === "vitalicio";
     const expiresAt = prof?.plan_expires_at ? new Date(prof.plan_expires_at) : sub?.current_period_end ? new Date(sub.current_period_end) : assinatura?.vence_em ? new Date(assinatura.vence_em) : null;
-    const perfilAtivo = tierFromProf !== "free" && (Boolean(prof?.plan_vitalicio) || isFuture(prof?.plan_expires_at));
+    const perfilAtivo = tierFromProf !== "free" && (Boolean(prof?.plan_vitalicio) || !prof?.plan_expires_at || isFuture(prof?.plan_expires_at));
     const subAtiva = tierFromSub !== "free" && isActiveStatus(sub?.status) && (tierFromSub === "vitalicio" || isFuture(sub?.current_period_end));
     const assinaturaAtiva = tierFromAssinatura !== "free" && isActiveStatus(assinatura?.status) && (tierFromAssinatura === "vitalicio" || isFuture(assinatura?.vence_em));
     const isPaid = tier !== "free" && (vitalicio || perfilAtivo || subAtiva || assinaturaAtiva);
