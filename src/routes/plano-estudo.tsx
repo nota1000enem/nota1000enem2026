@@ -95,9 +95,27 @@ function PlanoEstudoPage() {
     const d = Number(diasSemana);
     if (!h || h < 2) return "Mínimo de 2h por dia.";
     if (h > 8) return "Máximo de 8h por dia (evite burnout).";
-    if (!d || d < 4) return "Mínimo de 4 dias por semana.";
+    if (!d || d < 5) return "Mínimo de 5 dias por semana.";
     if (d > 6) return "Máximo de 6 dias por semana (1 dia de descanso é essencial).";
     return null;
+  }
+
+  // Aviso inline mostrado abaixo dos inputs (sempre visível enquanto inválido)
+  const avisoMinimos = validar();
+
+  async function apagarPlano(id: string) {
+    if (!confirm("Apagar este plano? Essa ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("planos_estudo").delete().eq("id", id);
+    if (error) {
+      toast.error("Não foi possível apagar o plano.");
+      return;
+    }
+    setHistorico((h) => h.filter((p) => p.id !== id));
+    if (planoAbertoId === id) {
+      setPlano(null);
+      setPlanoAbertoId(null);
+    }
+    toast.success("Plano apagado.");
   }
 
   async function gerar() {
@@ -218,17 +236,26 @@ function PlanoEstudoPage() {
                 </div>
                 <div>
                   <Label>
-                    Dias/semana <span className="text-xs text-muted-foreground">(4–6)</span>
+                    Dias/semana <span className="text-xs text-muted-foreground">(mín 5, máx 6)</span>
                   </Label>
                   <Input
                     type="number"
-                    min={4}
+                    min={5}
                     max={6}
                     value={diasSemana}
                     onChange={(e) => setDiasSemana(e.target.value)}
                   />
                 </div>
               </div>
+              {avisoMinimos && (
+                <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-200">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    <b>Ajuste os valores:</b> {avisoMinimos} O cronograma só pode ser gerado dentro
+                    desses limites pedagógicos.
+                  </span>
+                </div>
+              )}
               <div className="mt-4">
                 <Label>Dias até a prova</Label>
                 <Input
@@ -366,23 +393,34 @@ function PlanoEstudoPage() {
                       })}
                     </p>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setPlano(p.cronograma);
-                      setPlanoAbertoId(p.id);
-                      setTimeout(
-                        () =>
-                          document
-                            .getElementById("plano-gerado")
-                            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-                        50,
-                      );
-                    }}
-                  >
-                    Ver plano
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setPlano(p.cronograma);
+                        setPlanoAbertoId(p.id);
+                        setTimeout(
+                          () =>
+                            document
+                              .getElementById("plano-gerado")
+                              ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                          50,
+                        );
+                      }}
+                    >
+                      Ver plano
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive hover:bg-destructive/10"
+                      onClick={() => apagarPlano(p.id)}
+                      aria-label="Apagar plano"
+                    >
+                      Apagar
+                    </Button>
+                  </div>
                 </Card>
               ))}
             </div>

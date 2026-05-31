@@ -230,6 +230,15 @@ function Planos() {
     }
     setLoadingPlan(planType);
     try {
+      // Meta Pixel — InitiateCheckout antes de redirecionar para o gateway
+      try {
+        const { pixelTrack } = await import("@/lib/meta-pixel");
+        pixelTrack("InitiateCheckout", {
+          content_name: label,
+          content_category: "subscription",
+          content_ids: [planType],
+        });
+      } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida do servidor");
       window.location.href = res.init_point;

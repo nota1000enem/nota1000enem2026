@@ -80,6 +80,12 @@ function AuthPage() {
         setErroSignup(traduzirErro(error.message));
         return;
       }
+      // Eventos Meta Pixel — Lead (interesse) + CompleteRegistration (cadastro feito)
+      try {
+        const { pixelTrack } = await import("@/lib/meta-pixel");
+        pixelTrack("Lead", { content_name: "signup" });
+        pixelTrack("CompleteRegistration", { content_name: "signup", status: true });
+      } catch {}
       // Se já existe sessão (auto-confirm), redireciona
       if (data.session) {
         toast.success("Conta criada! Redirecionando...");
