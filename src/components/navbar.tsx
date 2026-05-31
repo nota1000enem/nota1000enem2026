@@ -10,15 +10,18 @@ export function Navbar() {
   const { user } = useAuth();
   const router = useRouter();
 
-  const links = [
-    { to: "/", label: "Início" },
-    { to: "/redacao", label: "Corrigir Redação" },
-    { to: "/aulas", label: "Vídeo Aulas" },
-    { to: "/questoes", label: "1.000 Questões" },
-    { to: "/plano-estudo", label: "Plano de Estudo" },
-    { to: "/ranking", label: "Ranking" },
-    { to: "/planos", label: "Planos" },
+  // Links públicos: quando logado, escondemos "Início", "Plano de Estudo" e "Planos"
+  // (o aluno já tem plano e acessa upgrade via Perfil/Assinatura).
+  const baseLinks = [
+    { to: "/", label: "Início", hideWhenLogged: true },
+    { to: "/redacao", label: "Corrigir Redação", hideWhenLogged: false },
+    { to: "/aulas", label: "Vídeo Aulas", hideWhenLogged: false },
+    { to: "/questoes", label: "1.000 Questões", hideWhenLogged: false },
+    { to: "/plano-estudo", label: "Plano de Estudo", hideWhenLogged: true },
+    { to: "/ranking", label: "Ranking", hideWhenLogged: false },
+    { to: "/planos", label: "Planos", hideWhenLogged: true },
   ];
+  const links = baseLinks.filter((l) => !(user && l.hideWhenLogged));
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">

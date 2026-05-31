@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2 } from "lucide-react";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu Perfil – Nota 1000 ENEM" }] }),
@@ -38,6 +39,8 @@ function PerfilPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [subscription, setSubscription] = useState<{ credits_remaining: number; status: string; current_period_end: string; plan_type: string } | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
+  // Fonte autoritativa do plano (combina profiles + subscriptions + assinaturas)
+  const planAccess = usePlanAccess();
 
   // password change
   const [currentPwd, setCurrentPwd] = useState("");
@@ -133,10 +136,12 @@ function PerfilPage() {
     );
   }
 
-  const planKey = profile?.plan_vitalicio ? "vitalicio" : (profile?.plan ?? "free");
+  // Usa usePlanAccess (mesma fonte do dashboard) — antes só lia profile.plan, que ficava "free"
+  // quando o upgrade era registrado apenas em subscriptions/assinaturas.
+  const planKey = planAccess.vitalicio ? "vitalicio" : planAccess.tier;
   const planMeta = PLAN_LABELS[planKey] ?? PLAN_LABELS.free;
-  const ativo = planKey === "vitalicio" || (planKey !== "free" && profile?.plan_expires_at && new Date(profile.plan_expires_at) > new Date());
-  const vence = profile?.plan_expires_at ? new Date(profile.plan_expires_at).toLocaleDateString("pt-BR") : null;
+  const ativo = planAccess.isPaid;
+  const vence = planAccess.expiresAt ? planAccess.expiresAt.toLocaleDateString("pt-BR") : null;
 
   return (
     <div className="min-h-screen bg-background">
