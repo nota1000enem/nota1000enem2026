@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlanAccess } from "@/hooks/use-plan-access";
+import { type PlanTier, usePlanAccess } from "@/hooks/use-plan-access";
+import { toast } from "sonner";
 
 /**
  * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).
@@ -33,6 +34,15 @@ export const Route = createFileRoute("/aulas")({
 
 function gerar(titulos: string[]): { t: string; min: number }[] {
   return titulos.map((t, i) => ({ t, min: 10 + ((i * 3) % 22) }));
+}
+
+type VideoLesson = { title: string; video_url: string; access_tier: string };
+
+function canAccessArea(tier: PlanTier, area: string) {
+  if (tier === "full" || tier === "vitalicio") return true;
+  if (tier === "pro") return ["Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza"].includes(area);
+  if (tier === "light") return ["Linguagens e Códigos", "Ciências da Natureza"].includes(area);
+  return false;
 }
 
 const trilhas = [
@@ -138,18 +148,31 @@ function Aulas() {
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const { isPaid: planoPago } = usePlanAccess();
+  const { tier, isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const [videos, setVideos] = useState<Record<string, VideoLesson>>({});
 
-  function handleClick(titulo: string) {
-    const url = VIDEO_LINKS[titulo];
-    if (url && planoPago) {
+  useEffect(() => {
+    supabase.from("video_lessons").select("title, video_url, access_tier").then(({ data }) => {
+      const mapa = Object.fromEntries(((data as VideoLesson[] | null) ?? []).map((v) => [v.title, v]));
+      setVideos(mapa);
+    });
+  }, []);
+
+  function handleClick(titulo: string, area: string) {
+    const liberada = planoPago && canAccessArea(tier, area);
+    const url = videos[titulo]?.video_url || VIDEO_LINKS[titulo];
+    if (url && liberada) {
       setAulaSelecionada(titulo);
       setVideoUrl(url);
       setVideoOpen(true);
       return;
     }
     setAulaSelecionada(titulo);
-    setOpenLock(true);
+    if (liberada) {
+      toast.success("Aula liberada no seu plano. O vídeo será adicionado em breve.");
+      return;
+    }
+    if (!planLoading) setOpenLock(true);
   }
 
 
@@ -181,22 +204,25 @@ function Aulas() {
               <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
                 <CarouselContent>
                   {tr.aulas.map((a, idx) => (
+                    const liberada = planoPago && canAccessArea(tier, tr.area);
                     <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                       <Card
-                        onClick={() => handleClick(a.t)}
+                        onClick={() => handleClick(a.t, tr.area)}
                         className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
                       >
                         <div className={`relative aspect-video bg-gradient-to-br ${tr.cor}`}>
                           <div className="absolute inset-0 grid place-content-center">
                             <PlayCircle className="h-14 w-14 text-primary/40 drop-shadow-lg" />
                           </div>
-                          <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
-                            <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
-                              <Lock className="h-7 w-7 text-primary" />
+                          {!liberada && (
+                            <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
+                              <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
+                                <Lock className="h-7 w-7 text-primary" />
+                              </div>
                             </div>
-                          </div>
+                          )}
                           <Badge className="absolute top-3 right-3" variant="outline">
-                            <Lock className="mr-1 h-3 w-3" /> Premium
+                            {liberada ? <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</> : <><Lock className="mr-1 h-3 w-3" /> Premium</>}
                           </Badge>
                           <span className="absolute top-3 left-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
                             Aula {String(idx + 1).padStart(2, "0")}
