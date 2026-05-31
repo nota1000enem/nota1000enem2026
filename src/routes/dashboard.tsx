@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play } from "lucide-react";
+import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play, Brain } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -21,12 +21,14 @@ export const Route = createFileRoute("/dashboard")({
 
 type Redacao = { id: string; tema: string | null; nota_total: number | null; created_at: string };
 type Tentativa = { id: string; simulado_nome: string; nota_total: number; acertos: number; total: number; finished_at: string };
+type PlanoResumo = { id: string; horas_dia: number; dias_semana: number; meta: string | null; created_at: string };
 
 function Dashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [redacoes, setRedacoes] = useState<Redacao[]>([]);
   const [tentativas, setTentativas] = useState<Tentativa[]>([]);
+  const [ultimoPlano, setUltimoPlano] = useState<PlanoResumo | null>(null);
   const [nome, setNome] = useState<string>("estudante");
   const [fetching, setFetching] = useState(true);
 
@@ -37,13 +39,15 @@ function Dashboard() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: redData }, { data: tentData }, { data: prof }] = await Promise.all([
+      const [{ data: redData }, { data: tentData }, { data: prof }, { data: planoData }] = await Promise.all([
         supabase.from("redacoes").select("id, tema, nota_total, created_at").order("created_at", { ascending: false }).limit(20),
         supabase.rpc("get_minhas_tentativas", { _user_id: user.id }),
         supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+        supabase.from("planos_estudo").select("id, horas_dia, dias_semana, meta, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
       ]);
       setRedacoes((redData as Redacao[]) ?? []);
       setTentativas((tentData as Tentativa[]) ?? []);
+      setUltimoPlano((planoData as PlanoResumo | null) ?? null);
       const fn = (prof?.full_name as string | null)?.trim();
       setNome(fn && fn.length ? fn.split(" ")[0] : "estudante");
       setFetching(false);
