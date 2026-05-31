@@ -164,7 +164,7 @@ Retorne SEMPRE via tool_call.`;
 - Meta: ${meta}
 - Dias até a prova: ${diasAteProva}
 
-Cada dia ativo deve ter EXATAMENTE ${horasDia} blocos (um por hora). Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
+Cada dia ativo deve ter EXATAMENTE ${slotsHorarios.length} blocos de no máximo 40 minutos. Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
