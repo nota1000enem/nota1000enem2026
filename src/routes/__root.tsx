@@ -73,23 +73,55 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nota 100 ENEM" },
-      { name: "description", content: "Nota 1000 ENEM offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Nota 100 ENEM" },
-      { property: "og:description", content: "Nota 1000 ENEM offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Nota 100 ENEM" },
-      { name: "twitter:description", content: "Nota 1000 ENEM offers AI-powered ENEM essay correction, study tools, and practice tests for students." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/G3zR6STR0hQh4fSD4aCg3hWLzPV2/social-images/social-1779754549726-nota_1000_enem.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/G3zR6STR0hQh4fSD4aCg3hWLzPV2/social-images/social-1779754549726-nota_1000_enem.webp" },
-    ],
-    links: [
+      { title: "Nota 1000 ENEM – Correção de Redação com IA" },
       {
-        rel: "stylesheet",
-        href: appCss,
+        name: "description",
+        content:
+          "Plataforma brasileira de preparação para o ENEM: correção de redação por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+      },
+      { name: "author", content: "Nota 1000 ENEM" },
+      { property: "og:site_name", content: "Nota 1000 ENEM" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "og:title", content: "Nota 1000 ENEM – Correção de Redação com IA" },
+      {
+        property: "og:description",
+        content:
+          "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Nota 1000 ENEM – Correção de Redação com IA" },
+      {
+        name: "twitter:description",
+        content:
+          "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+      },
+    ],
+    links: [{ rel: "stylesheet", href: appCss }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          name: "Nota 1000 ENEM",
+          url: "https://nota1000enem.online",
+          description:
+            "Plataforma de preparação para o ENEM com correção de redação por IA, simulados, banco de questões e vídeo aulas.",
+          inLanguage: "pt-BR",
+          areaServed: "BR",
+          sameAs: ["https://t.me/+wr3mUBagkQkyODYx"],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Nota 1000 ENEM",
+          url: "https://nota1000enem.online",
+          inLanguage: "pt-BR",
+        }),
       },
     ],
   }),
@@ -101,7 +133,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
@@ -118,7 +150,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <main id="main-content">
+        <Outlet />
+      </main>
       <TelegramFab />
     </QueryClientProvider>
   );

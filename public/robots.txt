@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /perfil
+Disallow: /minha-assinatura
+Disallow: /reset-password
+Disallow: /api/
+
+Sitemap: https://nota1000enem.online/sitemap.xml
