@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
+import { createCheckout, forcarConfirmacaoMP, type PlanType } from "@/lib/mercadopago.functions";
 import planosImg from "@/assets/planos-img.png";
 import aprovado1 from "@/assets/enem-aprovado-1.jpg";
 import aprovado2 from "@/assets/enem-aprovado-2.jpg";
@@ -201,12 +201,30 @@ const galeria = [
 
 function Planos() {
   const checkoutFn = useServerFn(createCheckout);
+  const confirmarFn = useServerFn(forcarConfirmacaoMP);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
-  const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(null);
+  const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem("mp_pending_v1");
+      return raw ? (JSON.parse(raw) as { plan: PlanType; checkoutUrl: string }) : null;
+    } catch { return null; }
+  });
+  const [confirmando, setConfirmando] = useState(false);
   const promo = useFakePromoTimer();
   const galeriaAutoplay = useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
+
+  // Persiste/limpa o estado de "aguardando pagamento" entre reloads
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (aguardandoPgto) {
+      localStorage.setItem("mp_pending_v1", JSON.stringify(aguardandoPgto));
+    } else {
+      localStorage.removeItem("mp_pending_v1");
+    }
+  }, [aguardandoPgto]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
