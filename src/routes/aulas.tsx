@@ -245,7 +245,7 @@ function Aulas() {
 
         <Card className="card-glass mt-12 p-8 text-center">
           <h3 className="text-2xl font-bold">Desbloqueie todas as aulas</h3>
-          <p className="mt-2 text-muted-foreground">Acesso completo com o plano Pro ou Full Acesso.</p>
+          <p className="mt-2 text-muted-foreground">Light libera Linguagens e Natureza. Pro libera as 4 áreas. Full e Vitalício liberam redação completa e bônus.</p>
           <Link to="/planos" className="mt-4 inline-block">
             <Button size="lg" className="glow-blue">Ver planos</Button>
           </Link>
