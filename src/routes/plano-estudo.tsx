@@ -236,17 +236,26 @@ function PlanoEstudoPage() {
                 </div>
                 <div>
                   <Label>
-                    Dias/semana <span className="text-xs text-muted-foreground">(4–6)</span>
+                    Dias/semana <span className="text-xs text-muted-foreground">(mín 5, máx 6)</span>
                   </Label>
                   <Input
                     type="number"
-                    min={4}
+                    min={5}
                     max={6}
                     value={diasSemana}
                     onChange={(e) => setDiasSemana(e.target.value)}
                   />
                 </div>
               </div>
+              {avisoMinimos && (
+                <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-200">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    <b>Ajuste os valores:</b> {avisoMinimos} O cronograma só pode ser gerado dentro
+                    desses limites pedagógicos.
+                  </span>
+                </div>
+              )}
               <div className="mt-4">
                 <Label>Dias até a prova</Label>
                 <Input
