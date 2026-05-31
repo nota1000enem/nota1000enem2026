@@ -68,15 +68,28 @@ serve(async (req) => {
     const body = await req.json();
     let horasDia = Number(body.horasDia ?? 2);
     let diasSemana = Number(body.diasSemana ?? 4);
+    let horaInicio = Number(body.horaInicio ?? 19);
     const fraquezas = String(body.fraquezas ?? "").slice(0, 500);
     const meta = String(body.meta ?? "aprovação").slice(0, 200);
     const diasAteProva = Number(body.diasAteProva ?? 180);
 
-    // ❗ CLAMP — respeita regras: 2h-8h, 4-6 dias
+    // ❗ CLAMP — respeita regras
     if (!Number.isFinite(horasDia) || horasDia < 2) horasDia = 2;
     if (horasDia > 8) horasDia = 8;
     if (!Number.isFinite(diasSemana) || diasSemana < 4) diasSemana = 4;
     if (diasSemana > 6) diasSemana = 6;
+    if (!Number.isFinite(horaInicio) || horaInicio < 5) horaInicio = 19;
+    if (horaInicio > 22) horaInicio = 22;
+    if (horaInicio + horasDia > 24) horaInicio = 24 - horasDia;
+
+    // Pré-gera os slots HORA A HORA (ex.: 13h às 14h, 14h às 15h, …)
+    const slotsHorarios: string[] = [];
+    for (let i = 0; i < horasDia; i++) {
+      const ini = horaInicio + i;
+      const fim = ini + 1;
+      const pad = (n: number) => String(n).padStart(2, "0");
+      slotsHorarios.push(`${pad(ini)}:00 às ${pad(fim)}:00`);
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
