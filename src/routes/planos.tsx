@@ -285,12 +285,18 @@ function Planos() {
         onClick={() => handleCheckout(p.planType, p.name)}
         disabled={loadingPlan !== null}
         size="lg"
-        className="mt-6 w-full bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
+        className={
+          p.popular
+            ? "mt-6 w-full animate-pulse bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 font-extrabold uppercase tracking-wide text-white shadow-xl shadow-orange-500/50 ring-2 ring-amber-300 hover:scale-[1.03] hover:from-amber-300 hover:to-rose-400 transition-all"
+            : "mt-6 w-full bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
+        }
       >
         {loadingPlan === p.planType ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…
           </>
+        ) : p.popular ? (
+          <>🔥 QUERO O {p.name.toUpperCase()} →</>
         ) : (
           <>Assinar {p.name} →</>
         )}
