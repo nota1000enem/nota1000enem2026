@@ -130,7 +130,8 @@ function Dashboard() {
       setTentativas((tentData as Tentativa[]) ?? []);
       setUltimoPlano((planoData as PlanoResumo | null) ?? null);
       const fn = (prof?.full_name as string | null)?.trim();
-      setNome(fn && fn.length ? fn.split(" ")[0] : "estudante");
+      const emailPrefix = user.email ? user.email.split("@")[0] : "aluno";
+      setNome(fn && fn.length ? fn.split(" ")[0] : emailPrefix);
       setFetching(false);
     })();
   }, [user]);
