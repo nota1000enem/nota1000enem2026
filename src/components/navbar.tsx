@@ -17,6 +17,7 @@ export function Navbar() {
     { to: "/redacao", label: "Corrigir Redação", hideWhenLogged: false },
     { to: "/aulas", label: "Vídeo Aulas", hideWhenLogged: false },
     { to: "/questoes", label: "1.000 Questões", hideWhenLogged: false },
+    { to: "/pdfs", label: "PDFs", hideWhenLogged: false },
     { to: "/plano-estudo", label: "Plano de Estudo", hideWhenLogged: true },
     { to: "/ranking", label: "Ranking", hideWhenLogged: false },
     { to: "/planos", label: "Planos", hideWhenLogged: true },

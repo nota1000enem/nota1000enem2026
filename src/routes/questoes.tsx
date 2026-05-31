@@ -62,9 +62,9 @@ function QuestoesPage() {
           escala ENEM (0–1000).
         </p>
 
-        <Card className="card-glass mt-8 p-5 border-yellow-500/40 bg-yellow-500/5">
+        <Card className="card-glass mt-8 p-5 border-primary/40 bg-primary/5">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-yellow-500" />
+            <AlertTriangle className="mt-0.5 h-5 w-5 text-primary" />
             <div className="text-sm">
               <p className="font-semibold">Como funciona</p>
               <p className="mt-1 text-muted-foreground">
@@ -72,11 +72,17 @@ function QuestoesPage() {
                 escala 0–1000 e fica salva no seu dashboard, na seção{" "}
                 <strong>Classificação SEM</strong>.
               </p>
-              <p className="mt-2 text-muted-foreground">
-                As provas 5,6,7 e 8 possuem questões algumas de super raciocínio, com perguntas
-                muito curtas pra testar a inteligência de cada um em condições inviáveis/difíceis !
-                BOAS PROVAS
-              </p>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 text-primary" />
+            <div className="text-sm text-muted-foreground">
+              APENAS As provas 5, 6, 7 e 8 possuem questões algumas de super raciocínio (CASO NÃO
+              ENTENDA É SÓ PULAR PRA PRÓXIMA PROVA), com perguntas muito curtas pra testar a
+              inteligência de cada um em condições inviáveis/difíceis! BOAS PROVAS
             </div>
           </div>
         </Card>
