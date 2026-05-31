@@ -270,14 +270,15 @@ function Planos() {
       <Button
         onClick={() => handleCheckout(p.planType, p.name)}
         disabled={loadingPlan !== null}
-        className={`mt-6 w-full ${p.popular ? "glow-blue" : "bg-primary/30 text-primary-foreground hover:bg-primary/50"}`}
+        size="lg"
+        className="mt-6 w-full bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
       >
         {loadingPlan === p.planType ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…
           </>
         ) : (
-          <>Assinar {p.name}</>
+          <>Assinar {p.name} →</>
         )}
       </Button>
       {p.upgrade && (
