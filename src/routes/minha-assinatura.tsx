@@ -28,25 +28,25 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
     nome: "Light",
     preco: "R$ 19,90 / mês",
     cor: "text-blue-400",
-    beneficios: ["15 redações/mês", "Acesso a Vídeo Aulas", "1.000 questões + simulados", "Plano de estudo IA", "Ranking + dashboard"],
+    beneficios: ["15 redações/mês", "Linguagens, Códigos e suas Tecnologias", "Ciências da Natureza e suas Tecnologias", "Plano de estudo IA", "Ranking + dashboard"],
   },
   pro: {
     nome: "Pro",
     preco: "R$ 29,90 / mês",
     cor: "text-purple-400",
-    beneficios: ["30 redações/mês", "Modo Professor Rígido", "Vídeo Aulas + Simulados", "Plano de estudo IA", "Suporte prioritário"],
+    beneficios: ["30 redações/mês", "Tudo do Light", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Plano de estudo IA"],
   },
   full: {
     nome: "Full",
     preco: "R$ 49,90 / mês",
     cor: "text-yellow-400",
-    beneficios: ["60 redações/mês", "Modo Professor Rígido", "Tudo do Pro + extras", "Plano de estudo IA semanal", "Atendimento VIP no Telegram"],
+    beneficios: ["60 redações/mês", "Tudo do Pro", "Redação completa", "BÔNUS — 9 segredos para aprovação", "Atendimento VIP no Telegram"],
   },
   vitalicio: {
     nome: "Vitalício",
     preco: "Acesso permanente",
     cor: "text-emerald-400",
-    beneficios: ["70 redações/mês recorrente", "Acesso vitalício a TUDO", "Modo Professor Rígido", "Sem mensalidades", "Updates futuros incluídos"],
+    beneficios: ["70 redações/mês recorrente", "Acesso vitalício a TUDO", "Redação completa", "BÔNUS — 9 segredos para aprovação", "Updates futuros incluídos"],
   },
 };
 
