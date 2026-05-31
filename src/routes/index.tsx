@@ -604,13 +604,13 @@ function Index() {
               </p>
             </div>
           )}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
+          {(() => {
+            const planosArr = [
               {
                 name: "ENEM Light",
                 planType: "LIGHT" as PlanType,
                 price: "19,90",
-                oldPrice: null,
+                oldPrice: null as string | null,
                 periodo: "/mês",
                 cta: "Começar Agora",
                 popular: false,
@@ -630,7 +630,7 @@ function Index() {
                 name: "ENEM Pro",
                 planType: "PRO" as PlanType,
                 price: "29,90",
-                oldPrice: "39,90",
+                oldPrice: "39,90" as string | null,
                 periodo: "/mês",
                 cta: "Quero o Pro",
                 popular: true,
@@ -696,10 +696,11 @@ function Index() {
                   "Sem renovação, sem cobrança recorrente",
                 ],
               },
-            ].map((p) => (
+            ];
+            const renderCard = (p: typeof planosArr[number]) => (
               <Card
                 key={p.name}
-                className={`relative p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}
+                className={`relative h-full p-6 ${p.popular ? "card-glass border-primary/50 glow-blue" : "card-glass"}`}
               >
                 {p.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
@@ -709,12 +710,8 @@ function Index() {
                 <h3 className="text-xl font-bold">{p.name}</h3>
                 {p.oldPrice && promo.active && (
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground line-through">
-                      R$ {p.oldPrice}
-                    </span>
-                    <Badge className="bg-destructive/20 text-destructive border border-destructive/40">
-                      -25%
-                    </Badge>
+                    <span className="text-sm text-muted-foreground line-through">R$ {p.oldPrice}</span>
+                    <Badge className="bg-destructive/20 text-destructive border border-destructive/40">-25%</Badge>
                   </div>
                 )}
                 <div className="mt-1 flex items-baseline gap-1">
@@ -732,8 +729,8 @@ function Index() {
                 <Button
                   onClick={() => handleBuy(p.planType)}
                   disabled={loadingPlan !== null}
-                  className={`mt-6 w-full ${p.popular ? "glow-blue" : ""}`}
-                  variant={p.popular ? "default" : "outline"}
+                  className={`mt-6 w-full ${p.popular ? "glow-blue" : "bg-primary/30 text-primary-foreground hover:bg-primary/50"}`}
+                  variant={p.popular ? "default" : "default"}
                 >
                   {loadingPlan === p.planType ? (
                     <>
@@ -744,8 +741,30 @@ function Index() {
                   )}
                 </Button>
               </Card>
-            ))}
-          </div>
+            );
+            return (
+              <>
+                {/* Mobile carousel */}
+                <div className="md:hidden">
+                  <Carousel opts={{ align: "start" }} className="px-8">
+                    <CarouselContent>
+                      {planosArr.map((p) => (
+                        <CarouselItem key={p.name} className="basis-[85%]">
+                          {renderCard(p)}
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-0" />
+                    <CarouselNext className="right-0" />
+                  </Carousel>
+                </div>
+                {/* Desktop grid */}
+                <div className="hidden gap-6 md:grid md:grid-cols-2 lg:grid-cols-4">
+                  {planosArr.map(renderCard)}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </section>
 
