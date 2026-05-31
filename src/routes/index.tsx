@@ -40,14 +40,16 @@ function useFakePromoTimer() {
   const ACTIVE = 30 * 60;
   const PAUSE = 10 * 60;
   const KEY = "promo_start_ts";
-  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
+  const [now, setNow] = useState(0);
   useEffect(() => {
     if (!localStorage.getItem(KEY)) {
       localStorage.setItem(KEY, String(Math.floor(Date.now() / 1000)));
     }
+    setNow(Math.floor(Date.now() / 1000));
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
     return () => clearInterval(id);
   }, []);
+  if (!now) return { active: false, label: "00:00" };
   const start = Number(localStorage.getItem(KEY) ?? now);
   const cycle = ACTIVE + PAUSE;
   const elapsed = (now - start) % cycle;
