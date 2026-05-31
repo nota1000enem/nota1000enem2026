@@ -176,7 +176,6 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="absolute inset-0 -z-10 blur-3xl opacity-50 bg-primary/30 rounded-full" />
             <Carousel
               opts={{ loop: true, align: "center" }}
               plugins={[heroAutoplay.current]}
@@ -191,7 +190,7 @@ function Index() {
                         alt={img.alt}
                         width={1024}
                         height={1024}
-                        className="aspect-square w-full rounded-2xl border border-primary/30 object-contain bg-background/40 glow-blue"
+                        className="aspect-square w-full rounded-2xl object-cover"
                         loading={i === 0 ? "eager" : "lazy"}
                       />
                       <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">
