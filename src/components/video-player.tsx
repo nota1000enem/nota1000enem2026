@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Maximize, Gauge, Settings, X } from "lucide-react";
+import { Play, Pause, Maximize, Gauge, Settings, X, RotateCcw, RotateCw } from "lucide-react";
 
 /**
  * Reprodutor YouTube com controles customizados.
  * Mantém o aluno na plataforma — esconde controles nativos (controls=0),
  * sem link "Ver no YouTube", sem vídeos relacionados externos.
- * Controles disponíveis: Pausar/Play, Velocidade 2x, Qualidade, Tela cheia.
+ * Controles disponíveis: Pausar/Play, pular 10s, velocidade, qualidade, tela cheia.
  */
 
 declare global {
@@ -113,6 +113,15 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     playing ? p.pauseVideo() : p.playVideo();
   }
 
+  function seekBy(deltaSeconds: number) {
+    const p = playerRef.current;
+    if (!p?.getCurrentTime || !p?.seekTo) return;
+    const current = Number(p.getCurrentTime?.() ?? 0);
+    const duration = Number(p.getDuration?.() ?? 0);
+    const target = Math.max(0, Math.min(duration || current + deltaSeconds, current + deltaSeconds));
+    p.seekTo(target, true);
+  }
+
   function changeSpeed(v: number) {
     setSpeed(v);
     setShowSpeed(false);
@@ -138,20 +147,26 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="card-glass border-primary/30 sm:max-w-4xl p-0 overflow-hidden">
+      <DialogContent className="card-glass overflow-hidden border-primary/30 p-0 sm:max-w-4xl">
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <div ref={wrapRef} className="relative bg-black">
-          <div className="aspect-video w-full" onClick={toggle}>
+          <div className="aspect-video w-full" onDoubleClick={() => seekBy(10)}>
             <div ref={ref} className="h-full w-full pointer-events-none" />
           </div>
 
-          {/* Bloqueia clique no card do YouTube */}
           <div className="pointer-events-none absolute inset-0" />
 
-          {/* Barra de controles */}
-          <div className="absolute bottom-0 left-0 right-0 flex items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3">
+          <div className="absolute bottom-0 left-0 right-0 flex flex-wrap items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3">
             <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={toggle}>
               {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            </Button>
+
+            <Button size="sm" variant="ghost" className="text-white hover:bg-white/10" onClick={() => seekBy(-10)}>
+              <RotateCcw className="mr-1 h-4 w-4" /> 10s
+            </Button>
+
+            <Button size="sm" variant="ghost" className="text-white hover:bg-white/10" onClick={() => seekBy(10)}>
+              <RotateCw className="mr-1 h-4 w-4" /> 10s
             </Button>
 
             <div className="relative">
@@ -159,17 +174,20 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
                 size="sm"
                 variant="ghost"
                 className="text-white hover:bg-white/10"
-                onClick={() => { setShowSpeed((s) => !s); setShowQual(false); }}
+                onClick={() => {
+                  setShowSpeed((s) => !s);
+                  setShowQual(false);
+                }}
               >
                 <Gauge className="mr-1 h-4 w-4" /> {speed}x
               </Button>
               {showSpeed && (
-                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 ring-1 ring-border shadow-lg">
+                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 shadow-lg ring-1 ring-border">
                   {[1, 1.25, 1.5, 1.75, 2].map((v) => (
                     <button
                       key={v}
                       onClick={() => changeSpeed(v)}
-                      className={`block w-20 rounded px-2 py-1 text-left text-xs hover:bg-accent ${speed === v ? "text-primary font-semibold" : ""}`}
+                      className={`block w-20 rounded px-2 py-1 text-left text-xs hover:bg-accent ${speed === v ? "font-semibold text-primary" : ""}`}
                     >
                       {v}x
                     </button>
@@ -183,17 +201,20 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
                 size="sm"
                 variant="ghost"
                 className="text-white hover:bg-white/10"
-                onClick={() => { setShowQual((s) => !s); setShowSpeed(false); }}
+                onClick={() => {
+                  setShowQual((s) => !s);
+                  setShowSpeed(false);
+                }}
               >
                 <Settings className="mr-1 h-4 w-4" /> {quality}
               </Button>
               {showQual && qualities.length > 0 && (
-                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 ring-1 ring-border shadow-lg">
+                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 shadow-lg ring-1 ring-border">
                   {["auto", ...qualities].map((q) => (
                     <button
                       key={q}
                       onClick={() => changeQuality(q)}
-                      className={`block w-24 rounded px-2 py-1 text-left text-xs hover:bg-accent ${quality === q ? "text-primary font-semibold" : ""}`}
+                      className={`block w-24 rounded px-2 py-1 text-left text-xs hover:bg-accent ${quality === q ? "font-semibold text-primary" : ""}`}
                     >
                       {q}
                     </button>
@@ -216,3 +237,4 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     </Dialog>
   );
 }
+
