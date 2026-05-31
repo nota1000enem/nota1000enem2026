@@ -44,7 +44,8 @@ function Dashboard() {
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
     const plan = params.get("plan")?.toUpperCase() ?? "";
-    const purchaseKey = `mp_purchase_${plan}_${status}`;
+    const paymentId = params.get("payment_id") ?? params.get("collection_id") ?? "sem_id";
+    const purchaseKey = `mp_purchase_${plan}_${paymentId}`;
     if (status === "success" && plan in PLAN_VALUES && !sessionStorage.getItem(purchaseKey)) {
       sessionStorage.setItem(purchaseKey, "1");
       import("@/lib/meta-pixel")
