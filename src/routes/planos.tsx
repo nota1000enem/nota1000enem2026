@@ -402,7 +402,7 @@ function Planos() {
                 onClick={async () => {
                   setConfirmando(true);
                   try {
-                    const r = await confirmarFn({});
+                    const r = await confirmarFn();
                     if (r.ok) {
                       toast.success("Pagamento confirmado! Liberando acesso...");
                       window.location.href = `/dashboard?status=success&plan=${aguardandoPgto.plan}`;
