@@ -6,39 +6,55 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 import { supabase } from "@/integrations/supabase/client";
-import { Crown, Calendar, CreditCard, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { Crown, Calendar, CreditCard, Check, Infinity as Inf, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/minha-assinatura")({
   head: () => ({ meta: [{ title: "Minha Assinatura – Nota 1000 ENEM" }] }),
   component: MinhaAssinaturaPage,
 });
 
-type Assinatura = {
+type Pagamento = {
   id: string;
-  plano: string;
-  status: string;
   valor_centavos: number;
-  iniciou_em: string | null;
-  vence_em: string | null;
-  proxima_cobranca_em: string | null;
-  cancelou_em: string | null;
+  status: string;
+  created_at: string;
+  plan_type: string;
 };
-type Cobranca = {
-  id: string;
-  valor_centavos: number;
-  status: string;
-  vencimento: string;
-  pago_em: string | null;
+
+const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; beneficios: string[] }> = {
+  light: {
+    nome: "Light",
+    preco: "R$ 19,90 / mês",
+    cor: "text-blue-400",
+    beneficios: ["15 redações/mês", "Acesso a Vídeo Aulas", "1.000 questões + simulados", "Plano de estudo IA", "Ranking + dashboard"],
+  },
+  pro: {
+    nome: "Pro",
+    preco: "R$ 29,90 / mês",
+    cor: "text-purple-400",
+    beneficios: ["30 redações/mês", "Modo Professor Rígido", "Vídeo Aulas + Simulados", "Plano de estudo IA", "Suporte prioritário"],
+  },
+  full: {
+    nome: "Full",
+    preco: "R$ 49,90 / mês",
+    cor: "text-yellow-400",
+    beneficios: ["60 redações/mês", "Modo Professor Rígido", "Tudo do Pro + extras", "Plano de estudo IA semanal", "Atendimento VIP no Telegram"],
+  },
+  vitalicio: {
+    nome: "Vitalício",
+    preco: "Acesso permanente",
+    cor: "text-emerald-400",
+    beneficios: ["70 redações/mês recorrente", "Acesso vitalício a TUDO", "Modo Professor Rígido", "Sem mensalidades", "Updates futuros incluídos"],
+  },
 };
 
 function MinhaAssinaturaPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [assinatura, setAssinatura] = useState<Assinatura | null>(null);
-  const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
-  const [fetching, setFetching] = useState(true);
+  const access = usePlanAccess();
+  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
@@ -46,43 +62,17 @@ function MinhaAssinaturaPage() {
 
   useEffect(() => {
     if (!user) return;
-    (async () => {
-      const { data: ass } = await supabase
-        .from("assinaturas")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      setAssinatura(ass as Assinatura | null);
-      if (ass) {
-        const { data: cobs } = await supabase
-          .from("cobrancas")
-          .select("*")
-          .eq("assinatura_id", (ass as Assinatura).id)
-          .order("vencimento", { ascending: false });
-        setCobrancas((cobs ?? []) as Cobranca[]);
-      }
-      setFetching(false);
-    })();
+    supabase
+      .from("payment_transactions")
+      .select("id,valor_centavos,status,created_at,plan_type")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data }) => setPagamentos((data ?? []) as Pagamento[]));
   }, [user]);
 
-  async function cancelar() {
-    if (!assinatura) return;
-    if (!confirm("Tem certeza que deseja cancelar sua assinatura?")) return;
-    const { error } = await supabase
-      .from("assinaturas")
-      .update({ status: "cancelada", cancelou_em: new Date().toISOString() })
-      .eq("id", assinatura.id);
-    if (error) return toast.error(error.message);
-    toast.success("Assinatura cancelada. Você mantém acesso até o vencimento.");
-    setAssinatura({ ...assinatura, status: "cancelada", cancelou_em: new Date().toISOString() });
-  }
-
   const formato = (c: number) => `R$ ${(c / 100).toFixed(2).replace(".", ",")}`;
-  const diasRestantes = assinatura?.vence_em
-    ? Math.max(0, Math.ceil((new Date(assinatura.vence_em).getTime() - Date.now()) / 86400000))
-    : 0;
+  const info = PLAN_INFO[access.tier];
 
   return (
     <div className="min-h-screen bg-background">
@@ -91,11 +81,13 @@ function MinhaAssinaturaPage() {
         <Badge variant="outline" className="border-primary/40 text-primary">
           <Crown className="mr-1 h-3 w-3" /> Sua assinatura
         </Badge>
-        <h1 className="mt-3 text-3xl font-bold md:text-4xl">Minha <span className="gradient-text">Assinatura</span></h1>
+        <h1 className="mt-3 text-3xl font-bold md:text-4xl">
+          Minha <span className="gradient-text">Assinatura</span>
+        </h1>
 
-        {fetching ? (
+        {access.loading ? (
           <p className="mt-6 text-sm text-muted-foreground">Carregando...</p>
-        ) : !assinatura ? (
+        ) : !access.isPaid ? (
           <Card className="card-glass mt-8 p-8 text-center">
             <p className="text-muted-foreground">Você ainda não tem uma assinatura ativa.</p>
             <Link to="/planos" className="mt-4 inline-block">
@@ -108,51 +100,73 @@ function MinhaAssinaturaPage() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase text-muted-foreground">Plano atual</p>
-                  <p className="text-2xl font-bold gradient-text capitalize">{assinatura.plano}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{formato(assinatura.valor_centavos)}</p>
+                  <p className={`text-3xl font-bold ${info?.cor ?? "gradient-text"}`}>
+                    {info?.nome ?? access.tier}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{info?.preco ?? ""}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs uppercase text-muted-foreground">Status</p>
-                  <p className={`text-lg font-bold ${assinatura.status === "ativa" ? "text-green-500" : "text-yellow-500"}`}>
-                    {assinatura.status}
-                  </p>
+                  <p className="text-lg font-bold text-green-500">ATIVO</p>
                 </div>
               </div>
-              {assinatura.vence_em && (
-                <div className="mt-4 flex items-center gap-2 rounded-lg border border-border/60 bg-background/60 p-3 text-sm">
-                  <Calendar className="h-4 w-4 text-primary" />
-                  <span>Vence em <b>{new Date(assinatura.vence_em).toLocaleDateString("pt-BR")}</b> ({diasRestantes} dias restantes)</span>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/60 p-3 text-sm">
+                  {access.vitalicio ? <Inf className="h-4 w-4 text-emerald-400" /> : <Calendar className="h-4 w-4 text-primary" />}
+                  <span>
+                    {access.vitalicio ? (
+                      <>Acesso <b>vitalício</b> — nunca expira</>
+                    ) : access.expiresAt ? (
+                      <>Vence em <b>{access.expiresAt.toLocaleDateString("pt-BR")}</b> ({access.daysLeft} dias)</>
+                    ) : (
+                      "Acesso ativo"
+                    )}
+                  </span>
                 </div>
-              )}
-              {assinatura.cancelou_em && (
-                <div className="mt-3 flex items-center gap-2 rounded-lg border border-yellow-500/40 bg-yellow-500/5 p-3 text-sm">
-                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                  <span>Cancelada em {new Date(assinatura.cancelou_em).toLocaleDateString("pt-BR")}. Acesso até o vencimento.</span>
-                </div>
-              )}
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link to="/planos"><Button variant="outline">Mudar de plano</Button></Link>
-                {assinatura.status === "ativa" && !assinatura.cancelou_em && (
-                  <Button variant="outline" onClick={cancelar}>Cancelar assinatura</Button>
+                {access.credits !== null && (
+                  <div className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+                    <Zap className="h-4 w-4 text-primary" />
+                    <span><b className="text-primary">{access.credits}</b> créditos de redação restantes</span>
+                  </div>
                 )}
+              </div>
+
+              {info && (
+                <div className="mt-6">
+                  <p className="text-xs uppercase text-muted-foreground">Seus benefícios</p>
+                  <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+                    {info.beneficios.map((b) => (
+                      <li key={b} className="flex items-start gap-2 text-sm">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Link to="/planos"><Button variant="outline">Mudar de plano</Button></Link>
+                <Link to="/dashboard"><Button className="glow-blue">Ir para o Dashboard</Button></Link>
               </div>
             </Card>
 
-            <h2 className="mt-10 text-xl font-semibold">Histórico de cobranças</h2>
-            {cobrancas.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">Nenhuma cobrança ainda.</p>
+            <h2 className="mt-10 text-xl font-semibold">Histórico de pagamentos</h2>
+            {pagamentos.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">Nenhum pagamento registrado ainda.</p>
             ) : (
               <div className="mt-4 grid gap-2">
-                {cobrancas.map((c) => (
+                {pagamentos.map((c) => (
                   <Card key={c.id} className="card-glass flex items-center justify-between p-4">
                     <div className="flex items-center gap-3">
                       <CreditCard className="h-4 w-4 text-primary" />
                       <div>
-                        <p className="text-sm font-medium">{formato(c.valor_centavos)}</p>
-                        <p className="text-xs text-muted-foreground">Venc.: {new Date(c.vencimento).toLocaleDateString("pt-BR")}</p>
+                        <p className="text-sm font-medium">{formato(c.valor_centavos)} <span className="text-muted-foreground">— {c.plan_type}</span></p>
+                        <p className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleDateString("pt-BR")}</p>
                       </div>
                     </div>
-                    <span className={`text-xs font-bold uppercase ${c.status === "paga" ? "text-green-500" : c.status === "falhou" ? "text-red-500" : "text-yellow-500"}`}>
+                    <span className={`text-xs font-bold uppercase ${c.status === "approved" ? "text-green-500" : c.status === "rejected" ? "text-red-500" : "text-yellow-500"}`}>
                       {c.status}
                     </span>
                   </Card>
