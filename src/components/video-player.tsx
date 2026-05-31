@@ -1,0 +1,218 @@
+import { useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Play, Pause, Maximize, Gauge, Settings, X } from "lucide-react";
+
+/**
+ * Reprodutor YouTube com controles customizados.
+ * Mantém o aluno na plataforma — esconde controles nativos (controls=0),
+ * sem link "Ver no YouTube", sem vídeos relacionados externos.
+ * Controles disponíveis: Pausar/Play, Velocidade 2x, Qualidade, Tela cheia.
+ */
+
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+function extractId(url: string): string | null {
+  if (!url) return null;
+  const m =
+    url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/) ||
+    url.match(/^([A-Za-z0-9_-]{6,})$/);
+  return m ? m[1] : null;
+}
+
+function loadAPI(): Promise<void> {
+  return new Promise((resolve) => {
+    if (window.YT && window.YT.Player) return resolve();
+    const existing = document.getElementById("yt-iframe-api");
+    if (!existing) {
+      const s = document.createElement("script");
+      s.id = "yt-iframe-api";
+      s.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(s);
+    }
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      prev?.();
+      resolve();
+    };
+  });
+}
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  videoUrl: string;
+  title: string;
+};
+
+export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<any>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [qualities, setQualities] = useState<string[]>([]);
+  const [quality, setQuality] = useState("auto");
+  const [showSpeed, setShowSpeed] = useState(false);
+  const [showQual, setShowQual] = useState(false);
+  const videoId = extractId(videoUrl);
+
+  useEffect(() => {
+    if (!open || !videoId) return;
+    let destroyed = false;
+    loadAPI().then(() => {
+      if (destroyed || !ref.current) return;
+      playerRef.current = new window.YT.Player(ref.current, {
+        videoId,
+        playerVars: {
+          controls: 0,
+          rel: 0,
+          modestbranding: 1,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          playsinline: 1,
+          showinfo: 0,
+          cc_load_policy: 0,
+        },
+        events: {
+          onReady: (e: any) => {
+            e.target.playVideo();
+            setPlaying(true);
+            setTimeout(() => {
+              try {
+                setQualities(e.target.getAvailableQualityLevels?.() ?? []);
+              } catch {}
+            }, 800);
+          },
+          onStateChange: (e: any) => {
+            setPlaying(e.data === 1);
+          },
+        },
+      });
+    });
+    return () => {
+      destroyed = true;
+      try {
+        playerRef.current?.destroy?.();
+      } catch {}
+      playerRef.current = null;
+      setPlaying(false);
+      setSpeed(1);
+    };
+  }, [open, videoId]);
+
+  function toggle() {
+    const p = playerRef.current;
+    if (!p) return;
+    playing ? p.pauseVideo() : p.playVideo();
+  }
+
+  function changeSpeed(v: number) {
+    setSpeed(v);
+    setShowSpeed(false);
+    playerRef.current?.setPlaybackRate?.(v);
+  }
+
+  function changeQuality(q: string) {
+    setQuality(q);
+    setShowQual(false);
+    try {
+      playerRef.current?.setPlaybackQuality?.(q);
+    } catch {}
+  }
+
+  function fullscreen() {
+    const el = wrapRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) document.exitFullscreen();
+    else el.requestFullscreen?.();
+  }
+
+  if (!videoId) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="card-glass border-primary/30 sm:max-w-4xl p-0 overflow-hidden">
+        <DialogTitle className="sr-only">{title}</DialogTitle>
+        <div ref={wrapRef} className="relative bg-black">
+          <div className="aspect-video w-full" onClick={toggle}>
+            <div ref={ref} className="h-full w-full pointer-events-none" />
+          </div>
+
+          {/* Bloqueia clique no card do YouTube */}
+          <div className="pointer-events-none absolute inset-0" />
+
+          {/* Barra de controles */}
+          <div className="absolute bottom-0 left-0 right-0 flex items-center gap-2 bg-gradient-to-t from-black/90 to-transparent p-3">
+            <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={toggle}>
+              {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            </Button>
+
+            <div className="relative">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={() => { setShowSpeed((s) => !s); setShowQual(false); }}
+              >
+                <Gauge className="mr-1 h-4 w-4" /> {speed}x
+              </Button>
+              {showSpeed && (
+                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 ring-1 ring-border shadow-lg">
+                  {[1, 1.25, 1.5, 1.75, 2].map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => changeSpeed(v)}
+                      className={`block w-20 rounded px-2 py-1 text-left text-xs hover:bg-accent ${speed === v ? "text-primary font-semibold" : ""}`}
+                    >
+                      {v}x
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={() => { setShowQual((s) => !s); setShowSpeed(false); }}
+              >
+                <Settings className="mr-1 h-4 w-4" /> {quality}
+              </Button>
+              {showQual && qualities.length > 0 && (
+                <div className="absolute bottom-10 left-0 rounded-md bg-background/95 p-1 ring-1 ring-border shadow-lg">
+                  {["auto", ...qualities].map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => changeQuality(q)}
+                      className={`block w-24 rounded px-2 py-1 text-left text-xs hover:bg-accent ${quality === q ? "text-primary font-semibold" : ""}`}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1" />
+
+            <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={fullscreen}>
+              <Maximize className="h-5 w-5" />
+            </Button>
+            <Button size="icon" variant="ghost" className="text-white hover:bg-white/10" onClick={onClose}>
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
