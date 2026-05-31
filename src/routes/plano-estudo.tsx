@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Brain, Calendar, Loader2, Sparkles, Lock, Crown, History, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/plano-estudo")({
@@ -52,8 +53,7 @@ function PlanoEstudoPage() {
   const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
   const [plano, setPlano] = useState<PlanoIA | null>(null);
-  const [planoUsuario, setPlanoUsuario] = useState<string>("free");
-  const [vitalicio, setVitalicio] = useState<boolean>(false);
+  const { isPaid: liberado } = usePlanAccess();
   const [historico, setHistorico] = useState<PlanoSalvo[]>([]);
 
   useEffect(() => {
@@ -63,19 +63,12 @@ function PlanoEstudoPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: prof }, { data: planos }] = await Promise.all([
-        supabase.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle(),
-        supabase.from("planos_estudo").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
-      ]);
-      setPlanoUsuario((prof?.plan as string) ?? "free");
-      setVitalicio(Boolean(prof?.plan_vitalicio));
+      const { data: planos } = await supabase.from("planos_estudo").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5);
       const lista = (planos as unknown as PlanoSalvo[] | null) ?? [];
       setHistorico(lista);
       if (lista.length > 0) setPlano(lista[0].cronograma);
     })();
   }, [user]);
-
-  const liberado = vitalicio || ["light", "pro", "full", "vitalicio"].includes(planoUsuario);
 
   function validar(): string | null {
     const h = Number(horasDia);

@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 
 /**
  * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).
@@ -137,25 +138,7 @@ function Aulas() {
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const [planoPago, setPlanoPago] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("plan, plan_vitalicio, plan_expires_at")
-        .eq("id", user.id)
-        .maybeSingle();
-      const ativo =
-        !!prof &&
-        prof.plan !== "free" &&
-        (prof.plan_vitalicio === true ||
-          (prof.plan_expires_at && new Date(prof.plan_expires_at) > new Date()));
-      setPlanoPago(!!ativo);
-    })();
-  }, []);
+  const { isPaid: planoPago } = usePlanAccess();
 
   function handleClick(titulo: string) {
     const url = VIDEO_LINKS[titulo];

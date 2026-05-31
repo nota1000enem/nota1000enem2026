@@ -13,8 +13,9 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
-import { Lock, Crown } from "lucide-react";
+import { Lock, Crown, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/redacao")({
   head: () => ({
@@ -43,16 +44,17 @@ type Resultado = {
 function RedacaoPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const access = usePlanAccess();
   const [tema, setTema] = useState("");
   const [texto, setTexto] = useState("");
   const [modoRigido, setModoRigido] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [resultado, setResultado] = useState<Resultado | null>(null);
-  const [plano, setPlano] = useState<string>("free");
   const [bloqueado, setBloqueado] = useState(false);
   const [motivoBloqueio, setMotivoBloqueio] = useState<string>("");
   const [limite, setLimite] = useState<number>(1);
   const [usadas, setUsadas] = useState<number>(0);
+  const [creditos, setCreditos] = useState<number>(0);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
@@ -60,21 +62,18 @@ function RedacaoPage() {
 
   async function recarregarStatus() {
     if (!user) return;
-    const { data: prof } = await supabase.from("profiles").select("plan").eq("id", user.id).maybeSingle();
-    const p = (prof?.plan as string) ?? "free";
-    setPlano(p);
     const { data } = await supabase.rpc("pode_corrigir_redacao", { _user_id: user.id });
-    const r = (data ?? {}) as { pode?: boolean; motivo?: string; limite?: number; usadas?: number };
+    const r = (data ?? {}) as { pode?: boolean; motivo?: string; limite?: number; usadas?: number; creditos?: number };
     setBloqueado(!r.pode);
     setMotivoBloqueio(r.motivo ?? "");
     setLimite(r.limite ?? 1);
     setUsadas(r.usadas ?? 0);
+    setCreditos(r.creditos ?? 0);
   }
 
   useEffect(() => { recarregarStatus(); /* eslint-disable-next-line */ }, [user]);
 
-  // Modo rígido só liberado para Pro, Full e Vitalício
-  const modoRigidoLiberado = ["pro", "full", "vitalicio"].includes(plano);
+  const modoRigidoLiberado = access.isPremium;
 
   async function handleSubmit() {
     if (!user) {
@@ -91,6 +90,10 @@ function RedacaoPage() {
         profile_nao_encontrado: "Seu perfil ainda não foi criado. Faça logout e login novamente para sincronizar.",
       };
       toast.error(msgs[motivoBloqueio] ?? `Acesso bloqueado (${motivoBloqueio || "motivo desconhecido"}). Entre em contato pelo Telegram se persistir.`);
+      return;
+    }
+    if (!tema.trim() || tema.trim().length < 8) {
+      toast.error("Informe o tema da redação (mínimo 8 caracteres). Não existe redação ENEM sem tema.");
       return;
     }
     if (texto.trim().length < 50) {
@@ -114,7 +117,7 @@ function RedacaoPage() {
       setResultado(r);
       await supabase.from("redacoes").insert({
         user_id: user!.id,
-        tema: tema || null,
+        tema,
         texto,
         nota_total: r.nota_total,
         competencia_1: r.competencia_1,
@@ -199,12 +202,23 @@ function RedacaoPage() {
               </div>
             )}
 
-            <Label htmlFor="tema">Tema (opcional)</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="tema" className="flex items-center gap-1">
+                Tema <span className="text-destructive">*</span>
+              </Label>
+              <span className="flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                <Zap className="h-3 w-3" />
+                {access.isPaid
+                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
+                  : `${Math.max(0, 3 - usadas)}/3 grátis`}
+              </span>
+            </div>
             <Input
               id="tema"
               value={tema}
               onChange={(e) => setTema(e.target.value)}
               placeholder="Ex: Os desafios da educação digital no Brasil"
+              required
               className="mt-2"
             />
             {sugestoesTema.length > 0 && (

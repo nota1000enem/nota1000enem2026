@@ -16,6 +16,8 @@ import aprovado3 from "@/assets/enem-aprovado-3.jpg";
 import aprovado4 from "@/assets/enem-aprovado-4.jpg";
 import printNota840 from "@/assets/print-nota-840.png";
 import printNota1000 from "@/assets/print-nota-1000.png";
+import printRanking from "@/assets/ranking-enem.png";
+import printVideoAulas from "@/assets/videoaulas-enem.png";
 import { useServerFn } from "@tanstack/react-start";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
 import { toast } from "sonner";
@@ -93,9 +95,11 @@ function Index() {
   const heroImgs = [
     { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
     { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
-    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
+    { src: printRanking, alt: "Ranking dos melhores alunos do Nota 1000 ENEM" },
     { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
+    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
     { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
+    { src: printVideoAulas, alt: "Catálogo de vídeo aulas Nota 1000 ENEM" },
     { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
   ];
   return (
