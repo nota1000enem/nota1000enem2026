@@ -3,26 +3,28 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
+  const { isPaid } = usePlanAccess();
   const router = useRouter();
 
-  // Links públicos: quando logado, escondemos "Início", "Plano de Estudo" e "Planos"
-  // (o aluno já tem plano e acessa upgrade via Perfil/Assinatura).
+  // "Início" some ao logar. "Planos" só some quando o aluno já tem plano pago
+  // (free continua vendo Planos pra poder fazer upgrade).
   const baseLinks = [
-    { to: "/", label: "Início", hideWhenLogged: true },
-    { to: "/redacao", label: "Corrigir Redação", hideWhenLogged: false },
-    { to: "/aulas", label: "Vídeo Aulas", hideWhenLogged: false },
-    { to: "/questoes", label: "1.000 Questões", hideWhenLogged: false },
-    { to: "/pdfs", label: "PDFs", hideWhenLogged: false },
-    { to: "/plano-estudo", label: "Plano de Estudo", hideWhenLogged: true },
-    { to: "/ranking", label: "Ranking", hideWhenLogged: false },
-    { to: "/planos", label: "Planos", hideWhenLogged: true },
+    { to: "/", label: "Início", hide: !!user },
+    { to: "/redacao", label: "Corrigir Redação", hide: false },
+    { to: "/aulas", label: "Vídeo Aulas", hide: false },
+    { to: "/questoes", label: "1.000 Questões", hide: false },
+    { to: "/pdfs", label: "PDFs", hide: false },
+    { to: "/plano-estudo", label: "Plano de Estudo", hide: !!user && false },
+    { to: "/ranking", label: "Ranking", hide: false },
+    { to: "/planos", label: "Planos", hide: !!user && isPaid },
   ];
-  const links = baseLinks.filter((l) => !(user && l.hideWhenLogged));
+  const links = baseLinks.filter((l) => !l.hide);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">
