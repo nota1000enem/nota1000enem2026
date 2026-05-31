@@ -192,8 +192,13 @@ function Aulas() {
         </p>
 
         <div className="mt-10 space-y-14">
-          {trilhas.map((tr) => (
-            <div key={tr.area}>
+          {[...trilhas]
+            .sort((a, b) => {
+              const aLib = planoPago && canAccessArea(tier, a.area) ? 0 : 1;
+              const bLib = planoPago && canAccessArea(tier, b.area) ? 0 : 1;
+              return aLib - bLib;
+            })
+            .map((tr) => (
               <div className="mb-4 flex items-end justify-between gap-3">
                 <div>
                   <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
