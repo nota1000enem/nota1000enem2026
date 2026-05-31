@@ -555,6 +555,7 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_redacoes_antigas: { Args: never; Returns: undefined }
       get_minhas_tentativas: {
         Args: { _user_id: string }
         Returns: {

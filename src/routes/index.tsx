@@ -125,19 +125,11 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="mb-4 flex flex-wrap gap-2">
-              {["Matemática","Linguagens e Códigos","Ciências Humanas","Ciências da Natureza","Redação","+ 1.000 questões em VÍDEO"].map((t) => (
-                <Badge key={t} variant="outline" className="border-primary/40 text-primary">{t}</Badge>
-              ))}
-            </div>
-            <p className="mb-4 text-sm text-muted-foreground">
-              <span className="font-semibold text-primary">AULA NOVA TODA SEMANA</span> — Estude todas as áreas do ENEM com correções inteligentes, trilhas personalizadas e foco na nota 1000. Tudo em um só lugar. Chega de gastar dinheiro à toa com vários cursos ou questões sem sentido. Tenha acesso a tudo <span className="font-semibold text-foreground">AQUI e AGORA</span>! O sonho da <span className="gradient-text font-semibold">NOTA 1.000</span> e da Universidade está mais próximo.
-            </p>
             <div className="absolute inset-0 -z-10 blur-3xl opacity-50 bg-primary/30 rounded-full" />
             <Carousel opts={{ loop: true, align: "center" }} plugins={[heroAutoplay.current]} className="relative">
               <CarouselContent>
                 {heroImgs.map((img, i) => (
-                  <CarouselItem key={i} className="basis-[80%]">
+                  <CarouselItem key={i} className="basis-[90%]">
                     <div className="relative">
                       <img src={img.src} alt={img.alt} width={1024} height={1024}
                         className="aspect-square w-full rounded-2xl border border-primary/30 object-contain bg-background/40 glow-blue"
@@ -152,7 +144,22 @@ function Index() {
             </Carousel>
           </div>
         </div>
+
+        {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
+        <div className="mx-auto max-w-7xl px-4 pb-16">
+          <div className="rounded-2xl border border-primary/20 bg-card/40 p-6 backdrop-blur">
+            <div className="flex flex-wrap justify-center gap-2">
+              {["Matemática e suas Tecnologias","Linguagens, Códigos e suas Tecnologias","Ciências Humanas e suas Tecnologias","Ciências da Natureza e suas Tecnologias","Redação","+ 1.000 questões em VÍDEO"].map((t) => (
+                <Badge key={t} variant="outline" className="border-primary/40 text-primary">{t}</Badge>
+              ))}
+            </div>
+            <p className="mx-auto mt-4 max-w-4xl text-center text-sm text-muted-foreground">
+              <span className="font-semibold text-primary">AULA NOVA TODA SEMANA</span> — Estude todas as áreas do ENEM com correções inteligentes, trilhas personalizadas e foco na nota 1000. Tudo em um só lugar. Tenha acesso a tudo <span className="font-semibold text-foreground">AQUI e AGORA</span>. O sonho da <span className="gradient-text font-semibold">NOTA 1.000</span> e da Universidade está mais próximo.
+            </p>
+          </div>
+        </div>
       </section>
+
 
       {/* COMO FUNCIONA */}
       <section className="border-t border-border/40 py-20">
