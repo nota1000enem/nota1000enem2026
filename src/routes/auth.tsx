@@ -170,7 +170,7 @@ function AuthPage() {
           </div>
           <div className="my-4 flex items-center gap-2"><div className="h-px flex-1 bg-border" /><span className="text-xs text-muted-foreground">ou com email</span><div className="h-px flex-1 bg-border" /></div>
 
-          <Tabs defaultValue="login">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "signup")}>
             <TabsList className="grid w-full grid-cols-2"><TabsTrigger value="login">Entrar</TabsTrigger><TabsTrigger value="signup">Cadastrar</TabsTrigger></TabsList>
             <TabsContent value="login">
               <form onSubmit={signIn} className="space-y-4">
