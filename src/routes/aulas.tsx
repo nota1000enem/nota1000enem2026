@@ -199,7 +199,9 @@ function Aulas() {
               return aLib - bLib;
             })
             .map((tr) => (
+              <div key={tr.area}>
               <div className="mb-4 flex items-end justify-between gap-3">
+
                 <div>
                   <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
                   <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
