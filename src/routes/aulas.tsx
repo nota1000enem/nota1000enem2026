@@ -135,11 +135,41 @@ const trilhas = [
 function Aulas() {
   const [openLock, setOpenLock] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const [planoPago, setPlanoPago] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("plan, plan_vitalicio, plan_expires_at")
+        .eq("id", user.id)
+        .maybeSingle();
+      const ativo =
+        !!prof &&
+        prof.plan !== "free" &&
+        (prof.plan_vitalicio === true ||
+          (prof.plan_expires_at && new Date(prof.plan_expires_at) > new Date()));
+      setPlanoPago(!!ativo);
+    })();
+  }, []);
 
   function handleClick(titulo: string) {
+    const url = VIDEO_LINKS[titulo];
+    if (url && planoPago) {
+      setAulaSelecionada(titulo);
+      setVideoUrl(url);
+      setVideoOpen(true);
+      return;
+    }
     setAulaSelecionada(titulo);
     setOpenLock(true);
   }
+
+
 
   return (
     <div className="min-h-screen bg-background">
