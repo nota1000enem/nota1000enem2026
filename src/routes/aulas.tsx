@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { PlayCircle, Lock, Sparkles, Crown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { VideoPlayer } from "@/components/video-player";
+import { supabase } from "@/integrations/supabase/client";
+
+/**
+ * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).
+ * Para liberar uma aula, basta adicionar a entrada com URL do YouTube.
+ * Exemplo: "Estrutura dissertativo-argumentativa perfeita": "https://www.youtube.com/watch?v=XXXXX"
+ */
+const VIDEO_LINKS: Record<string, string> = {
+  // Adicionar links aqui conforme forem enviados.
+};
 
 export const Route = createFileRoute("/aulas")({
   head: () => ({
