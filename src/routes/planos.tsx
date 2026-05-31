@@ -10,6 +10,7 @@ import { Check, Sparkles, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
+import planosImg from "@/assets/planos-img.png";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -39,7 +40,7 @@ const planos: Array<{
     desc: "Para começar com o pé direito.",
     popular: false,
     upgrade: true,
-    items: ["15 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Redação completa", "1.000 questões", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
+    items: ["15 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências da Natureza e suas Tecnologias", "1.000 questões e simulados", "Plano de Estudo com IA", "PDF metodologia de estudos", "Cronograma de 30 dias", "Templates de redação nota 1000", "Acesso básico IA"],
   },
   {
     name: "ENEM Pro",
@@ -49,7 +50,7 @@ const planos: Array<{
     desc: "O queridinho dos aprovados.",
     popular: true,
     upgrade: true,
-    items: ["30 redações por mês", "Linguagens, Códigos e suas Tecnologias", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "Redação completa", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
+    items: ["30 redações por mês", "Tudo do Light", "Ciências Humanas e suas Tecnologias", "Matemática e suas Tecnologias", "As 4 áreas do ENEM liberadas", "20 vídeo aulas", "1.000 questões para passar", "Simulados", "Correção IA avançada", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Cronograma inteligente"],
   },
   {
     name: "Full Acess ENEM",
@@ -59,7 +60,7 @@ const planos: Array<{
     desc: "Tudo, sem limites.",
     popular: false,
     upgrade: false,
-    items: ["60 redações por mês", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
+    items: ["60 redações por mês", "Tudo do Pro", "Redação completa", "BÔNUS — 9 segredos para aprovação no vestibular", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido", "Plano de Estudo com IA", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras"],
   },
   {
     name: "Full Acess ENEM Vitalício",
@@ -69,7 +70,7 @@ const planos: Array<{
     desc: "Pague uma vez, use para SEMPRE.",
     popular: false,
     upgrade: false,
-    items: ["Acesso ETERNO — sem mensalidade", "70 redações por mês (renova a cada 30 dias)", "Matemática", "Linguagens e Códigos", "Ciências Humanas", "Ciências da Natureza", "Redação completa", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
+    items: ["Acesso ETERNO — sem mensalidade", "70 redações por mês (renova a cada 30 dias)", "Tudo do Full Acess", "Redação completa", "BÔNUS — 9 segredos para aprovação no vestibular", "Correção IA ilimitada", "1.000 questões avançadas", "Vídeo aulas completas", "Simulados ilimitados", "Templates premium", "Ranking de alunos", "IA Professor Rígido vitalício", "Plano de Estudo com IA vitalício", "Repertórios automáticos", "Estratégias de aprovação", "Atualizações futuras incluídas", "Sem renovação, sem cobrança recorrente"],
   },
 ];
 
@@ -117,9 +118,16 @@ function Planos() {
         <h1 className="mt-3 text-4xl font-bold md:text-5xl">
           Invista no seu <span className="gradient-text">futuro</span>
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          Planos pensados para diferentes momentos do seu estudo. Cancele quando quiser.
+        <p className="mx-auto mt-3 max-w-3xl text-muted-foreground">
+          Planos pensados para diferentes momentos do seu estudo, o SONHO da NOTA 1000 está PRÓXIMO. Cancele quando quiser. NÃO PRECISA CARTÃO DE CRÉDITO
         </p>
+
+        <img
+          src={planosImg}
+          alt="Correção de redações ENEM com inteligência artificial Nota 1000 ENEM"
+          className="mx-auto mt-8 w-full max-w-6xl rounded-2xl border border-primary/30 object-cover shadow-2xl shadow-primary/20"
+          loading="lazy"
+        />
 
         <div className="mt-12 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-4">
           {planos.map((p) => (
