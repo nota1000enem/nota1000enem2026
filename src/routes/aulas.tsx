@@ -12,14 +12,14 @@ import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
+import thumbMatematica from "@/assets/thumb-matematica.png";
+import thumbLinguagens from "@/assets/thumb-linguagens-codigos.png";
+import thumbHumanas from "@/assets/thumb-ciencias-humanas.png";
+import thumbNatureza from "@/assets/thumb-ciencias-natureza.png";
+import thumbRedacao from "@/assets/thumb-redacao.png";
+import thumbBonus from "@/assets/thumb-bonus.png";
 
-/**
- * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).
- * Para liberar uma aula, basta adicionar a entrada com URL do YouTube.
- * Exemplo: "Estrutura dissertativo-argumentativa perfeita": "https://www.youtube.com/watch?v=XXXXX"
- */
 const VIDEO_LINKS: Record<string, string> = {
-  // Matemática e suas Tecnologias
   "🧠 SEMANA DA MATEMÁTICA BÁSICA!! Aulão Completo": "https://youtu.be/MgeQ_Cf7WWg",
   "TUDO DE MATEMÁTICA PARA O ENEM - Aula completa": "https://youtu.be/MA_ZrgV2xws",
   "📈 INTERPRETAÇÃO DE GRÁFICOS, EQUAÇÕES E FUNÇÕES: Aula Completa": "https://youtu.be/yFjm_ObxOzo",
@@ -28,30 +28,25 @@ const VIDEO_LINKS: Record<string, string> = {
   "TUDO de Matemática do Ensino FUNDAMENTAL pro ENEM 2026 (pra quem tem MUITA DIFICULDADE)": "https://youtu.be/JQfJMJrV5Bk",
   "AULÃO ENEM: O que mais cai em FÍSICA no Enem": "https://www.youtube.com/live/DYpF0DJHfk0",
   "TUDO de QUÍMICA GERAL pro ENEM 2026 (GANHE MUITOS ACERTOS)": "https://youtu.be/S5O-_kHn3W0",
-  // Linguagens, Códigos e suas Tecnologias
   "10 horas de aulas (Linguagens códigos e suas tecnologias)": "https://youtu.be/KwtFbA6QLWI",
   "TODOS OS EXERCÍCIOS - LINGUAGENS": "https://youtu.be/sTqMFMEMxr8",
   "11 Horas de Aula (Linguagens códigos e suas tecnologias)": "https://youtu.be/EcFsAkgu-_A",
-  // Ciências Humanas e suas Tecnologias
   "Ciências Humanas e suas Tecnologias no ENEM": "https://www.youtube.com/live/53fJePeNMRA",
   "ENEM 2026 | REVISÃO COMPLETA DE CIÊNCIAS HUMANAS": "https://youtu.be/ka2w_C8rJfQ",
   "✅ MACETES de HUMANAS para o ENEM 2026 (+800 PONTOS com eles!)": "https://youtu.be/SX8fSMUTLGU",
   "Aulão de Revisão Enem: Ciências Humanas e suas Tecnologias": "https://www.youtube.com/live/e2ARULf5zIU",
   "CORREÇÃO ENEM 2025 | LINGUAGENS, CIÊNCIAS HUMANAS E REDAÇÃO": "https://www.youtube.com/live/ApF2ckyAMgQ",
   "Revisão Final ENEM (PROVA 2021) - Ciências Humanas": "https://youtu.be/mN5xjPTQl4Q",
-  // Ciências da Natureza e suas Tecnologias
   "RESOLUÇÃO 2º simulado enem SAS 2026 - NATUREZA PARTE I": "https://youtu.be/sTqMFMEMxr8",
   "INTENSIVÃO ENEM: Revisão COMPLETA de Ciências da Natureza": "https://www.youtube.com/live/4_BBzVvXg18",
   "💪 CORREÇÃO DO ENEM NATUREZA 2025 (45 Acertos) - Ciências da Natureza": "https://www.youtube.com/live/pYQpeY-i2gk",
   "Como GABARITAR Ciências da NATUREZA do Enem 2026 na PRÁTICA": "https://youtu.be/t-JNhC5Vvm0",
   "🍀🤯 Ciências da Natureza e suas Tecnologias para o ENEM 2026: Revisão Completa 3 ANOS EM 4 HORAS!!": "https://youtu.be/NOBaD0hCGYU",
-  // Redação completa
   "Como começar uma REDAÇÃO ENEM 2026 (900+)": "https://youtu.be/LAfiDT4TpHY",
   "AULÃO DE REDAÇÃO PARA O ENEM: como alcançar a nota 1000": "https://youtu.be/cVlfWDcIAfo",
   "AULÃO ENEM DE LITERATURA E REDAÇÃO: OS TEMAS QUE MAIS CAEM | AULÃO ENEM 2025": "https://www.youtube.com/live/u8NOTQQglew",
   "NOVO MODELO REDAÇÃO ENEM 2026 (+900 em QUALQUER TEMA)": "https://youtu.be/wYkCtbXVUZU",
   "COMO FAZER UMA REDAÇÃO NOTA MÁXIMA? ENEM 2026": "https://youtu.be/mYmrLdf5AWE",
-  // Bônus
   "RESOLVENDO LINGUAGENS DO ENEM 2023 AO VIVO - Live BÔNUS": "https://www.youtube.com/live/z-7F_ulvD90",
   "QUÍMICA ORGÂNICA no ENEM 2026: Tudo o que Cai (AULA COMPLETA)": "https://www.youtube.com/live/dIpxNWr4ZDI",
   "🔴 [ENEM 2025] GABARITO EXTRAOFICIAL Matemática": "https://www.youtube.com/live/Kcz3Y5fmweE",
@@ -70,11 +65,14 @@ export const Route = createFileRoute("/aulas")({
   component: Aulas,
 });
 
-function gerar(titulos: string[]): { t: string; min: number }[] {
-  return titulos.map((t, i) => ({ t, min: 10 + ((i * 3) % 22) }));
-}
-
 type VideoLesson = { title: string; video_url: string; access_tier: string };
+
+type Trilha = {
+  area: string;
+  cor: string;
+  thumb: string;
+  aulas: { t: string; min: number }[];
+};
 
 function canAccessArea(tier: PlanTier, area: string) {
   if (tier === "full" || tier === "vitalicio") return true;
@@ -83,10 +81,18 @@ function canAccessArea(tier: PlanTier, area: string) {
   return false;
 }
 
-const trilhas = [
+function formatDuration(totalMinutes: number) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours === 0) return `${minutes} min`;
+  return `${hours}:${String(minutes).padStart(2, "0")} horas`;
+}
+
+const trilhas: Trilha[] = [
   {
     area: "Matemática e suas Tecnologias",
     cor: "from-blue-500/30 to-blue-500/5",
+    thumb: thumbMatematica,
     aulas: [
       { t: "🧠 SEMANA DA MATEMÁTICA BÁSICA!! Aulão Completo", min: 120 },
       { t: "TUDO DE MATEMÁTICA PARA O ENEM - Aula completa", min: 180 },
@@ -101,6 +107,7 @@ const trilhas = [
   {
     area: "Linguagens, Códigos e suas Tecnologias",
     cor: "from-fuchsia-500/30 to-fuchsia-500/5",
+    thumb: thumbLinguagens,
     aulas: [
       { t: "10 horas de aulas (Linguagens códigos e suas tecnologias)", min: 600 },
       { t: "TODOS OS EXERCÍCIOS - LINGUAGENS", min: 180 },
@@ -110,6 +117,7 @@ const trilhas = [
   {
     area: "Ciências Humanas e suas Tecnologias",
     cor: "from-amber-500/30 to-amber-500/5",
+    thumb: thumbHumanas,
     aulas: [
       { t: "Ciências Humanas e suas Tecnologias no ENEM", min: 120 },
       { t: "ENEM 2026 | REVISÃO COMPLETA DE CIÊNCIAS HUMANAS", min: 150 },
@@ -122,6 +130,7 @@ const trilhas = [
   {
     area: "Ciências da Natureza e suas Tecnologias",
     cor: "from-emerald-500/30 to-emerald-500/5",
+    thumb: thumbNatureza,
     aulas: [
       { t: "RESOLUÇÃO 2º simulado enem SAS 2026 - NATUREZA PARTE I", min: 90 },
       { t: "INTENSIVÃO ENEM: Revisão COMPLETA de Ciências da Natureza", min: 180 },
@@ -133,6 +142,7 @@ const trilhas = [
   {
     area: "Redação completa",
     cor: "from-primary/30 to-primary/5",
+    thumb: thumbRedacao,
     aulas: [
       { t: "Como começar uma REDAÇÃO ENEM 2026 (900+)", min: 25 },
       { t: "AULÃO DE REDAÇÃO PARA O ENEM: como alcançar a nota 1000", min: 90 },
@@ -144,6 +154,7 @@ const trilhas = [
   {
     area: "BÔNUS — Aulões e correções extras",
     cor: "from-yellow-500/30 to-yellow-500/5",
+    thumb: thumbBonus,
     aulas: [
       { t: "RESOLVENDO LINGUAGENS DO ENEM 2023 AO VIVO - Live BÔNUS", min: 150 },
       { t: "QUÍMICA ORGÂNICA no ENEM 2026: Tudo o que Cai (AULA COMPLETA)", min: 120 },
@@ -187,8 +198,6 @@ function Aulas() {
     if (!planLoading) setOpenLock(true);
   }
 
-
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -212,56 +221,65 @@ function Aulas() {
             })
             .map((tr) => (
               <div key={tr.area}>
-              <div className="mb-4 flex items-end justify-between gap-3">
-
-                <div>
-                  <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
-                  <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
+                <div className="mb-4 flex items-end justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
+                    <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
+                  </div>
+                  <Badge variant="outline" className="border-primary/40 text-primary">Trilha completa</Badge>
                 </div>
-                <Badge variant="outline" className="border-primary/40 text-primary">Trilha completa</Badge>
-              </div>
-              <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
-                <CarouselContent>
-                  {tr.aulas.map((a, idx) => {
-                    const liberada = planoPago && canAccessArea(tier, tr.area);
-                    return <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                      <Card
-                        onClick={() => handleClick(a.t, tr.area)}
-                        className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
-                      >
-                        <div className={`relative aspect-video bg-gradient-to-br ${tr.cor}`}>
-                          <div className="absolute inset-0 grid place-content-center">
-                            <PlayCircle className="h-14 w-14 text-primary/40 drop-shadow-lg" />
-                          </div>
-                          {!liberada && (
-                            <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
-                              <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
-                                <Lock className="h-7 w-7 text-primary" />
+                <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
+                  <CarouselContent>
+                    {tr.aulas.map((a, idx) => {
+                      const liberada = planoPago && canAccessArea(tier, tr.area);
+                      return (
+                        <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                          <Card
+                            onClick={() => handleClick(a.t, tr.area)}
+                            className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
+                          >
+                            <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${tr.cor}`}>
+                              <img
+                                src={tr.thumb}
+                                alt={`Thumb da trilha ${tr.area}`}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 bg-black/20" />
+                              <div className="absolute inset-0 grid place-content-center">
+                                <div className="grid h-16 w-16 place-content-center rounded-full bg-background/75 shadow-lg ring-2 ring-primary/40 backdrop-blur-sm">
+                                  <PlayCircle className="h-8 w-8 text-primary drop-shadow-lg" />
+                                </div>
                               </div>
+                              {!liberada && (
+                                <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
+                                  <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
+                                    <Lock className="h-7 w-7 text-primary" />
+                                  </div>
+                                </div>
+                              )}
+                              <Badge className="absolute right-3 top-3" variant="outline">
+                                {liberada ? <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</> : <><Lock className="mr-1 h-3 w-3" /> Premium</>}
+                              </Badge>
+                              <span className="absolute left-3 top-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
+                                Aula {String(idx + 1).padStart(2, "0")}
+                              </span>
                             </div>
-                          )}
-                          <Badge className="absolute top-3 right-3" variant="outline">
-                            {liberada ? <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</> : <><Lock className="mr-1 h-3 w-3" /> Premium</>}
-                          </Badge>
-                          <span className="absolute top-3 left-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
-                            Aula {String(idx + 1).padStart(2, "0")}
-                          </span>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="line-clamp-2 text-sm font-medium">{a.t}</h3>
-                          <p className="mt-1 text-xs text-muted-foreground">{a.min} min</p>
-                        </div>
-                      </Card>
-                    </CarouselItem>;
-                  })}
-                </CarouselContent>
-                <CarouselPrevious className="left-0" />
-                <CarouselNext className="right-0" />
-              </Carousel>
+                            <div className="p-4">
+                              <h3 className="line-clamp-2 text-sm font-medium">{a.t}</h3>
+                              <p className="mt-1 text-xs text-muted-foreground">{formatDuration(a.min)}</p>
+                            </div>
+                          </Card>
+                        </CarouselItem>
+                      );
+                    })}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
               </div>
             ))}
         </div>
-
 
         <Card className="card-glass mt-12 p-8 text-center">
           <h3 className="text-2xl font-bold">Faça parte da nossa comunidade</h3>
@@ -324,7 +342,6 @@ function Aulas() {
         videoUrl={videoUrl}
         title={aulaSelecionada}
       />
-
 
       <Footer />
     </div>
