@@ -289,6 +289,8 @@ Retorne SEMPRE via tool_call estruturado.`;
                   sugestoes: { type: "array", items: { type: "string" } },
                   melhorias: { type: "array", items: { type: "string" } },
                   repertorios: { type: "array", items: { type: "string" } },
+                  anulada: { type: "boolean", description: "true se a redação se enquadra em qualquer situação de zero automático do INEP" },
+                  motivo_anulacao: { type: "string", description: "regra violada quando anulada=true; string vazia quando anulada=false" },
                 },
                 required: [
                   "competencia_1",
@@ -302,6 +304,8 @@ Retorne SEMPRE via tool_call estruturado.`;
                   "sugestoes",
                   "melhorias",
                   "repertorios",
+                  "anulada",
+                  "motivo_anulacao",
                 ],
                 additionalProperties: false,
               },
