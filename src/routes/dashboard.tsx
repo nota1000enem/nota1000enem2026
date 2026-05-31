@@ -10,6 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play, Brain } from "lucide-react";
 import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 
+const PLAN_VALUES: Record<string, number> = {
+  LIGHT: 19.9,
+  PRO: 29.9,
+  FULL: 49.9,
+  VITALICIO: 499,
+};
+
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
@@ -32,6 +39,27 @@ function Dashboard() {
   const [ultimoPlano, setUltimoPlano] = useState<PlanoResumo | null>(null);
   const [nome, setNome] = useState<string>("estudante");
   const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    const plan = params.get("plan")?.toUpperCase() ?? "";
+    const purchaseKey = `mp_purchase_${plan}_${status}`;
+    if (status === "success" && plan in PLAN_VALUES && !sessionStorage.getItem(purchaseKey)) {
+      sessionStorage.setItem(purchaseKey, "1");
+      import("@/lib/meta-pixel")
+        .then(({ pixelTrack }) => {
+          pixelTrack("Purchase", {
+            content_name: `Plano ${plan}`,
+            content_category: "subscription",
+            content_ids: [plan],
+            currency: "BRL",
+            value: PLAN_VALUES[plan],
+          });
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
