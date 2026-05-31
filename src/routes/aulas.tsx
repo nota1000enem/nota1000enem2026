@@ -262,6 +262,14 @@ function Aulas() {
         </DialogContent>
       </Dialog>
 
+      <VideoPlayer
+        open={videoOpen}
+        onClose={() => setVideoOpen(false)}
+        videoUrl={videoUrl}
+        title={aulaSelecionada}
+      />
+
+
       <Footer />
     </div>
   );
