@@ -25,8 +25,14 @@ function AuthPage() {
   const [erroLogin, setErroLogin] = useState<string>("");
   const [erroSignup, setErroSignup] = useState<string>("");
   const [enviandoReset, setEnviandoReset] = useState(false);
+  const [tab, setTab] = useState<"login" | "signup">("login");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("erro") === "sem_conta") {
+      setErroLogin("Esta conta ainda não existe. Use a aba 'Cadastrar' para criar primeiro.");
+      setTab("signup");
+    }
     supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
   }, [nav]);
 
@@ -128,11 +134,14 @@ function AuthPage() {
     }
   }
   async function google() {
+    // Marca a intenção (login vs cadastro) pra checar do outro lado após OAuth
+    sessionStorage.setItem("oauth_intent", tab);
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
     if (r.error) toast.error("Erro ao entrar com Google. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
   }
   async function apple() {
+    sessionStorage.setItem("oauth_intent", tab);
     const r = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin + "/dashboard" });
     if (r.error) toast.error("Erro ao entrar com Apple. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
@@ -161,7 +170,7 @@ function AuthPage() {
           </div>
           <div className="my-4 flex items-center gap-2"><div className="h-px flex-1 bg-border" /><span className="text-xs text-muted-foreground">ou com email</span><div className="h-px flex-1 bg-border" /></div>
 
-          <Tabs defaultValue="login">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "signup")}>
             <TabsList className="grid w-full grid-cols-2"><TabsTrigger value="login">Entrar</TabsTrigger><TabsTrigger value="signup">Cadastrar</TabsTrigger></TabsList>
             <TabsContent value="login">
               <form onSubmit={signIn} className="space-y-4">

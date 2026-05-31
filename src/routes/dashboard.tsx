@@ -39,6 +39,26 @@ function Dashboard() {
   const [ultimoPlano, setUltimoPlano] = useState<PlanoResumo | null>(null);
   const [nome, setNome] = useState<string>("estudante");
   const [fetching, setFetching] = useState(true);
+  const [confirmandoPgto, setConfirmandoPgto] = useState(false);
+
+  // OAuth: se o usuário tentou ENTRAR mas a conta não existia, o provider
+  // (Google/Apple) cria a conta automaticamente. Detectamos via created_at
+  // recente + intent "login" e deslogamos, pedindo cadastro explícito.
+  useEffect(() => {
+    if (!user) return;
+    const intent = sessionStorage.getItem("oauth_intent");
+    if (!intent) return;
+    sessionStorage.removeItem("oauth_intent");
+    if (intent !== "login") return;
+    const createdAt = user.created_at ? new Date(user.created_at).getTime() : 0;
+    const isBrandNew = Date.now() - createdAt < 60_000;
+    if (isBrandNew) {
+      (async () => {
+        await supabase.auth.signOut();
+        window.location.href = "/auth?erro=sem_conta";
+      })();
+    }
+  }, [user, router]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -61,6 +81,37 @@ function Dashboard() {
         .catch(() => {});
     }
   }, []);
+
+  // Polling: ao voltar do checkout com status=success, esperamos o webhook
+  // do Mercado Pago ativar a subscription antes de mostrar tudo "vazio".
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("status") !== "success") return;
+    let cancelled = false;
+    setConfirmandoPgto(true);
+    (async () => {
+      for (let i = 0; i < 20 && !cancelled; i++) {
+        const { data } = await supabase
+          .from("subscriptions")
+          .select("status, current_period_end")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (data?.status === "ACTIVE" && data.current_period_end && new Date(data.current_period_end) > new Date()) {
+          if (!cancelled) {
+            setConfirmandoPgto(false);
+            // Limpa querystring pra evitar polling de novo no F5
+            window.history.replaceState({}, "", "/dashboard");
+            window.location.reload();
+          }
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+      if (!cancelled) setConfirmandoPgto(false);
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
@@ -93,6 +144,18 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      {confirmandoPgto && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur">
+          <Card className="card-glass mx-4 max-w-md p-8 text-center">
+            <Sparkles className="mx-auto h-10 w-10 animate-pulse text-primary" />
+            <h2 className="mt-4 text-xl font-bold">Confirmando seu pagamento...</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Recebemos seu pagamento! Estamos liberando seu acesso, isso leva alguns segundos.
+              Não feche esta página.
+            </p>
+          </Card>
+        </div>
+      )}
       <section className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
