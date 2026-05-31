@@ -60,6 +60,20 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             allowFullScreen
             frameBorder={0}
           />
+          {/* Máscaras opacas que ESCONDEM totalmente os overlays do YouTube
+              (ícone de link no topo esquerdo, "Mais vídeos" e logo do YouTube
+              no topo direito). Cobrem visualmente e bloqueiam cliques. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-auto absolute left-0 top-0 z-10 h-16 w-32 bg-black"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-auto absolute right-0 top-0 z-10 h-16 w-72 max-w-[55%] bg-black"
+          />
+          {/* Shields inferiores: bloqueiam botões nativos do YouTube nos cantos
+              da barra de controles (ex.: link de compartilhar/título do vídeo)
+              sem cobrir play/pause, tempo, volume e fullscreen. */}
           <button
             type="button"
             tabIndex={-1}
