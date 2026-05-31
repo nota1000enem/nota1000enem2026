@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
+import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 
 export const Route = createFileRoute("/plano-estudo")({
   head: () => ({
@@ -53,6 +54,7 @@ function PlanoEstudoPage() {
   const [diasAteProva, setDiasAteProva] = useState("180");
   const [carregando, setCarregando] = useState(false);
   const [plano, setPlano] = useState<PlanoIA | null>(null);
+  const [planoAbertoId, setPlanoAbertoId] = useState<string | null>(null);
   const { isPaid: liberado, loading: carregandoPlano } = usePlanAccess();
   const [historico, setHistorico] = useState<PlanoSalvo[]>([]);
 
@@ -66,7 +68,10 @@ function PlanoEstudoPage() {
       const { data: planos } = await supabase.from("planos_estudo").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5);
       const lista = (planos as unknown as PlanoSalvo[] | null) ?? [];
       setHistorico(lista);
-      if (lista.length > 0) setPlano(lista[0].cronograma);
+      if (lista.length > 0) {
+        setPlano(lista[0].cronograma);
+        setPlanoAbertoId(lista[0].id);
+      }
     })();
   }, [user]);
 
@@ -109,8 +114,10 @@ function PlanoEstudoPage() {
       const planoGerado = { resumo: r.resumo, dicas_gerais: r.dicas_gerais, cronograma: r.cronograma };
       setPlano(planoGerado);
       const salvo = (data as PlanoIA & { plano_salvo?: PlanoSalvo | null }).plano_salvo;
-      if (salvo) setHistorico([salvo, ...historico].slice(0, 5));
+      setPlanoAbertoId(salvo?.id ?? "novo");
+      if (salvo) setHistorico([salvo, ...historico.filter((h) => h.id !== salvo.id)].slice(0, 5));
       toast.success("Plano semanal gerado e salvo!");
+      setTimeout(() => document.getElementById("plano-gerado")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao gerar plano");
     } finally {
@@ -133,6 +140,7 @@ function PlanoEstudoPage() {
           A IA monta uma sequência pedagógica real (teoria → exercício → revisão), em blocos curtos de 15-30 min,
           cobrindo as 4 áreas do ENEM + redação.
         </p>
+        <WeeklyRetentionSummary userId={user?.id} />
 
         <div className="mt-3 flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -161,7 +169,7 @@ function PlanoEstudoPage() {
 
         {liberado && (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <Card className="card-glass p-6">
+          <Card id="plano-gerado" className="card-glass scroll-mt-24 p-6">
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Horas/dia <span className="text-xs text-muted-foreground">(mín 2h)</span></Label>
@@ -204,6 +212,10 @@ function PlanoEstudoPage() {
             )}
             {plano && (
               <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-lg font-semibold">Plano semanal salvo</h3>
+                  {planoAbertoId && <Badge variant="outline" className="border-primary/40 text-primary">Aberto agora</Badge>}
+                </div>
                 <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">{plano.resumo}</div>
                 {plano.dicas_gerais?.length > 0 && (
                   <div>
@@ -251,7 +263,11 @@ function PlanoEstudoPage() {
                       {new Date(p.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
                     </p>
                   </div>
-                  <Button size="sm" variant="outline" onClick={() => setPlano(p.cronograma)}>Ver plano</Button>
+                  <Button size="sm" variant="outline" onClick={() => {
+                    setPlano(p.cronograma);
+                    setPlanoAbertoId(p.id);
+                    setTimeout(() => document.getElementById("plano-gerado")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                  }}>Ver plano</Button>
                 </Card>
               ))}
             </div>
