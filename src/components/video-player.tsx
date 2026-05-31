@@ -95,7 +95,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
   const [duration, setDuration] = useState(0);
   const [current, setCurrent] = useState(0);
   const [buffered, setBuffered] = useState(0);
-  const [volume, setVolume] = useState(100);
+  const [volume, setVolume] = useState(50);
   const [muted, setMuted] = useState(false);
   const [speed, setSpeed] = useState<number>(1);
   const [quality, setQuality] = useState<string>("auto");
@@ -132,8 +132,12 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
           onReady: (e: any) => {
             setReady(true);
             setDuration(e.target.getDuration() || 0);
-            setVolume(e.target.getVolume() ?? 100);
-            setMuted(e.target.isMuted());
+            try {
+              e.target.setVolume(50);
+              e.target.unMute();
+            } catch {}
+            setVolume(50);
+            setMuted(false);
             try {
               e.target.playVideo();
             } catch {}

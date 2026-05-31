@@ -68,15 +68,28 @@ serve(async (req) => {
     const body = await req.json();
     let horasDia = Number(body.horasDia ?? 2);
     let diasSemana = Number(body.diasSemana ?? 4);
+    let horaInicio = Number(body.horaInicio ?? 19);
     const fraquezas = String(body.fraquezas ?? "").slice(0, 500);
     const meta = String(body.meta ?? "aprovação").slice(0, 200);
     const diasAteProva = Number(body.diasAteProva ?? 180);
 
-    // ❗ CLAMP — respeita regras: 2h-8h, 4-6 dias
+    // ❗ CLAMP — respeita regras
     if (!Number.isFinite(horasDia) || horasDia < 2) horasDia = 2;
     if (horasDia > 8) horasDia = 8;
     if (!Number.isFinite(diasSemana) || diasSemana < 4) diasSemana = 4;
     if (diasSemana > 6) diasSemana = 6;
+    if (!Number.isFinite(horaInicio) || horaInicio < 5) horaInicio = 19;
+    if (horaInicio > 22) horaInicio = 22;
+    if (horaInicio + horasDia > 24) horaInicio = 24 - horasDia;
+
+    // Pré-gera os slots HORA A HORA (ex.: 13h às 14h, 14h às 15h, …)
+    const slotsHorarios: string[] = [];
+    for (let i = 0; i < horasDia; i++) {
+      const ini = horaInicio + i;
+      const fim = ini + 1;
+      const pad = (n: number) => String(n).padStart(2, "0");
+      slotsHorarios.push(`${pad(ini)}:00 às ${pad(fim)}:00`);
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
@@ -97,7 +110,7 @@ serve(async (req) => {
 
 REGRAS ABSOLUTAS:
 1. O cronograma terá EXATAMENTE ${diasSemana} dias de estudo. NÃO inclua mais dias. Os dias ATIVOS são: ${diasAtivos.join(", ")}. Os dias ${diasDescanso.join(", ")} devem aparecer no cronograma como dias de "Descanso ativo / leitura leve" com 1 bloco curto opcional OU apenas com a label "Descanso — sem estudo formal hoje". NUNCA gere blocos de estudo cheios nos dias de descanso.
-2. CARGA DIÁRIA: exatamente ${horasDia}h de estudo nos dias ativos. Distribua em blocos curtos de 15, 20, 25 ou 30 minutos (técnica de microaprendizagem ENEM) + pausas curtas de 5-10min entre blocos. NUNCA blocos de 50min — eles desconcentram.
+2. CARGA DIÁRIA: exatamente ${horasDia}h de estudo nos dias ativos. **OBRIGATÓRIO** — crie EXATAMENTE ${horasDia} blocos por dia ativo, UM POR HORA, usando estes horários NA ORDEM: ${slotsHorarios.join(" | ")}. Cada bloco dura 60 minutos (50min de estudo + 10min de pausa dentro do bloco). NUNCA agrupe 2h num único bloco como "13h às 15h" — sempre 1 hora por bloco. NUNCA pule um horário. NUNCA invente outro horário.
 3. SEQUÊNCIA PEDAGÓGICA: cada matéria que aparece deve seguir TEORIA → EXEMPLOS RESOLVIDOS → EXERCÍCIOS → REVISÃO ESPAÇADA. Ex.: se Segunda tem "Função do 2º grau (teoria)", Quarta deve ter "Exercícios de função do 2º grau" e no domingo ou sábado "Revisão de funções".
 4. ENCADEAMENTO: não pule pré-requisitos. Equação do 2º grau ANTES de função do 2º grau. Cinemática ANTES de dinâmica. Sintaxe ANTES de coesão. Pré-modernismo ANTES de modernismo.
 5. COBERTURA OBRIGATÓRIA (todas as 4 áreas presentes na semana, mínimo 40-50min cada):
@@ -123,21 +136,22 @@ REGRAS ABSOLUTAS:
    - Literatura: Quinhentismo, Barroco, Arcadismo, Romantismo, Realismo/Naturalismo, Parnasianismo/Simbolismo, Pré-Modernismo, Modernismo (1ª/2ª/3ª fase), Contemporânea.
    - Inglês: Reading comprehension, Cognatos/falsos cognatos, Tempos verbais, Phrasal verbs.
    - Redação: Estrutura dissertativa-argumentativa, Tese, Repertório sociocultural, Coesão, Proposta de intervenção (5 elementos).
-10. HORÁRIO: comece em 19:00 (estudante padrão pós-escola). Em fins de semana, sugira 14:00. Ajuste se a meta sugerir outro padrão.
+10. HORÁRIO: comece SEMPRE em ${String(horaInicio).padStart(2,"0")}:00 (horário declarado pelo aluno). Use APENAS os slots horários listados na regra 2, em ordem cronológica.
 11. DICAS: 5-7 dicas ESPECÍFICAS, com tom humano, evitando frases genéricas tipo "estude todos os dias". Boas dicas mencionam: técnica de Feynman, flashcards Anki, simulado quinzenal, revisão por mapa mental nos domingos, banco TRI ENEM, correção da redação na segunda após escrever no sábado, etc.
 12. RESUMO: 2-3 frases motivacionais que MENCIONEM A META do aluno e as fraquezas declaradas (personalize).
 
 Retorne SEMPRE via tool_call.`;
 
     const userPrompt = `Monte o plano semanal para este aluno:
-- Carga: ${horasDia}h/dia em ${diasSemana} dias da semana
+- Carga: ${horasDia}h/dia em ${diasSemana} dias da semana, começando às ${String(horaInicio).padStart(2,"0")}:00
+- SLOTS OBRIGATÓRIOS por dia ativo (use TODOS, na ordem): ${slotsHorarios.join(" | ")}
 - Dias ativos: ${diasAtivos.join(", ")}
 - Dias de descanso: ${diasDescanso.join(", ")}
 - Pontos fracos declarados: ${fraquezas || "não informados (cobertura equilibrada)"}
 - Meta: ${meta}
 - Dias até a prova: ${diasAteProva}
 
-O cronograma deve trazer os 7 dias da semana, mas só os ${diasSemana} dias ativos terão blocos de estudo cheios. Os outros aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
+Cada dia ativo deve ter EXATAMENTE ${horasDia} blocos (um por hora). Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -206,7 +220,7 @@ O cronograma deve trazer os 7 dias da semana, mas só os ${diasSemana} dias ativ
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
-    // 🔒 PÓS-PROCESSAMENTO: garante respeito a diasSemana
+    // 🔒 PÓS-PROCESSAMENTO: força slots hora a hora e respeito a diasSemana
     if (Array.isArray(parsed.cronograma)) {
       parsed.cronograma = parsed.cronograma.map((d: { dia: string; blocos: Array<{ horario: string; materia: string; topico: string; tipo: string }> }) => {
         const ativo = diasAtivos.includes(d.dia);
@@ -221,7 +235,18 @@ O cronograma deve trazer os 7 dias da semana, mas só os ${diasSemana} dias ativ
             }],
           };
         }
-        return d;
+        // Garante exatamente `horasDia` blocos com os horários corretos.
+        const blocosIA = Array.isArray(d.blocos) ? d.blocos : [];
+        const blocosFinal = slotsHorarios.map((horario, idx) => {
+          const orig = blocosIA[idx];
+          return {
+            horario,
+            materia: orig?.materia || "Estudo geral",
+            topico: orig?.topico || "Sessão de estudo focada",
+            tipo: orig?.tipo || "teoria",
+          };
+        });
+        return { dia: d.dia, blocos: blocosFinal };
       });
     }
 

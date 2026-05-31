@@ -62,6 +62,7 @@ function PlanoEstudoPage() {
   const router = useRouter();
   const [horasDia, setHorasDia] = useState("3");
   const [diasSemana, setDiasSemana] = useState("5");
+  const [horaInicio, setHoraInicio] = useState("19");
   const [fraquezas, setFraquezas] = useState("");
   const [meta, setMeta] = useState("Aprovação em medicina");
   const [diasAteProva, setDiasAteProva] = useState("180");
@@ -93,10 +94,13 @@ function PlanoEstudoPage() {
   function validar(): string | null {
     const h = Number(horasDia);
     const d = Number(diasSemana);
+    const hi = Number(horaInicio);
     if (!h || h < 2) return "Mínimo de 2h por dia.";
     if (h > 8) return "Máximo de 8h por dia (evite burnout).";
     if (!d || d < 5) return "Mínimo de 5 dias por semana.";
     if (d > 6) return "Máximo de 6 dias por semana (1 dia de descanso é essencial).";
+    if (!Number.isFinite(hi) || hi < 5 || hi > 22) return "Horário de início inválido (use 5 a 22h).";
+    if (hi + h > 24) return "Carga ultrapassa a meia-noite. Reduza horas ou comece mais cedo.";
     return null;
   }
 
@@ -142,6 +146,7 @@ function PlanoEstudoPage() {
         body: {
           horasDia: Number(horasDia),
           diasSemana: Number(diasSemana),
+          horaInicio: Number(horaInicio),
           fraquezas,
           meta,
           diasAteProva: Number(diasAteProva),
@@ -256,6 +261,22 @@ function PlanoEstudoPage() {
                   </span>
                 </div>
               )}
+              <div className="mt-4">
+                <Label>
+                  Horário livre — COMEÇO{" "}
+                  <span className="text-xs text-muted-foreground">(ex: 13 = começa às 13h)</span>
+                </Label>
+                <Input
+                  type="number"
+                  min={5}
+                  max={22}
+                  value={horaInicio}
+                  onChange={(e) => setHoraInicio(e.target.value)}
+                />
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  A IA monta os blocos hora a hora a partir desse horário. Ex.: 13h às 14h, 14h às 15h…
+                </p>
+              </div>
               <div className="mt-4">
                 <Label>Dias até a prova</Label>
                 <Input

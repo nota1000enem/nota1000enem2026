@@ -30,9 +30,13 @@ function AuthPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("erro") === "sem_conta") {
-      setErroLogin("Esta conta ainda não existe. Use a aba 'Cadastrar' para criar primeiro.");
+      setErroLogin("Conta não existe, cadastre-se ou revise os dados.");
       setTab("signup");
     }
+    // Limpa qualquer dado autopreenchido pelo navegador ao abrir a página
+    setEmail("");
+    setPassword("");
+    setName("");
     supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
   }, [nav]);
 
@@ -173,9 +177,9 @@ function AuthPage() {
           <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "signup")}>
             <TabsList className="grid w-full grid-cols-2"><TabsTrigger value="login">Entrar</TabsTrigger><TabsTrigger value="signup">Cadastrar</TabsTrigger></TabsList>
             <TabsContent value="login">
-              <form onSubmit={signIn} className="space-y-4">
-                <div><Label>Email</Label><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
-                <div><Label>Senha</Label><Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required /></div>
+              <form onSubmit={signIn} className="space-y-4" autoComplete="off">
+                <div><Label>Email</Label><Input type="email" name="login-email" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
+                <div><Label>Senha</Label><Input type="password" name="login-password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)} required /></div>
                 {erroLogin && (
                   <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
@@ -194,12 +198,12 @@ function AuthPage() {
               </form>
             </TabsContent>
             <TabsContent value="signup">
-              <form onSubmit={signUp} className="space-y-4">
-                <div><Label>Nome</Label><Input value={name} onChange={e=>setName(e.target.value)} required /></div>
-                <div><Label>Email</Label><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
+              <form onSubmit={signUp} className="space-y-4" autoComplete="off">
+                <div><Label>Nome</Label><Input name="signup-name" autoComplete="off" value={name} onChange={e=>setName(e.target.value)} required /></div>
+                <div><Label>Email</Label><Input type="email" name="signup-email" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
                 <div>
                   <Label>Senha</Label>
-                  <Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} />
+                  <Input type="password" name="signup-password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={6} />
                   <p className="mt-1 text-[11px] text-muted-foreground">
                     Mínimo 6 caracteres com 1 MAIÚSCULA, 1 minúscula, 1 número e 1 caractere especial.
                   </p>
