@@ -729,8 +729,8 @@ function Index() {
                 <Button
                   onClick={() => handleBuy(p.planType)}
                   disabled={loadingPlan !== null}
-                  className={`mt-6 w-full ${p.popular ? "glow-blue" : "bg-primary/30 text-primary-foreground hover:bg-primary/50"}`}
-                  variant={p.popular ? "default" : "default"}
+                  size="lg"
+                  className="mt-6 w-full bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
                 >
                   {loadingPlan === p.planType ? (
                     <>
