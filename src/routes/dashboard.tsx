@@ -119,6 +119,27 @@ function Dashboard() {
           </Card>
         </div>
 
+        {/* Plano de estudo atual */}
+        <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <Brain className="h-4 w-4 text-primary" /> Plano de estudo da semana
+        </h2>
+        {ultimoPlano ? (
+          <Card className="card-glass flex flex-wrap items-center justify-between gap-3 p-5">
+            <div>
+              <p className="font-medium">{ultimoPlano.dias_semana} dias × {ultimoPlano.horas_dia}h — {ultimoPlano.meta || "sem meta"}</p>
+              <p className="text-xs text-muted-foreground">
+                Gerado em {new Date(ultimoPlano.created_at).toLocaleDateString("pt-BR")} · Lembre-se de gerar um novo todo domingo.
+              </p>
+            </div>
+            <Link to="/plano-estudo"><Button variant="outline" size="sm"><Brain className="mr-1 h-4 w-4" /> Abrir plano</Button></Link>
+          </Card>
+        ) : (
+          <Card className="card-glass flex flex-wrap items-center justify-between gap-3 p-5">
+            <p className="text-sm text-muted-foreground">Você ainda não gerou nenhum plano de estudo.</p>
+            <Link to="/plano-estudo"><Button size="sm" className="glow-blue"><Brain className="mr-1 h-4 w-4" /> Gerar meu plano</Button></Link>
+          </Card>
+        )}
+
         {/* Histórico redação */}
         <div className="mt-10">
           <h2 className="mb-4 text-xl font-semibold">Histórico de redações</h2>
