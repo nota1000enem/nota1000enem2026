@@ -203,9 +203,9 @@ function Aulas() {
               </div>
               <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
                 <CarouselContent>
-                  {tr.aulas.map((a, idx) => (
+                  {tr.aulas.map((a, idx) => {
                     const liberada = planoPago && canAccessArea(tier, tr.area);
-                    <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                    return <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                       <Card
                         onClick={() => handleClick(a.t, tr.area)}
                         className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
@@ -233,8 +233,8 @@ function Aulas() {
                           <p className="mt-1 text-xs text-muted-foreground">{a.min} min</p>
                         </div>
                       </Card>
-                    </CarouselItem>
-                  ))}
+                    </CarouselItem>;
+                  })}
                 </CarouselContent>
                 <CarouselPrevious className="left-0" />
                 <CarouselNext className="right-0" />
