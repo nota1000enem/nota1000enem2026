@@ -183,8 +183,23 @@ NÃO aponte como erro nenhum dos casos abaixo — são CORRETOS no português cu
 - NÃO confunda C1 (gramática) com C4 (coesão). Repetição lexical é C4.
 - Vírgula antes de "mas/porém/contudo/todavia/entretanto" é SEMPRE obrigatória (esse SIM aponte).
 
-==== ZERO AUTOMÁTICO ====
-nota_total = 0: branco, fuga total, não-dissertativo (poema/narrativa/receita), < 7 linhas, cópia integral dos motivadores, desrespeito aos DH.
+==== ZERO AUTOMÁTICO (ANULAÇÃO TOTAL — NOTA 0/1000) ====
+Baseado na cartilha oficial do INEP (Situações que zeram a redação no ENEM):
+Se QUALQUER uma destas situações ocorrer, marque "anulada" = true e preencha "motivo_anulacao" com a regra exata violada. Quando anulada = true, TODAS as 5 competências DEVEM ser 0 e nota_total = 0 — não importa se a gramática está boa.
+
+Situações de anulação (zere a redação inteira):
+1. FUGA TOTAL AO TEMA — o texto não aborda o tema proposto em momento algum (ex.: tema é "inclusão de PcD" e o aluno escreve sobre futebol). Tangenciar o tema NÃO anula (vai para C2 baixo), mas IGNORAR o tema anula.
+2. NÃO-DISSERTATIVO — poema, narrativa, receita, carta, diálogo, letra de música, bula, lista de tópicos.
+3. TEXTO INSUFICIENTE — menos de 7 linhas manuscritas (≈ 350 caracteres no nosso input). Considere anular se texto < 400 caracteres com argumentação ausente.
+4. CÓPIA DOS TEXTOS MOTIVADORES — texto é majoritariamente cópia/paráfrase dos motivadores sem produção autoral.
+5. PARTE DELIBERADAMENTE DESCONECTADA — trechos sem nexo, propaganda, recados, desenhos em palavras, "socorro", "professor me ajuda", impropérios, palavrões gratuitos.
+6. DESRESPEITO AOS DIREITOS HUMANOS — proposta de intervenção que viola DH (extermínio, tortura, segregação étnica/racial/religiosa, eugenia, pena de morte sumária, etc.).
+7. EM BRANCO ou apenas com cabeçalho.
+8. FOLHA DE TEXTO DEFINITIVO ASSINADA / IDENTIFICADA (não se aplica aqui — input é texto digitado).
+
+REGRA DE OURO da anulação: se há fuga TOTAL ao tema (texto inteiro sobre outro assunto), NÃO dê 120 em C1 e 0 nas outras — zere TUDO. O aluno espera comportamento ENEM real.
+
+Se a redação NÃO se enquadra em nenhuma das 8 situações acima, "anulada" = false, "motivo_anulacao" = "", e avalie normalmente pelas 5 competências.
 
 ==== POR COMPETÊNCIA ====
 
