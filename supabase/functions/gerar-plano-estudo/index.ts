@@ -220,7 +220,7 @@ Cada dia ativo deve ter EXATAMENTE ${horasDia} blocos (um por hora). Os outros d
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
-    // 🔒 PÓS-PROCESSAMENTO: garante respeito a diasSemana
+    // 🔒 PÓS-PROCESSAMENTO: força slots hora a hora e respeito a diasSemana
     if (Array.isArray(parsed.cronograma)) {
       parsed.cronograma = parsed.cronograma.map((d: { dia: string; blocos: Array<{ horario: string; materia: string; topico: string; tipo: string }> }) => {
         const ativo = diasAtivos.includes(d.dia);
@@ -235,7 +235,18 @@ Cada dia ativo deve ter EXATAMENTE ${horasDia} blocos (um por hora). Os outros d
             }],
           };
         }
-        return d;
+        // Garante exatamente `horasDia` blocos com os horários corretos.
+        const blocosIA = Array.isArray(d.blocos) ? d.blocos : [];
+        const blocosFinal = slotsHorarios.map((horario, idx) => {
+          const orig = blocosIA[idx];
+          return {
+            horario,
+            materia: orig?.materia || "Estudo geral",
+            topico: orig?.topico || "Sessão de estudo focada",
+            tipo: orig?.tipo || "teoria",
+          };
+        });
+        return { dia: d.dia, blocos: blocosFinal };
       });
     }
 
