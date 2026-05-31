@@ -36,6 +36,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     fs: "1",
     iv_load_policy: "3",
     modestbranding: "1",
+    mute: "1",
     playsinline: "1",
     rel: "0",
     showinfo: "0",
