@@ -80,6 +80,22 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
               e.stopPropagation();
             }}
           />
+          {/* Bloqueio invisível só no atalho/logo/link do YouTube na barra,
+              preservando play, tempo, volume, engrenagem e fullscreen. */}
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="absolute bottom-0 right-11 z-10 h-12 w-16 cursor-default bg-transparent"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
         </div>
       </DialogContent>
     </Dialog>
