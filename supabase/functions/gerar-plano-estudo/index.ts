@@ -82,13 +82,26 @@ serve(async (req) => {
     if (horaInicio > 22) horaInicio = 22;
     if (horaInicio + horasDia > 24) horaInicio = 24 - horasDia;
 
-    // Pré-gera os slots HORA A HORA (ex.: 13h às 14h, 14h às 15h, …)
+    // Pré-gera os slots de NO MÁXIMO 40 minutos (40min estudo + 10min pausa = 50min por ciclo)
+    // Ex.: 13:00 às 13:40, 13:50 às 14:30, 14:40 às 15:20…
     const slotsHorarios: string[] = [];
-    for (let i = 0; i < horasDia; i++) {
-      const ini = horaInicio + i;
-      const fim = ini + 1;
-      const pad = (n: number) => String(n).padStart(2, "0");
-      slotsHorarios.push(`${pad(ini)}:00 às ${pad(fim)}:00`);
+    const totalMin = horasDia * 60;
+    const STUDY = 40;
+    const PAUSE = 10;
+    const pad = (n: number) => String(n).padStart(2, "0");
+    let cursor = horaInicio * 60; // em minutos desde 00:00
+    const fimDia = (horaInicio + horasDia) * 60;
+    let acumulado = 0;
+    while (acumulado + STUDY <= totalMin && cursor + STUDY <= fimDia) {
+      const ini = cursor;
+      const fim = cursor + STUDY;
+      slotsHorarios.push(`${pad(Math.floor(ini / 60))}:${pad(ini % 60)} às ${pad(Math.floor(fim / 60))}:${pad(fim % 60)}`);
+      cursor = fim + PAUSE;
+      acumulado += STUDY;
+    }
+    if (slotsHorarios.length === 0) {
+      // fallback mínimo
+      slotsHorarios.push(`${pad(horaInicio)}:00 às ${pad(horaInicio)}:40`);
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
