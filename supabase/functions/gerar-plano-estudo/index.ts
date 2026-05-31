@@ -82,13 +82,26 @@ serve(async (req) => {
     if (horaInicio > 22) horaInicio = 22;
     if (horaInicio + horasDia > 24) horaInicio = 24 - horasDia;
 
-    // Pré-gera os slots HORA A HORA (ex.: 13h às 14h, 14h às 15h, …)
+    // Pré-gera os slots de NO MÁXIMO 40 minutos (40min estudo + 10min pausa = 50min por ciclo)
+    // Ex.: 13:00 às 13:40, 13:50 às 14:30, 14:40 às 15:20…
     const slotsHorarios: string[] = [];
-    for (let i = 0; i < horasDia; i++) {
-      const ini = horaInicio + i;
-      const fim = ini + 1;
-      const pad = (n: number) => String(n).padStart(2, "0");
-      slotsHorarios.push(`${pad(ini)}:00 às ${pad(fim)}:00`);
+    const totalMin = horasDia * 60;
+    const STUDY = 40;
+    const PAUSE = 10;
+    const pad = (n: number) => String(n).padStart(2, "0");
+    let cursor = horaInicio * 60; // em minutos desde 00:00
+    const fimDia = (horaInicio + horasDia) * 60;
+    let acumulado = 0;
+    while (acumulado + STUDY <= totalMin && cursor + STUDY <= fimDia) {
+      const ini = cursor;
+      const fim = cursor + STUDY;
+      slotsHorarios.push(`${pad(Math.floor(ini / 60))}:${pad(ini % 60)} às ${pad(Math.floor(fim / 60))}:${pad(fim % 60)}`);
+      cursor = fim + PAUSE;
+      acumulado += STUDY;
+    }
+    if (slotsHorarios.length === 0) {
+      // fallback mínimo
+      slotsHorarios.push(`${pad(horaInicio)}:00 às ${pad(horaInicio)}:40`);
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -110,7 +123,7 @@ serve(async (req) => {
 
 REGRAS ABSOLUTAS:
 1. O cronograma terá EXATAMENTE ${diasSemana} dias de estudo. NÃO inclua mais dias. Os dias ATIVOS são: ${diasAtivos.join(", ")}. Os dias ${diasDescanso.join(", ")} devem aparecer no cronograma como dias de "Descanso ativo / leitura leve" com 1 bloco curto opcional OU apenas com a label "Descanso — sem estudo formal hoje". NUNCA gere blocos de estudo cheios nos dias de descanso.
-2. CARGA DIÁRIA: exatamente ${horasDia}h de estudo nos dias ativos. **OBRIGATÓRIO** — crie EXATAMENTE ${horasDia} blocos por dia ativo, UM POR HORA, usando estes horários NA ORDEM: ${slotsHorarios.join(" | ")}. Cada bloco dura 60 minutos (50min de estudo + 10min de pausa dentro do bloco). NUNCA agrupe 2h num único bloco como "13h às 15h" — sempre 1 hora por bloco. NUNCA pule um horário. NUNCA invente outro horário.
+2. CARGA DIÁRIA: ${horasDia}h de estudo nos dias ativos divididos em BLOCOS DE NO MÁXIMO 40 MINUTOS (40min de foco + 10min de pausa entre blocos). **OBRIGATÓRIO** — crie EXATAMENTE ${slotsHorarios.length} blocos por dia ativo, usando estes horários NA ORDEM: ${slotsHorarios.join(" | ")}. NUNCA agrupe blocos como "13h às 15h" — sempre 40min por bloco no MÁXIMO. NUNCA pule um horário. NUNCA invente outro horário.
 3. SEQUÊNCIA PEDAGÓGICA: cada matéria que aparece deve seguir TEORIA → EXEMPLOS RESOLVIDOS → EXERCÍCIOS → REVISÃO ESPAÇADA. Ex.: se Segunda tem "Função do 2º grau (teoria)", Quarta deve ter "Exercícios de função do 2º grau" e no domingo ou sábado "Revisão de funções".
 4. ENCADEAMENTO: não pule pré-requisitos. Equação do 2º grau ANTES de função do 2º grau. Cinemática ANTES de dinâmica. Sintaxe ANTES de coesão. Pré-modernismo ANTES de modernismo.
 5. COBERTURA OBRIGATÓRIA (todas as 4 áreas presentes na semana, mínimo 40-50min cada):
@@ -151,7 +164,7 @@ Retorne SEMPRE via tool_call.`;
 - Meta: ${meta}
 - Dias até a prova: ${diasAteProva}
 
-Cada dia ativo deve ter EXATAMENTE ${horasDia} blocos (um por hora). Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
+Cada dia ativo deve ter EXATAMENTE ${slotsHorarios.length} blocos de no máximo 40 minutos. Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
