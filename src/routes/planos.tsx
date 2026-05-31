@@ -202,6 +202,7 @@ const galeria = [
 function Planos() {
   const checkoutFn = useServerFn(createCheckout);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
+  const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(null);
   const promo = useFakePromoTimer();
   const galeriaAutoplay = useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
@@ -222,6 +223,48 @@ function Planos() {
     }
   }, []);
 
+  // Polling enquanto a tela "Aguardando pagamento" está aberta
+  useEffect(() => {
+    if (!aguardandoPgto) return;
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 200; // ~10 min
+
+    (async () => {
+      while (!cancelled && attempts < maxAttempts) {
+        attempts++;
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const uid = session?.user?.id;
+          if (uid) {
+            const { data: sub } = await supabase
+              .from("subscriptions")
+              .select("status, plan_type, current_period_end")
+              .eq("user_id", uid)
+              .maybeSingle();
+            if (
+              sub?.status === "ACTIVE" &&
+              sub.current_period_end &&
+              new Date(sub.current_period_end) > new Date()
+            ) {
+              if (!cancelled) {
+                window.location.href = `/dashboard?status=success&plan=${aguardandoPgto.plan}`;
+              }
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("poll subscription erro:", e);
+        }
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [aguardandoPgto]);
+
   async function handleCheckout(planType: PlanType, label: string) {
     const {
       data: { session },
@@ -233,7 +276,6 @@ function Planos() {
     }
     setLoadingPlan(planType);
     try {
-      // Meta Pixel — InitiateCheckout antes de redirecionar para o gateway
       try {
         const { pixelTrack } = await import("@/lib/meta-pixel");
         pixelTrack("InitiateCheckout", {
@@ -246,12 +288,20 @@ function Planos() {
       } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida do servidor");
-      window.location.href = res.init_point;
+      // Abre o checkout do MP em nova aba e mantém polling nesta tela
+      const w = window.open(res.init_point, "_blank", "noopener,noreferrer");
+      if (!w) {
+        // Pop-up bloqueado: redireciona como antes
+        window.location.href = res.init_point;
+        return;
+      }
+      setAguardandoPgto({ plan: planType, checkoutUrl: res.init_point });
     } catch (e: unknown) {
       console.error(e);
       toast.error(
         e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`,
       );
+    } finally {
       setLoadingPlan(null);
     }
   }
