@@ -34,9 +34,7 @@ export const createCheckout = createServerFn({ method: "POST" })
     const email = claims?.email ?? undefined;
 
     // Origin para back_urls e notification_url
-    const origin =
-      process.env.PUBLIC_APP_URL ??
-      "https://nota900-ai-genius.lovable.app";
+    const origin = process.env.PUBLIC_APP_URL ?? "https://nota1000enem.online";
 
     const notificationUrl = `${origin}/api/public/mp-webhook`;
 
