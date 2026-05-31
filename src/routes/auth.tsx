@@ -30,9 +30,13 @@ function AuthPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("erro") === "sem_conta") {
-      setErroLogin("Esta conta ainda não existe. Use a aba 'Cadastrar' para criar primeiro.");
+      setErroLogin("Conta não existe, cadastre-se ou revise os dados.");
       setTab("signup");
     }
+    // Limpa qualquer dado autopreenchido pelo navegador ao abrir a página
+    setEmail("");
+    setPassword("");
+    setName("");
     supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
   }, [nav]);
 
