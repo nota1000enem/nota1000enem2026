@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { PlayCircle, Lock, Sparkles, Crown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { VideoPlayer } from "@/components/video-player";
+import { supabase } from "@/integrations/supabase/client";
+
+/**
+ * Mapa de links de vídeo. Chave = título exato da aula (campo `t`).
+ * Para liberar uma aula, basta adicionar a entrada com URL do YouTube.
+ * Exemplo: "Estrutura dissertativo-argumentativa perfeita": "https://www.youtube.com/watch?v=XXXXX"
+ */
+const VIDEO_LINKS: Record<string, string> = {
+  // Adicionar links aqui conforme forem enviados.
+};
 
 export const Route = createFileRoute("/aulas")({
   head: () => ({
@@ -124,11 +135,41 @@ const trilhas = [
 function Aulas() {
   const [openLock, setOpenLock] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const [planoPago, setPlanoPago] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("plan, plan_vitalicio, plan_expires_at")
+        .eq("id", user.id)
+        .maybeSingle();
+      const ativo =
+        !!prof &&
+        prof.plan !== "free" &&
+        (prof.plan_vitalicio === true ||
+          (prof.plan_expires_at && new Date(prof.plan_expires_at) > new Date()));
+      setPlanoPago(!!ativo);
+    })();
+  }, []);
 
   function handleClick(titulo: string) {
+    const url = VIDEO_LINKS[titulo];
+    if (url && planoPago) {
+      setAulaSelecionada(titulo);
+      setVideoUrl(url);
+      setVideoOpen(true);
+      return;
+    }
     setAulaSelecionada(titulo);
     setOpenLock(true);
   }
+
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -220,6 +261,14 @@ function Aulas() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <VideoPlayer
+        open={videoOpen}
+        onClose={() => setVideoOpen(false)}
+        videoUrl={videoUrl}
+        title={aulaSelecionada}
+      />
+
 
       <Footer />
     </div>

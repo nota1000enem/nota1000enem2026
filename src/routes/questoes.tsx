@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, AlertTriangle, BookOpen, Play } from "lucide-react";
+import { Sparkles, AlertTriangle, BookOpen, Play, Lock, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/questoes")({
@@ -16,13 +16,41 @@ export const Route = createFileRoute("/questoes")({
 type Sim = { id: string; nome: string; descricao: string | null; total_questoes: number; ordem: number };
 
 function QuestoesPage() {
+  const navigate = useNavigate();
   const [sims, setSims] = useState<Sim[]>([]);
+  const [planoPago, setPlanoPago] = useState<boolean>(false);
+  const [carregado, setCarregado] = useState(false);
+
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("simulados").select("*").eq("ativo", true).order("ordem");
-      setSims((data as Sim[]) ?? []);
+      const { data: simData } = await supabase.from("simulados").select("*").eq("ativo", true).order("ordem");
+      setSims((simData as Sim[]) ?? []);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("plan, plan_vitalicio, plan_expires_at")
+          .eq("id", user.id)
+          .maybeSingle();
+        const ativo =
+          !!prof &&
+          prof.plan !== "free" &&
+          (prof.plan_vitalicio === true ||
+            (prof.plan_expires_at && new Date(prof.plan_expires_at) > new Date()));
+        setPlanoPago(!!ativo);
+      }
+      setCarregado(true);
     })();
   }, []);
+
+  function handleProva(id: string) {
+    if (!planoPago) {
+      navigate({ to: "/planos" });
+      return;
+    }
+    navigate({ to: "/simulado/$id", params: { id } });
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,29 +76,49 @@ function QuestoesPage() {
           </div>
         </Card>
 
+        {carregado && !planoPago && (
+          <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
+            <div className="flex items-start gap-3">
+              <Crown className="mt-0.5 h-5 w-5 text-primary" />
+              <div className="text-sm flex-1">
+                <p className="font-semibold">Simulados são exclusivos para alunos com plano pago</p>
+                <p className="mt-1 text-muted-foreground">
+                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as provas.
+                </p>
+              </div>
+              <Link to="/planos"><Button size="sm" className="glow-blue">Ver planos</Button></Link>
+            </div>
+          </Card>
+        )}
+
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {sims.map((s) => (
-            <Card key={s.id} className="card-glass p-6">
+            <Card key={s.id} className={`card-glass p-6 relative ${!planoPago ? "overflow-hidden" : ""}`}>
+              {!planoPago && (
+                <div className="absolute top-3 right-3">
+                  <Badge variant="outline" className="border-primary/40 text-primary">
+                    <Lock className="mr-1 h-3 w-3" /> Premium
+                  </Badge>
+                </div>
+              )}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
               </div>
               <h3 className="mt-2 text-xl font-bold">{s.nome}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{s.descricao}</p>
-              <Link to="/simulado/$id" params={{ id: s.id }}>
-                <Button className="mt-4 w-full glow-blue"><Play className="mr-1 h-4 w-4" /> Iniciar prova</Button>
-              </Link>
+              <Button
+                onClick={() => handleProva(s.id)}
+                className={`mt-4 w-full ${planoPago ? "glow-blue" : ""}`}
+                variant={planoPago ? "default" : "outline"}
+              >
+                {planoPago ? (
+                  <><Play className="mr-1 h-4 w-4" /> Iniciar prova</>
+                ) : (
+                  <><Lock className="mr-1 h-4 w-4" /> Desbloquear aulas premium</>
+                )}
+              </Button>
             </Card>
           ))}
-          {Array.from({ length: Math.max(0, 18 - sims.length) }).map((_, idx) => {
-            const n = sims.length + idx + 1;
-            return (
-              <Card key={`extra-${n}`} className="card-glass p-6 opacity-60">
-                <h3 className="text-xl font-bold">Prova {n}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Em breve.</p>
-                <Button disabled className="mt-4 w-full">Em breve</Button>
-              </Card>
-            );
-          })}
         </div>
       </section>
       <Footer />
