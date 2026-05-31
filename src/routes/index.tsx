@@ -193,9 +193,6 @@ function Index() {
                         className="aspect-square w-full rounded-2xl object-cover"
                         loading={i === 0 ? "eager" : "lazy"}
                       />
-                      <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold text-primary backdrop-blur">
-                        {i + 1}/{heroImgs.length}
-                      </span>
                     </div>
                   </CarouselItem>
                 ))}
