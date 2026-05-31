@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const PLAN_CONFIG = {
   LIGHT: { price: 19.9, credits: 15, tier: "PRO_BASIC", label: "ENEM Light" },
