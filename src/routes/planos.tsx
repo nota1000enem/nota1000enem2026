@@ -170,7 +170,9 @@ function Planos() {
       window.location.href = res.init_point;
     } catch (e: unknown) {
       console.error(e);
-      toast.error(e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`);
+      toast.error(
+        e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`,
+      );
       setLoadingPlan(null);
     }
   }
