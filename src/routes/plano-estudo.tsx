@@ -106,7 +106,8 @@ function PlanoEstudoPage() {
       if (error) throw error;
       const r = data as PlanoIA & { error?: string };
       if (r.error) throw new Error(r.error);
-      setPlano(r);
+      const planoGerado = { resumo: r.resumo, dicas_gerais: r.dicas_gerais, cronograma: r.cronograma };
+      setPlano(planoGerado);
       const salvo = (data as PlanoIA & { plano_salvo?: PlanoSalvo | null }).plano_salvo;
       if (salvo) setHistorico([salvo, ...historico].slice(0, 5));
       toast.success("Plano semanal gerado e salvo!");
