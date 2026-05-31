@@ -134,11 +134,14 @@ function AuthPage() {
     }
   }
   async function google() {
+    // Marca a intenção (login vs cadastro) pra checar do outro lado após OAuth
+    sessionStorage.setItem("oauth_intent", tab);
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
     if (r.error) toast.error("Erro ao entrar com Google. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
   }
   async function apple() {
+    sessionStorage.setItem("oauth_intent", tab);
     const r = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin + "/dashboard" });
     if (r.error) toast.error("Erro ao entrar com Apple. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
