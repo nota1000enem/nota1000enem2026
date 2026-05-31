@@ -144,6 +144,18 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      {confirmandoPgto && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur">
+          <Card className="card-glass mx-4 max-w-md p-8 text-center">
+            <Sparkles className="mx-auto h-10 w-10 animate-pulse text-primary" />
+            <h2 className="mt-4 text-xl font-bold">Confirmando seu pagamento...</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Recebemos seu pagamento! Estamos liberando seu acesso, isso leva alguns segundos.
+              Não feche esta página.
+            </p>
+          </Card>
+        </div>
+      )}
       <section className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
