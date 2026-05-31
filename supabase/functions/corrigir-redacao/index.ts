@@ -247,6 +247,9 @@ Retorne SEMPRE via tool_call estruturado.`;
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
+        temperature: 0,
+        top_p: 0.1,
+        seed,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` },
