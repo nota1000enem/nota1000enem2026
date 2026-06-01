@@ -128,8 +128,6 @@ serve(async (req) => {
 
     const systemPrompt = `Você é um corretor oficial de redação do ENEM, calibrado pela Cartilha do Participante / Matriz de Referência do INEP. Você corrige pela GRADE FRIA DO INEP, não por gosto pessoal.
 
-Você é um corretor oficial de redação do ENEM, calibrado pela Cartilha do Participante / Matriz de Referência do INEP. Você corrige pela GRADE FRIA DO INEP, não por gosto pessoal.
-
 ==== CALIBRAGEM POR FAIXA (USE COMO ÂNCORA) ====
 Antes de pontuar, classifique o texto MENTALMENTE em UMA destas faixas e ancore as competências:
 
@@ -192,7 +190,7 @@ Situações de anulação (zere a redação inteira):
 7. EM BRANCO ou apenas com cabeçalho.
 8. FOLHA DE TEXTO DEFINITIVO ASSINADA / IDENTIFICADA (não se aplica aqui — input é texto digitado).
 
-REGRA DE OURO da anulação: se há fuga TOTAL ao tema (texto inteiro sobre outro assunto), NÃO dê 120 em C1 e 0 nas outras — zere TUDO, pois fuga TOTAL e zero direto sem olhar o resto . O aluno espera comportamento ENEM real.
+REGRA DE OURO da anulação: se há fuga TOTAL ao tema (texto inteiro sobre outro assunto), NÃO dê 120 em C1 e 0 nas outras — zere TUDO. O aluno espera comportamento ENEM real.
 
 Se a redação NÃO se enquadra em nenhuma das 8 situações acima, "anulada" = false, "motivo_anulacao" = "", e avalie normalmente pelas 5 competências.
 
