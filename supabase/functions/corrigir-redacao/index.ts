@@ -65,15 +65,40 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
+    const supaPublicKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
+    if (!supaPublicKey) {
+      console.error("Missing Supabase public key for user-scoped RPC");
+      return new Response(
+        JSON.stringify({ error: "Configuração de autenticação incompleta. Entre em contato com o suporte." }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    const userClient = createClient(supaUrl, supaPublicKey, {
+      global: {
+        headers: { Authorization: `Bearer ${authHeader}` },
+      },
+    });
+
+    const { data: pode, error: podeError } = await userClient.rpc("pode_corrigir_redacao", {
+      _user_id: user.id,
+    });
+    if (podeError) {
+      console.error("pode_corrigir_redacao error", podeError);
+      return new Response(
+        JSON.stringify({
+          error: "Não foi possível validar seu acesso à correção. Faça login novamente e tente de novo.",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
     const podeObj = pode as { pode?: boolean; motivo?: string } | null;
-    const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
-
-    const podeObj = pode as {
-      pode?: boolean;
-      motivo?: string;
-    } | null;
-
     if (!podeObj?.pode) {
       return new Response(
         JSON.stringify({
@@ -82,10 +107,7 @@ serve(async (req) => {
         }),
         {
           status: 403,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-          },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
     }
@@ -345,27 +367,8 @@ Retorne SEMPRE via tool_call estruturado.`;
     }
 
     const data = await resp.json();
-    console.log("IA RESPONSE:", JSON.stringify(data));
-
-    const args = data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-
-    if (!args) {
-      console.error("SEM TOOL CALL:", JSON.stringify(data));
-
-      return new Response(
-        JSON.stringify({
-          error: "A IA não retornou tool_calls",
-          debug: data,
-        }),
-        {
-          status: 500,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    }
+    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
     // ANULAÇÃO: se IA marcou anulada=true, zera tudo (regra INEP)
