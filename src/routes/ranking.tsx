@@ -73,7 +73,7 @@ function RankingPage() {
         ) : (
           <>
             {/* PÓDIO com fotos */}
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="mt-10 grid gap-3 grid-cols-3">
               {podio.map((r, i) => {
                 const cores = [
                   { ring: "ring-yellow-400/60", icon: Trophy, color: "text-yellow-400", label: "1º Lugar", glow: "glow-blue" },
@@ -82,24 +82,24 @@ function RankingPage() {
                 ][i];
                 const Icon = cores.icon;
                 return (
-                  <Card key={r.user_id} className={`card-glass p-6 text-center ring-2 ${cores.ring} ${cores.glow}`}>
-                    <div className={`mx-auto h-24 w-24 overflow-hidden rounded-full border-4 border-background ring-2 ${cores.ring} bg-muted`}>
+                  <Card key={r.user_id} className={`card-glass p-3 md:p-6 text-center ring-2 ${cores.ring} ${cores.glow}`}>
+                    <div className={`mx-auto h-14 w-14 md:h-24 md:w-24 overflow-hidden rounded-full border-2 md:border-4 border-background ring-2 ${cores.ring} bg-muted`}>
                       {r.avatar_url ? (
                         <img src={r.avatar_url} alt={r.nome} className="h-full w-full object-cover" loading="lazy" />
                       ) : (
                         <div className="grid h-full w-full place-content-center">
-                          <UserIcon className="h-10 w-10 text-muted-foreground" />
+                          <UserIcon className="h-6 w-6 md:h-10 md:w-10 text-muted-foreground" />
                         </div>
                       )}
                     </div>
-                    <Icon className={`mx-auto mt-3 h-7 w-7 ${cores.color}`} />
-                    <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{cores.label}</p>
-                    <p className="mt-2 text-lg font-semibold truncate">{r.nome}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <Icon className={`mx-auto mt-2 h-5 w-5 md:h-7 md:w-7 ${cores.color}`} />
+                    <p className="mt-1 text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground">{cores.label}</p>
+                    <p className="mt-1 text-sm md:text-lg font-semibold truncate">{r.nome}</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground truncate">
                       {[r.idade ? `${r.idade} anos` : null, r.estado].filter(Boolean).join(" · ") || "—"}
                     </p>
-                    <p className="mt-3 text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
-                    <p className="text-xs text-muted-foreground">/1000</p>
+                    <p className="mt-2 text-2xl md:text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">/1000</p>
                   </Card>
                 );
               })}
