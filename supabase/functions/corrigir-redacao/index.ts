@@ -67,18 +67,10 @@ serve(async (req) => {
     }
     const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
     const podeObj = pode as { pode?: boolean; motivo?: string } | null;
-    if (!podeObj?.pode) {
-      return new Response(
-        JSON.stringify({
-          error: "Limite atingido ou assinatura expirada.",
-          motivo: podeObj?.motivo,
-        }),
-        {
-          status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
-    }
+    const { data: pode, error: rpcError } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
+
+    console.log("RPC ERROR:", rpcError);
+    console.log("RPC DATA:", pode);
     const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
     const planoUsuario = (prof?.plan as string) ?? "free";
     const modoRigidoLiberado = prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
