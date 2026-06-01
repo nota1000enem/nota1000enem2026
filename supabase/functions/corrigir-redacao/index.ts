@@ -335,8 +335,27 @@ Retorne SEMPRE via tool_call estruturado.`;
     }
 
     const data = await resp.json();
-    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-    if (!args) throw new Error("Resposta inválida da IA");
+    console.log("IA RESPONSE:", JSON.stringify(data));
+
+    const args = data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+
+    if (!args) {
+      console.error("SEM TOOL CALL:", JSON.stringify(data));
+
+      return new Response(
+        JSON.stringify({
+          error: "A IA não retornou tool_calls",
+          debug: data,
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
     const parsed = JSON.parse(args);
 
     // ANULAÇÃO: se IA marcou anulada=true, zera tudo (regra INEP)
