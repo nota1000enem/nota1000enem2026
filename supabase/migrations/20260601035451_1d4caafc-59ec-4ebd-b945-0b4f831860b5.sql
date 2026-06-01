@@ -1,0 +1,1 @@
+UPDATE public.simulados SET total_questoes = 50 WHERE id IN ('99999999-9999-9999-9999-999999999999','aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
