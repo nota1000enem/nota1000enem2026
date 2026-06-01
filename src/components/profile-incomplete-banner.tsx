@@ -16,6 +16,14 @@ export function ProfileIncompleteBanner() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) { setLoaded(true); return; }
+      // Só exibe o aviso após o aluno já ter usado as 3 correções grátis —
+      // assim não assusta quem está testando pela primeira vez.
+      const { count: redacoesCount } = await supabase
+        .from("redacoes")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", u.user.id);
+      if ((redacoesCount ?? 0) < 3) { setLoaded(true); return; }
+
       const { data: p } = await supabase
         .from("profiles")
         .select("full_name, idade")
