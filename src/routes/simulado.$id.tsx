@@ -45,8 +45,9 @@ function SimuladoPage() {
   const [respostas, setRespostas] = useState<Record<string, string>>({});
   const [fetching, setFetching] = useState(true);
   const [finished, setFinished] = useState(false);
-  const [resultado, setResultado] = useState<{ nota: number; acertos: number; total: number; porArea: Record<string, { acertos: number; total: number }> } | null>(null);
+  const [resultado, setResultado] = useState<{ nota: number; acertos: number; total: number; porArea: Record<string, { acertos: number; total: number }>; gabarito: Record<string, GabaritoItem> } | null>(null);
   const [saving, setSaving] = useState(false);
+
 
   useEffect(() => { if (!loading && !user) router.navigate({ to: "/auth" }); }, [loading, user, router]);
 
