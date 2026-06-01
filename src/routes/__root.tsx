@@ -98,7 +98,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/logo-nota1000.png" },
+      { rel: "apple-touch-icon", href: "/logo-nota1000.png" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
