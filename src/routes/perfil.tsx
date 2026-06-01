@@ -186,6 +186,23 @@ function PerfilPage() {
           </div>
         </Card>
 
+        {/* Foto, Estado e Idade (Ranking) */}
+        <Card className="mb-6 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Camera className="h-4 w-4 text-primary" />
+            <h2 className="font-semibold">Perfil público no Ranking</h2>
+          </div>
+          <p className="mb-4 text-xs text-muted-foreground">
+            Sua foto aparece no ranking <strong>apenas se você ficar no TOP 3</strong>. Estado e idade aparecem para todos os colocados.
+          </p>
+          <RankingProfileEditor
+            profile={profile}
+            onSaved={(updates) => setProfile((p) => (p ? { ...p, ...updates } : p))}
+          />
+        </Card>
+
+
+
         {/* Plano */}
         <Card className="mb-6 p-6">
           <div className="mb-4 flex items-center gap-2">
