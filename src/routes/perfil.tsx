@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2, Camera, MapPin, Cake } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/perfil")({
@@ -23,7 +23,12 @@ type Profile = {
   plan: string | null;
   plan_expires_at: string | null;
   plan_vitalicio: boolean | null;
+  avatar_url: string | null;
+  estado: string | null;
+  idade: number | null;
 };
+
+const ESTADOS_BR = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 
 const PLAN_LABELS: Record<string, { label: string; cls: string }> = {
   free: { label: "Free", cls: "bg-muted text-foreground" },
@@ -65,7 +70,7 @@ function PerfilPage() {
       setResetEmail(data.user.email ?? "");
       const { data: p } = await supabase
         .from("profiles")
-        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio")
+        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade")
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
