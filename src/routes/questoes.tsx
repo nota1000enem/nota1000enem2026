@@ -62,19 +62,6 @@ function QuestoesPage() {
           escala ENEM (0–1000).
         </p>
 
-        <Card className="card-glass mt-8 p-5 border-primary/40 bg-primary/5">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-primary" />
-            <div className="text-sm">
-              <p className="font-semibold">Como funciona</p>
-              <p className="mt-1 text-muted-foreground">
-                Uma pergunta por vez (A–E). Use a seta para avançar. No fim, sua nota é calculada na
-                escala 0–1000 e fica salva no seu dashboard, na seção{" "}
-                <strong>Classificação SEM</strong>.
-              </p>
-            </div>
-          </div>
-        </Card>
 
         <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
           <div className="flex items-start gap-3">
