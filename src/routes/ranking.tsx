@@ -6,19 +6,27 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Medal, Award, Sparkles, TrendingUp } from "lucide-react";
+import { Trophy, Medal, Award, Sparkles, TrendingUp, MapPin, User as UserIcon } from "lucide-react";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
-      { title: "Top Notas da Semana – Nota 1000 ENEM" },
-      { name: "description", content: "Veja o ranking das melhores notas de redação ENEM da semana. Entre para competir e evoluir sua nota." },
+      { title: "Ranking ENEM – Top alunos com nota 1000 em Redação" },
+      { name: "description", content: "Veja o ranking dos melhores alunos do ENEM em correção de redação por IA. Compita pelo TOP 3 nacional e mostre sua nota." },
     ],
   }),
   component: RankingPage,
 });
 
-type Row = { user_id: string; nome: string; melhor_nota: number; total_redacoes: number };
+type Row = {
+  user_id: string;
+  nome: string;
+  melhor_nota: number;
+  total_redacoes: number;
+  avatar_url: string | null;
+  estado: string | null;
+  idade: number | null;
+};
 
 function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -46,12 +54,12 @@ function RankingPage() {
           Top Notas da <span className="gradient-text">Semana</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Os alunos com as maiores notas dos últimos 7 dias. Treine como quem tira nota alta.
+          Os alunos com as maiores notas. <strong>TOP 3 ganha destaque com foto.</strong>
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link to="/redacao"><Button className="glow-blue"><Trophy className="mr-1 h-4 w-4" /> Entrar no Ranking</Button></Link>
-          <Link to="/dashboard"><Button variant="outline">Ver meu progresso</Button></Link>
+          <Link to="/perfil"><Button variant="outline">Adicionar foto/estado/idade</Button></Link>
         </div>
 
         {loading ? (
@@ -59,13 +67,12 @@ function RankingPage() {
         ) : rows.length === 0 ? (
           <Card className="card-glass mt-10 p-10 text-center">
             <Trophy className="mx-auto h-12 w-12 text-primary/50" />
-            <p className="mt-4 text-muted-foreground">Ainda não há notas registradas esta semana.</p>
-            <p className="text-sm text-muted-foreground">Seja o primeiro a entrar no topo!</p>
+            <p className="mt-4 text-muted-foreground">Ainda não há notas registradas.</p>
             <Link to="/redacao" className="mt-4 inline-block"><Button className="glow-blue">Corrigir agora</Button></Link>
           </Card>
         ) : (
           <>
-            {/* PÓDIO */}
+            {/* PÓDIO com fotos */}
             <div className="mt-10 grid gap-4 md:grid-cols-3">
               {podio.map((r, i) => {
                 const cores = [
@@ -76,17 +83,29 @@ function RankingPage() {
                 const Icon = cores.icon;
                 return (
                   <Card key={r.user_id} className={`card-glass p-6 text-center ring-2 ${cores.ring} ${cores.glow}`}>
-                    <Icon className={`mx-auto h-10 w-10 ${cores.color}`} />
-                    <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">{cores.label}</p>
-                    <p className="mt-3 text-lg font-semibold truncate">{r.nome}</p>
-                    <p className="mt-2 text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
+                    <div className={`mx-auto h-24 w-24 overflow-hidden rounded-full border-4 border-background ring-2 ${cores.ring} bg-muted`}>
+                      {r.avatar_url ? (
+                        <img src={r.avatar_url} alt={r.nome} className="h-full w-full object-cover" loading="lazy" />
+                      ) : (
+                        <div className="grid h-full w-full place-content-center">
+                          <UserIcon className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <Icon className={`mx-auto mt-3 h-7 w-7 ${cores.color}`} />
+                    <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{cores.label}</p>
+                    <p className="mt-2 text-lg font-semibold truncate">{r.nome}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {[r.idade ? `${r.idade} anos` : null, r.estado].filter(Boolean).join(" · ") || "—"}
+                    </p>
+                    <p className="mt-3 text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
                     <p className="text-xs text-muted-foreground">/1000</p>
                   </Card>
                 );
               })}
             </div>
 
-            {/* RESTANTE */}
+            {/* RESTANTE — sem foto, com estado/idade */}
             {resto.length > 0 && (
               <div className="mt-8 space-y-2">
                 {resto.map((r, i) => (
@@ -97,8 +116,10 @@ function RankingPage() {
                       </div>
                       <div>
                         <p className="font-medium">{r.nome}</p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <TrendingUp className="h-3 w-3" /> {r.total_redacoes} redação(ões)
+                        <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1">
+                          {r.idade && <span>{r.idade} anos</span>}
+                          {r.estado && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{r.estado}</span>}
+                          <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" /> {r.total_redacoes} redação(ões)</span>
                         </p>
                       </div>
                     </div>
