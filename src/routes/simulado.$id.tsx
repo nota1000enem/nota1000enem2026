@@ -78,40 +78,31 @@ function SimuladoPage() {
   async function finalizar() {
     if (!user || finished) return;
     setSaving(true);
-    let acertos = 0;
-    const porArea: Record<string, { acertos: number; total: number }> = {};
-    for (const q of questoes) {
-      const marc = respostas[q.id];
-      const area = q.area;
-      porArea[area] ??= { acertos: 0, total: 0 };
-      porArea[area].total += 1;
-      if (marc && marc.toUpperCase() === q.resposta_correta.toUpperCase()) {
-        acertos += 1;
-        porArea[area].acertos += 1;
-      }
-    }
-    const nota = total ? Math.round((acertos / total) * 1000) : 0;
 
-    // cria tentativa
-    const { data: tent, error: e1 } = await supabase
-      .from("tentativas_simulado")
-      .insert({ user_id: user.id, simulado_id: id, started_at: new Date().toISOString(), finished_at: new Date().toISOString(), nota_total: nota, acertos, total, acertos_por_area: porArea })
-      .select("id").single();
-    if (e1) {
-      toast.error("Não conseguimos salvar sua tentativa. Tente novamente.");
+    const { data, error } = await supabase.rpc("corrigir_simulado", {
+      _simulado_id: id,
+      _respostas: respostas,
+    });
+
+    if (error || !data) {
+      toast.error("Não conseguimos corrigir sua prova. Tente novamente.");
       setSaving(false);
       return;
     }
 
-    // Respostas detalhadas NÃO são persistidas: o gabarito mostrado no final
-    // usa o estado local. Isso evita ocupar espaço no banco — apenas a nota
-    // e os acertos por área (em tentativas_simulado) ficam salvos para o dashboard.
+    const r = data as unknown as {
+      nota: number; acertos: number; total: number;
+      porArea: Record<string, { acertos: number; total: number }>;
+      gabarito: GabaritoItem[];
+    };
+    const gabMap: Record<string, GabaritoItem> = {};
+    for (const g of r.gabarito) gabMap[g.questao_id] = g;
 
-
-    setResultado({ nota, acertos, total, porArea });
+    setResultado({ nota: r.nota, acertos: r.acertos, total: r.total, porArea: r.porArea, gabarito: gabMap });
     setFinished(true);
     setSaving(false);
   }
+
 
   if (loading || fetching) {
     return (
