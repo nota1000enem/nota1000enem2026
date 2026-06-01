@@ -152,14 +152,9 @@ function PerfilPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="mx-auto max-w-3xl px-4 py-10">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="grid h-12 w-12 place-content-center rounded-full bg-primary/20 ring-1 ring-primary/40">
-            <UserIcon className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Meu Perfil</h1>
-            <p className="text-sm text-muted-foreground">Gerencie seus dados, senha e assinatura.</p>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold">Meu Perfil</h1>
+          <p className="text-sm text-muted-foreground">Gerencie seus dados, senha e assinatura.</p>
         </div>
 
         {/* Dados pessoais */}
