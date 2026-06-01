@@ -47,24 +47,56 @@ function isFuture(date?: string | null) {
   return !!date && new Date(date).getTime() > Date.now();
 }
 
+const CACHE_KEY = "n1k_plan_access_v1";
+
+function loadCache(): Partial<PlanAccess> | null {
+  if (typeof sessionStorage === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw);
+    return {
+      ...v,
+      expiresAt: v.expiresAt ? new Date(v.expiresAt) : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function saveCache(v: PlanAccess) {
+  if (typeof sessionStorage === "undefined") return;
+  try {
+    sessionStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ ...v, expiresAt: v.expiresAt?.toISOString() ?? null, refetch: undefined }),
+    );
+  } catch {}
+}
+
 export function usePlanAccess(): PlanAccess {
-  const [state, setState] = useState<PlanAccess>({
-    loading: true,
-    loggedIn: false,
-    tier: "free",
-    vitalicio: false,
-    expiresAt: null,
-    daysLeft: null,
-    isPaid: false,
-    isPremium: false,
-    credits: null,
-    refetch: async () => {},
+  const [state, setState] = useState<PlanAccess>(() => {
+    const cached = loadCache();
+    return {
+      loading: !cached, // se temos cache, já mostra imediatamente
+      loggedIn: cached?.loggedIn ?? false,
+      tier: cached?.tier ?? "free",
+      vitalicio: cached?.vitalicio ?? false,
+      expiresAt: cached?.expiresAt ?? null,
+      daysLeft: cached?.daysLeft ?? null,
+      isPaid: cached?.isPaid ?? false,
+      isPremium: cached?.isPremium ?? false,
+      credits: cached?.credits ?? null,
+      refetch: async () => {},
+    };
   });
 
   async function load() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      setState((s) => ({ ...s, loading: false, loggedIn: false, isPaid: false, isPremium: false }));
+      const next: PlanAccess = { loading: false, loggedIn: false, tier: "free", vitalicio: false, expiresAt: null, daysLeft: null, isPaid: false, isPremium: false, credits: null, refetch: load };
+      setState(next);
+      saveCache(next);
       return;
     }
     const [{ data: prof }, { data: sub }, { data: assinatura }] = await Promise.all([
@@ -76,7 +108,6 @@ export function usePlanAccess(): PlanAccess {
     const tierFromProf = normalize(prof?.plan);
     const tierFromSub = normalize(sub?.plan_type);
     const tierFromAssinatura = normalize(assinatura?.plano);
-    // pega o "melhor" tier conhecido
     const order: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];
     const tier = order[Math.max(order.indexOf(tierFromProf), order.indexOf(tierFromSub), order.indexOf(tierFromAssinatura))] as PlanTier;
 
@@ -89,18 +120,12 @@ export function usePlanAccess(): PlanAccess {
     const isPremium = isPaid && (tier === "pro" || tier === "full" || tier === "vitalicio");
     const daysLeft = expiresAt && !vitalicio ? Math.max(0, Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)) : null;
 
-    setState({
-      loading: false,
-      loggedIn: true,
-      tier,
-      vitalicio,
-      expiresAt,
-      daysLeft,
-      isPaid,
-      isPremium,
-      credits: sub?.credits_remaining ?? null,
-      refetch: load,
-    });
+    const next: PlanAccess = {
+      loading: false, loggedIn: true, tier, vitalicio, expiresAt, daysLeft, isPaid, isPremium,
+      credits: sub?.credits_remaining ?? null, refetch: load,
+    };
+    setState(next);
+    saveCache(next);
   }
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
