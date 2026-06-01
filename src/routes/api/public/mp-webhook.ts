@@ -201,6 +201,24 @@ export const Route = createFileRoute("/api/public/mp-webhook")({
             return new Response("ok", { status: 200 });
           }
 
+          // CRÍTICO: valida assinatura HMAC do MP antes de qualquer processamento
+          const secret = process.env.MP_WEBHOOK_SECRET;
+          if (!secret) {
+            console.error("MP_WEBHOOK_SECRET ausente — rejeitando webhook");
+            return new Response("server misconfigured", { status: 503 });
+          }
+          const signatureOk = verifyMpSignature({
+            signatureHeader: request.headers.get("x-signature"),
+            requestId: request.headers.get("x-request-id"),
+            dataId: String(paymentId),
+            secret,
+          });
+          if (!signatureOk) {
+            console.warn("Webhook MP com assinatura inválida — rejeitado");
+            return new Response("invalid signature", { status: 401 });
+          }
+
+
           // CRÍTICO: em Cloudflare Workers o runtime termina após o Response.
           // Precisamos aguardar o processamento antes de responder, senão
           // a transação nunca é salva (bug que deixou pagamentos reais sem ativar plano).
