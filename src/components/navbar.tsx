@@ -20,6 +20,7 @@ export function Navbar() {
     { to: "/aulas", label: "Vídeo Aulas", hide: false },
     { to: "/questoes", label: "1.000 Questões", hide: false },
     { to: "/pdfs", label: "PDFs", hide: false },
+    { to: "/prova-real", label: "Prova REAL ENEM", hide: false },
     { to: "/plano-estudo", label: "Plano de Estudo", hide: !!user && false },
     { to: "/ranking", label: "Ranking", hide: false },
     { to: "/planos", label: "Planos", hide: !!user && isPaid },
