@@ -267,30 +267,39 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           email: string | null
+          estado: string | null
           full_name: string | null
           id: string
+          idade: number | null
           mp_customer_id: string | null
           plan: string
           plan_expires_at: string | null
           plan_vitalicio: boolean
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           email?: string | null
+          estado?: string | null
           full_name?: string | null
           id: string
+          idade?: number | null
           mp_customer_id?: string | null
           plan?: string
           plan_expires_at?: string | null
           plan_vitalicio?: boolean
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           email?: string | null
+          estado?: string | null
           full_name?: string | null
           id?: string
+          idade?: number | null
           mp_customer_id?: string | null
           plan?: string
           plan_expires_at?: string | null
@@ -689,6 +698,9 @@ export type Database = {
       get_ranking_global: {
         Args: never
         Returns: {
+          avatar_url: string
+          estado: string
+          idade: number
           melhor_nota: number
           nome: string
           total_redacoes: number
