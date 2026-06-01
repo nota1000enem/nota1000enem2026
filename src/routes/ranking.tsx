@@ -94,7 +94,7 @@ function RankingPage() {
                     <Trophy className={`mx-auto mt-2 h-5 w-5 md:h-7 md:w-7 ${cores.color}`} />
                     <p className={`mt-1 text-[10px] md:text-xs uppercase tracking-wider font-semibold ${cores.color}`}>{cores.label}</p>
                     <p className={`mt-1 text-sm md:text-lg font-semibold truncate ${cores.color}`}>{r.nome}</p>
-                    <p className="text-[10px] md:text-xs text-muted-foreground truncate">
+                    <p className={`text-[10px] md:text-xs truncate ${cores.color} opacity-80`}>
                       {[r.idade ? `${r.idade} anos` : null, r.estado].filter(Boolean).join(" · ") || "—"}
                     </p>
                     <p className="mt-2 text-2xl md:text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
