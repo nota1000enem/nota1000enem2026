@@ -107,23 +107,23 @@ function RankingPage() {
 
             {/* RESTANTE — sem foto, com estado/idade */}
             {resto.length > 0 && (
-              <div className="mt-8 space-y-2">
+              <div className="mt-6 md:mt-8 space-y-1.5 md:space-y-2">
                 {resto.map((r, i) => (
-                  <Card key={r.user_id} className="card-glass flex items-center justify-between p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="grid h-10 w-10 place-content-center rounded-full border border-primary/30 bg-primary/5 font-bold text-primary">
+                  <Card key={r.user_id} className="card-glass flex items-center justify-between p-2.5 md:p-4">
+                    <div className="flex items-center gap-2 md:gap-4 min-w-0">
+                      <div className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-content-center rounded-full border border-primary/30 bg-primary/5 text-xs md:text-base font-bold text-primary">
                         {i + 4}º
                       </div>
-                      <div>
-                        <p className="font-medium">{r.nome}</p>
-                        <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <div className="min-w-0">
+                        <p className="text-sm md:text-base font-medium truncate">{r.nome}</p>
+                        <p className="text-[10px] md:text-xs text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5">
                           {r.idade && <span>{r.idade} anos</span>}
                           {r.estado && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{r.estado}</span>}
-                          <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" /> {r.total_redacoes} redação(ões)</span>
+                          <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" /> {r.total_redacoes} red.</span>
                         </p>
                       </div>
                     </div>
-                    <p className="text-2xl font-bold gradient-text">{r.melhor_nota}</p>
+                    <p className="text-lg md:text-2xl font-bold gradient-text shrink-0">{r.melhor_nota}</p>
                   </Card>
                 ))}
               </div>
