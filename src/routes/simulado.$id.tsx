@@ -55,7 +55,7 @@ function SimuladoPage() {
       const { data: sim } = await supabase.from("simulados").select("nome").eq("id", id).maybeSingle();
       setSimNome(sim?.nome ?? "Simulado");
       const { data } = await supabase
-        .from("questoes_simulado")
+        .from("questoes_simulado_publica")
         .select("*")
         .eq("simulado_id", id)
         .order("numero", { ascending: true });
