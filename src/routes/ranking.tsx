@@ -76,13 +76,12 @@ function RankingPage() {
             <div className="mt-10 grid gap-3 grid-cols-3">
               {podio.map((r, i) => {
                 const cores = [
-                  { ring: "ring-yellow-400/60", icon: Trophy, color: "text-yellow-400", label: "1º Lugar", glow: "glow-blue" },
-                  { ring: "ring-slate-300/60", icon: Medal, color: "text-slate-300", label: "2º Lugar", glow: "" },
-                  { ring: "ring-orange-400/60", icon: Award, color: "text-orange-400", label: "3º Lugar", glow: "" },
+                  { ring: "ring-yellow-400/70", color: "text-yellow-400", label: "1º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(250,204,21,0.5)]" },
+                  { ring: "ring-slate-300/70", color: "text-slate-300", label: "2º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(203,213,225,0.45)]" },
+                  { ring: "ring-orange-400/70", color: "text-orange-400", label: "3º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(251,146,60,0.45)]" },
                 ][i];
-                const Icon = cores.icon;
                 return (
-                  <Card key={r.user_id} className={`card-glass p-3 md:p-6 text-center ring-2 ${cores.ring} ${cores.glow}`}>
+                  <Card key={r.user_id} className={`card-glass p-3 md:p-6 text-center ring-2 ${cores.ring} ${cores.shadow}`}>
                     <div className={`mx-auto h-14 w-14 md:h-24 md:w-24 overflow-hidden rounded-full border-2 md:border-4 border-background ring-2 ${cores.ring} bg-muted`}>
                       {r.avatar_url ? (
                         <img src={r.avatar_url} alt={r.nome} className="h-full w-full object-cover" loading="lazy" />
@@ -92,9 +91,9 @@ function RankingPage() {
                         </div>
                       )}
                     </div>
-                    <Icon className={`mx-auto mt-2 h-5 w-5 md:h-7 md:w-7 ${cores.color}`} />
-                    <p className="mt-1 text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground">{cores.label}</p>
-                    <p className="mt-1 text-sm md:text-lg font-semibold truncate">{r.nome}</p>
+                    <Trophy className={`mx-auto mt-2 h-5 w-5 md:h-7 md:w-7 ${cores.color}`} />
+                    <p className={`mt-1 text-[10px] md:text-xs uppercase tracking-wider font-semibold ${cores.color}`}>{cores.label}</p>
+                    <p className={`mt-1 text-sm md:text-lg font-semibold truncate ${cores.color}`}>{r.nome}</p>
                     <p className="text-[10px] md:text-xs text-muted-foreground truncate">
                       {[r.idade ? `${r.idade} anos` : null, r.estado].filter(Boolean).join(" · ") || "—"}
                     </p>
