@@ -14,13 +14,29 @@ export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) 
   const [redacoes, setRedacoes] = useState<number[]>([]);
   const [simulados, setSimulados] = useState<number[]>([]);
   const [periodo, setPeriodo] = useState<{ inicio: Date; fim: Date } | null>(null);
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 7);
-    setPeriodo({ inicio: start, fim: end });
+    // Anchor da semana persistido localmente. Só aparece como "resumo da semana passada"
+    // depois que 7 dias se passarem desde o anchor. Quando aparece, ao iniciar nova semana
+    // o anchor é reiniciado.
+    const KEY = "weekly_anchor_v1";
+    const stored = localStorage.getItem(KEY);
+    const now = new Date();
+    let anchor = stored ? new Date(stored) : null;
+    if (!anchor || isNaN(anchor.getTime())) {
+      anchor = new Date(now);
+      anchor.setHours(0, 0, 0, 0);
+      localStorage.setItem(KEY, anchor.toISOString());
+    }
+    const fim = new Date(anchor);
+    fim.setDate(fim.getDate() + 7);
+    if (now >= fim) {
+      setPeriodo({ inicio: anchor, fim });
+      setMostrar(true);
+    } else {
+      setMostrar(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -56,18 +72,18 @@ export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) 
     ? Math.round(simulados.reduce((a, n) => a + n, 0) / simulados.length)
     : 0;
 
+  if (!mostrar || !periodo) return null;
+
   return (
     <Card className="card-glass mt-6 border-primary/30 bg-primary/5 p-4">
       <div className="flex items-start gap-3">
         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
         <div className="flex-1">
           <p className="text-sm font-semibold">
-            Notas e planos ficam salvos por 1 semana e depois resetam.
+            Resumo da semana passada
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {periodo
-              ? `Semana 1: dia ${formatDate(periodo.inicio)} a ${formatDate(periodo.fim)}`
-              : "Semana 1: carregando período..."}
+            {`Período: ${formatDate(periodo.inicio)} a ${formatDate(periodo.fim)}`}
           </p>
           <div className="mt-3 grid gap-3 text-xs sm:grid-cols-2">
             <div className="rounded-lg border border-border/50 bg-background/50 p-3">
@@ -78,7 +94,7 @@ export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) 
               </p>
             </div>
             <div className="rounded-lg border border-border/50 bg-background/50 p-3">
-              <p className="text-muted-foreground">Questões — nota total média</p>
+              <p className="text-muted-foreground">Simulados — nota total média</p>
               <p className="mt-1 text-2xl font-bold gradient-text">{mediaSimulado || "—"}</p>
               <p className="mt-1 text-muted-foreground">
                 {simulados.length} simulado(s) · média = soma das notas ÷ quantidade

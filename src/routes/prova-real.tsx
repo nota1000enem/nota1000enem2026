@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, FileText, Download, CheckCircle2 } from "lucide-react";
+import { Sparkles, FileText, Download, CheckCircle2, Lock, Crown } from "lucide-react";
+import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/prova-real")({
   head: () => ({
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/prova-real")({
       {
         name: "description",
         content:
-          "Baixe as provas reais do ENEM 2024 e 2025 (Dia 1 e Dia 2) com gabaritos oficiais em PDF. Material grátis para treinar.",
+          "Baixe as provas reais do ENEM 2022, 2023, 2024 e 2025 (Dia 1 e Dia 2) com gabaritos oficiais em PDF.",
       },
     ],
   }),
@@ -61,6 +62,16 @@ const ANOS: Ano[] = [
 ];
 
 function ProvaRealPage() {
+  const { isPaid, loading } = usePlanAccess();
+  const navigate = useNavigate();
+
+  function handleDownload(e: React.MouseEvent) {
+    if (!isPaid) {
+      e.preventDefault();
+      navigate({ to: "/planos" });
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -76,6 +87,26 @@ function ProvaRealPage() {
           real e confira suas respostas.
         </p>
 
+        {!loading && !isPaid && (
+          <Card className="card-glass mt-6 p-5 border-primary/40 bg-primary/5">
+            <div className="flex items-start gap-3">
+              <Crown className="mt-0.5 h-5 w-5 text-primary" />
+              <div className="text-sm flex-1">
+                <p className="font-semibold">Provas REAIS do ENEM são exclusivas para alunos pagos</p>
+                <p className="mt-1 text-muted-foreground">
+                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as
+                  PROVAS REAIS DO ENEM.
+                </p>
+              </div>
+              <Link to="/planos">
+                <Button size="sm" className="glow-blue">
+                  Ver planos
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        )}
+
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           {ANOS.map((a) => (
             <Card
@@ -89,7 +120,13 @@ function ProvaRealPage() {
               <div className="relative">
                 <div className="flex items-center justify-between">
                   <h2 className="text-4xl font-extrabold tracking-tight text-primary">{a.ano}</h2>
-                  <Badge className="bg-primary/20 text-primary hover:bg-primary/30">ENEM</Badge>
+                  <Badge className="bg-primary/20 text-primary hover:bg-primary/30">
+                    {!loading && !isPaid ? (
+                      <><Lock className="mr-1 h-3 w-3" /> Premium</>
+                    ) : (
+                      "ENEM"
+                    )}
+                  </Badge>
                 </div>
 
                 <div className="mt-6 space-y-5">
@@ -104,16 +141,28 @@ function ProvaRealPage() {
                         </h3>
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        <a href={p.prova} target="_blank" rel="noopener noreferrer">
-                          <Button className="w-full glow-blue">
-                            <Download className="mr-1 h-4 w-4" /> Prova Dia {p.dia}
+                        {isPaid ? (
+                          <a href={p.prova} target="_blank" rel="noopener noreferrer">
+                            <Button className="w-full glow-blue">
+                              <Download className="mr-1 h-4 w-4" /> Prova Dia {p.dia}
+                            </Button>
+                          </a>
+                        ) : (
+                          <Button onClick={handleDownload} variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
+                            <Lock className="mr-1 h-4 w-4" /> Prova Dia {p.dia}
                           </Button>
-                        </a>
-                        <a href={p.gabarito} target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
-                            <CheckCircle2 className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}
+                        )}
+                        {isPaid ? (
+                          <a href={p.gabarito} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
+                              <CheckCircle2 className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}
+                            </Button>
+                          </a>
+                        ) : (
+                          <Button onClick={handleDownload} variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
+                            <Lock className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}
                           </Button>
-                        </a>
+                        )}
                       </div>
                     </div>
                   ))}
