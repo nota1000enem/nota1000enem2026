@@ -34,23 +34,18 @@ export function Navbar() {
           <div className="grid h-8 w-8 place-content-center rounded-lg bg-primary/20 ring-1 ring-primary/40">
             <Sparkles className="h-4 w-4 text-primary" />
           </div>
-          <span className="font-bold tracking-tight">Nota <span className="gradient-text">1000</span> ENEM</span>
+          <span className="font-bold tracking-tight whitespace-nowrap">Nota <span className="gradient-text">1000</span> ENEM</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
-            <Link key={l.to} to={l.to} className="px-3 py-2 text-sm text-muted-foreground transition hover:text-foreground">
+            <Link key={l.to} to={l.to} className="whitespace-nowrap px-2 py-2 text-sm text-muted-foreground transition hover:text-foreground">
               {l.label}
             </Link>
           ))}
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
-            <>
-              <Link to="/dashboard"><Button variant="ghost" size="sm">Dashboard</Button></Link>
-              <Link to="/perfil"><Button variant="ghost" size="sm">Perfil</Button></Link>
-              <Link to="/minha-assinatura"><Button variant="ghost" size="sm">Assinatura</Button></Link>
-              <Button size="sm" variant="outline" onClick={async () => { await supabase.auth.signOut(); router.navigate({ to: "/" }); }}>Sair</Button>
-            </>
+            <Button size="sm" variant="outline" onClick={async () => { await supabase.auth.signOut(); router.navigate({ to: "/" }); }}>Sair</Button>
           ) : (
             <>
               <Link to="/auth"><Button variant="ghost" size="sm">Entrar</Button></Link>
@@ -62,6 +57,15 @@ export function Navbar() {
           {open ? <X /> : <Menu />}
         </button>
       </div>
+      {user && (
+        <div className="hidden border-t border-border/40 md:block">
+          <div className="mx-auto flex max-w-7xl items-center justify-end gap-1 px-4 py-2">
+            <Link to="/dashboard"><Button variant="ghost" size="sm">Dashboard</Button></Link>
+            <Link to="/perfil"><Button variant="ghost" size="sm">Perfil</Button></Link>
+            <Link to="/minha-assinatura"><Button variant="ghost" size="sm">Assinatura</Button></Link>
+          </div>
+        </div>
+      )}
       {open && (
         <div className="border-t border-border/40 md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
