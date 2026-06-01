@@ -93,7 +93,7 @@ function PdfsPage() {
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <FileText className="h-3 w-3" /> Arquivo PDF
               </div>
-              <h3 className="mt-2 text-xl font-bold">{p.nome}</h3>
+              <h3 className="mt-2 text-xl font-bold text-primary">{p.nome}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{p.descricao}</p>
               {planoPago ? (
                 <a href={p.arquivo} target="_blank" rel="noopener noreferrer" download>
