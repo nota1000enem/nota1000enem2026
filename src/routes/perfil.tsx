@@ -182,7 +182,37 @@ function PerfilPage() {
               <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input value={userEmail} readOnly className="bg-muted/30 pl-9" />
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta. Esse nome aparece no ranking, dashboard e nas suas correções.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Email vinculado à sua conta.</p>
+          </div>
+
+          {/* Verificação de email — interface pronta; envio real ativa após config. do domínio */}
+          <div className="mt-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
+            <Label className="text-xs font-semibold text-primary">Verificar email (código de 6 dígitos)</Label>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Para garantir que esse email é seu, enviaremos um código. Contas não verificadas em <strong>7 dias</strong> serão removidas.
+            </p>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+              <Input
+                placeholder="Código de 6 dígitos"
+                maxLength={6}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="sm:max-w-[180px]"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => toast.info("Verificação de email será ativada em breve — aguarde a configuração do domínio.")}
+              >
+                Enviar código
+              </Button>
+              <Button
+                type="button"
+                onClick={() => toast.info("Verificação de email será ativada em breve.")}
+              >
+                Verificar
+              </Button>
+            </div>
           </div>
         </Card>
 
