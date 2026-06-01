@@ -1,5 +1,43 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { createHmac, timingSafeEqual } from "crypto";
+
+/**
+ * Valida o header x-signature do Mercado Pago.
+ * Formato: "ts=1234567890,v1=abcdef..."
+ * Manifest: "id:{data.id};request-id:{x-request-id};ts:{ts};"
+ */
+function verifyMpSignature(opts: {
+  signatureHeader: string | null;
+  requestId: string | null;
+  dataId: string;
+  secret: string;
+}): boolean {
+  const { signatureHeader, requestId, dataId, secret } = opts;
+  if (!signatureHeader || !secret) return false;
+
+  const parts = Object.fromEntries(
+    signatureHeader.split(",").map((p) => {
+      const [k, v] = p.split("=").map((s) => s.trim());
+      return [k, v];
+    }),
+  );
+  const ts = parts.ts;
+  const v1 = parts.v1;
+  if (!ts || !v1) return false;
+
+  const manifest = `id:${dataId};request-id:${requestId ?? ""};ts:${ts};`;
+  const expected = createHmac("sha256", secret).update(manifest).digest("hex");
+
+  try {
+    const a = Buffer.from(v1, "hex");
+    const b = Buffer.from(expected, "hex");
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
+}
 
 const PLAN_CREDITS: Record<string, number> = {
   LIGHT: 15,
