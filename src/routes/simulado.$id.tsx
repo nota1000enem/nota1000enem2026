@@ -21,9 +21,11 @@ type Questao = {
   area: string;
   enunciado: string;
   alt_a: string; alt_b: string; alt_c: string; alt_d: string; alt_e: string | null;
-  resposta_correta: string;
   peso: number;
 };
+
+type GabaritoItem = { questao_id: string; marcada: string | null; correta: string; ok: boolean };
+
 
 const AREA_LABEL: Record<string, string> = {
   LINGUAGENS: "Linguagens",
