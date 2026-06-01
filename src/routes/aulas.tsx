@@ -111,6 +111,8 @@ const trilhas: Trilha[] = [
     cor: "from-fuchsia-500/30 to-fuchsia-500/5",
     thumb: thumbLinguagens,
     aulas: [
+      { t: "Revisão Completa ENEM: Códigos, Linguagens e Redação!", min: 149 },
+      { t: "TUDO sobre FUNÇÕES DA LINGUAGEM pro ENEM - Referencial, conativa, metalinguística, poética, fática", min: 69 },
       { t: "10 horas de aulas (Linguagens códigos e suas tecnologias)", min: 620 },
       { t: "TODOS OS EXERCÍCIOS - LINGUAGENS", min: 129 },
       { t: "11 Horas de Aula (Linguagens códigos e suas tecnologias)", min: 720 },
