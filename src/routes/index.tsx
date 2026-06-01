@@ -42,19 +42,23 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nota 1000 ENEM – Corretor de Redação ENEM com Inteligência Artificial" },
+      { title: "ENEM 2026: Corretor de Redação ENEM com IA + Simulados | Nota 1000 ENEM" },
       {
         name: "description",
         content:
-          "Descubra sua nota do ENEM em segundos. Corrija redações com IA, treine questões e estude com metodologia focada em nota 1000.",
+          "Plataforma #1 de preparação para o ENEM: correção de Redação ENEM por IA nota 0-1000, mais de 1.000 questões, simulados cronometrados, vídeo aulas e plano de estudo personalizado. Treine como quem tira nota 1000.",
       },
-      { property: "og:title", content: "Nota 1000 ENEM – Sua aprovação no ENEM começa aqui" },
+      { name: "keywords", content: "ENEM, ENEM 2026, redação ENEM, corretor de redação, correção de redação por IA, nota 1000 ENEM, simulado ENEM, questões ENEM, vídeo aulas ENEM, plano de estudo ENEM" },
+      { property: "og:title", content: "ENEM 2026 – Correção de Redação por IA + Simulados | Nota 1000 ENEM" },
       {
         property: "og:description",
         content:
-          "Correção de redação ENEM com IA, simulados, vídeo aulas e metodologia comprovada.",
+          "Corrija sua Redação do ENEM por IA em segundos, treine com simulados e vídeo aulas. Metodologia focada em nota 1000.",
       },
+      { property: "og:url", content: "https://nota1000enem.online/" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/" }],
   }),
   component: Index,
 });

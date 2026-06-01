@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2, Camera, MapPin, Cake } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/perfil")({
@@ -23,7 +23,12 @@ type Profile = {
   plan: string | null;
   plan_expires_at: string | null;
   plan_vitalicio: boolean | null;
+  avatar_url: string | null;
+  estado: string | null;
+  idade: number | null;
 };
+
+const ESTADOS_BR = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 
 const PLAN_LABELS: Record<string, { label: string; cls: string }> = {
   free: { label: "Free", cls: "bg-muted text-foreground" },
@@ -65,7 +70,7 @@ function PerfilPage() {
       setResetEmail(data.user.email ?? "");
       const { data: p } = await supabase
         .from("profiles")
-        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio")
+        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade")
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
@@ -180,6 +185,23 @@ function PerfilPage() {
             <p className="mt-1 text-xs text-muted-foreground">Email verificado e vinculado à sua conta. Esse nome aparece no ranking, dashboard e nas suas correções.</p>
           </div>
         </Card>
+
+        {/* Foto, Estado e Idade (Ranking) */}
+        <Card className="mb-6 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Camera className="h-4 w-4 text-primary" />
+            <h2 className="font-semibold">Perfil público no Ranking</h2>
+          </div>
+          <p className="mb-4 text-xs text-muted-foreground">
+            Sua foto aparece no ranking <strong>apenas se você ficar no TOP 3</strong>. Estado e idade aparecem para todos os colocados.
+          </p>
+          <RankingProfileEditor
+            profile={profile}
+            onSaved={(updates) => setProfile((p) => (p ? { ...p, ...updates } : p))}
+          />
+        </Card>
+
+
 
         {/* Plano */}
         <Card className="mb-6 p-6">
@@ -312,6 +334,125 @@ function NomeEditor({ currentName, userId, onSaved }: { currentName: string; use
       {!valid && nome.length > 0 && (
         <p className="mt-1 text-xs text-destructive">Nome precisa ter entre 2 e 60 caracteres.</p>
       )}
+    </div>
+  );
+}
+
+function RankingProfileEditor({ profile, onSaved }: { profile: Profile | null; onSaved: (u: Partial<Profile>) => void }) {
+  const [estado, setEstado] = useState(profile?.estado ?? "");
+  const [idade, setIdade] = useState<string>(profile?.idade ? String(profile.idade) : "");
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEstado(profile?.estado ?? "");
+    setIdade(profile?.idade ? String(profile.idade) : "");
+  }, [profile?.estado, profile?.idade]);
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !profile?.id) return;
+    if (file.size > 3 * 1024 * 1024) { toast.error("A foto deve ter no máximo 3MB."); return; }
+    if (!file.type.startsWith("image/")) { toast.error("Envie um arquivo de imagem."); return; }
+    setUploading(true);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `${profile.id}/avatar.${ext}`;
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setUploading(false); toast.error("Erro ao enviar foto: " + upErr.message); return; }
+    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+    const url = `${pub.publicUrl}?v=${Date.now()}`;
+    const { error: updErr } = await supabase.from("profiles").update({ avatar_url: url }).eq("id", profile.id);
+    setUploading(false);
+    if (updErr) { toast.error("Erro ao salvar foto."); return; }
+    onSaved({ avatar_url: url });
+    toast.success("Foto de perfil atualizada!");
+  }
+
+  async function removerFoto() {
+    if (!profile?.id) return;
+    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", profile.id);
+    if (error) { toast.error("Erro ao remover foto."); return; }
+    onSaved({ avatar_url: null });
+    toast.success("Foto removida.");
+  }
+
+  async function salvarDados() {
+    if (!profile?.id) return;
+    const idadeNum = idade ? parseInt(idade, 10) : null;
+    if (idadeNum !== null && (isNaN(idadeNum) || idadeNum < 10 || idadeNum > 100)) {
+      toast.error("Idade deve estar entre 10 e 100.");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("profiles")
+      .update({ estado: estado || null, idade: idadeNum })
+      .eq("id", profile.id);
+    setSaving(false);
+    if (error) { toast.error("Erro ao salvar."); return; }
+    onSaved({ estado: estado || null, idade: idadeNum });
+    toast.success("Dados do ranking atualizados!");
+  }
+
+  const dirty = (profile?.estado ?? "") !== estado || String(profile?.idade ?? "") !== idade;
+
+  return (
+    <div className="space-y-5">
+      {/* Foto */}
+      <div className="flex items-center gap-4">
+        <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-primary/40 bg-muted">
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+          ) : (
+            <div className="grid h-full w-full place-content-center">
+              <UserIcon className="h-8 w-8 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="cursor-pointer">
+            <input type="file" accept="image/*" className="hidden" onChange={handleFile} disabled={uploading} />
+            <span className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+              {profile?.avatar_url ? "Trocar foto" : "Enviar foto"}
+            </span>
+          </label>
+          {profile?.avatar_url && (
+            <Button variant="ghost" size="sm" onClick={removerFoto} className="text-xs text-muted-foreground">
+              Remover foto
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Estado */}
+      <div>
+        <Label className="flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" /> Estado</Label>
+        <select
+          value={estado}
+          onChange={(e) => setEstado(e.target.value)}
+          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">Selecione seu estado</option>
+          {ESTADOS_BR.map((uf) => (<option key={uf} value={uf}>{uf}</option>))}
+        </select>
+      </div>
+
+      {/* Idade */}
+      <div>
+        <Label className="flex items-center gap-1 text-xs text-muted-foreground"><Cake className="h-3 w-3" /> Idade</Label>
+        <Input
+          type="number" min={10} max={100}
+          value={idade}
+          onChange={(e) => setIdade(e.target.value)}
+          placeholder="Ex: 17"
+          className="mt-1"
+        />
+      </div>
+
+      <Button onClick={salvarDados} disabled={!dirty || saving} className="w-full">
+        {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        Salvar estado e idade
+      </Button>
     </div>
   );
 }
