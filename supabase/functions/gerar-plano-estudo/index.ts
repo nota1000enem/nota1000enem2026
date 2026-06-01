@@ -82,89 +82,102 @@ serve(async (req) => {
     if (horaInicio > 22) horaInicio = 22;
     if (horaInicio + horasDia > 24) horaInicio = 24 - horasDia;
 
-    // Pré-gera os slots de NO MÁXIMO 40 minutos (40min estudo + 10min pausa = 50min por ciclo)
-    // Ex.: 13:00 às 13:40, 13:50 às 14:30, 14:40 às 15:20…
-    const slotsHorarios: string[] = [];
-    const totalMin = horasDia * 60;
-    const STUDY = 40;
+    // Pré-gera slots de DURAÇÃO VARIÁVEL (20 / 30 / 40 min) + 10 min de pausa entre blocos.
+    // Padrão: alterna intensidade para variar fadiga. Slots "alta" (40min) recebem fraquezas.
     const PAUSE = 10;
+    const padroes = [40, 30, 20, 30, 40, 20, 30, 40];
+    const totalMin = horasDia * 60;
     const pad = (n: number) => String(n).padStart(2, "0");
-    let cursor = horaInicio * 60; // em minutos desde 00:00
+    type Slot = { horario: string; duracaoMin: number; intensidade: "alta" | "media" | "baixa" };
+    const slots: Slot[] = [];
+    let cursor = horaInicio * 60;
     const fimDia = (horaInicio + horasDia) * 60;
     let acumulado = 0;
-    while (acumulado + STUDY <= totalMin && cursor + STUDY <= fimDia) {
+    let i = 0;
+    while (cursor < fimDia) {
+      const dur = padroes[i % padroes.length];
+      if (acumulado + dur > totalMin) break;
+      if (cursor + dur > fimDia) break;
       const ini = cursor;
-      const fim = cursor + STUDY;
-      slotsHorarios.push(`${pad(Math.floor(ini / 60))}:${pad(ini % 60)} às ${pad(Math.floor(fim / 60))}:${pad(fim % 60)}`);
+      const fim = cursor + dur;
+      const intensidade: Slot["intensidade"] = dur >= 40 ? "alta" : dur >= 30 ? "media" : "baixa";
+      slots.push({
+        horario: `${pad(Math.floor(ini / 60))}:${pad(ini % 60)} às ${pad(Math.floor(fim / 60))}:${pad(fim % 60)}`,
+        duracaoMin: dur,
+        intensidade,
+      });
       cursor = fim + PAUSE;
-      acumulado += STUDY;
+      acumulado += dur;
+      i++;
     }
-    if (slotsHorarios.length === 0) {
-      // fallback mínimo
-      slotsHorarios.push(`${pad(horaInicio)}:00 às ${pad(horaInicio)}:40`);
+    if (slots.length === 0) {
+      slots.push({ horario: `${pad(horaInicio)}:00 às ${pad(horaInicio)}:30`, duracaoMin: 30, intensidade: "media" });
     }
+    const slotsResumo = slots
+      .map((s, idx) => `#${idx + 1} ${s.horario} (${s.duracaoMin}min, intensidade ${s.intensidade})`)
+      .join(" | ");
+    const slotsHorarios = slots.map(s => s.horario);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
-    // Escolhe quais dias serão de estudo (distribuição equilibrada)
-    // 4 dias: Seg, Qua, Sex, Sáb
-    // 5 dias: Seg, Ter, Qua, Qui, Sáb
-    // 6 dias: Seg-Sex + Sáb
     const distribuicoes: Record<number, string[]> = {
       4: ["Segunda-feira","Quarta-feira","Sexta-feira","Sábado"],
       5: ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sábado"],
       6: ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"],
     };
-    const diasAtivos = distribuicoes[diasSemana];
+    const diasAtivos = distribuicoes[diasSemana] ?? distribuicoes[5];
     const diasDescanso = DIAS_SEMANA.filter(d => !diasAtivos.includes(d));
 
-    const systemPrompt = `Você é um mentor sênior de ENEM que monta planos SEMANAIS pedagogicamente coerentes. Seu plano será reavaliado e refeito a cada semana pelo aluno.
+    const systemPrompt = `Você é um sistema especialista em planejamento de estudos para o ENEM. Cria planos SEMANAIS personalizados e otimizados com base no tempo disponível, no nível de dificuldade do aluno em cada matéria e no objetivo de desempenho.
 
 REGRAS ABSOLUTAS:
-1. O cronograma terá EXATAMENTE ${diasSemana} dias de estudo. NÃO inclua mais dias. Os dias ATIVOS são: ${diasAtivos.join(", ")}. Os dias ${diasDescanso.join(", ")} devem aparecer no cronograma como dias de "Descanso ativo / leitura leve" com 1 bloco curto opcional OU apenas com a label "Descanso — sem estudo formal hoje". NUNCA gere blocos de estudo cheios nos dias de descanso.
-2. CARGA DIÁRIA: ${horasDia}h de estudo nos dias ativos divididos em BLOCOS DE NO MÁXIMO 40 MINUTOS (40min de foco + 10min de pausa entre blocos). **OBRIGATÓRIO** — crie EXATAMENTE ${slotsHorarios.length} blocos por dia ativo, usando estes horários NA ORDEM: ${slotsHorarios.join(" | ")}. NUNCA agrupe blocos como "13h às 15h" — sempre 40min por bloco no MÁXIMO. NUNCA pule um horário. NUNCA invente outro horário.
-3. SEQUÊNCIA PEDAGÓGICA: cada matéria que aparece deve seguir TEORIA → EXEMPLOS RESOLVIDOS → EXERCÍCIOS → REVISÃO ESPAÇADA. Ex.: se Segunda tem "Função do 2º grau (teoria)", Quarta deve ter "Exercícios de função do 2º grau" e no domingo ou sábado "Revisão de funções".
-4. ENCADEAMENTO: não pule pré-requisitos. Equação do 2º grau ANTES de função do 2º grau. Cinemática ANTES de dinâmica. Sintaxe ANTES de coesão. Pré-modernismo ANTES de modernismo.
-5. COBERTURA OBRIGATÓRIA (todas as 4 áreas presentes na semana, mínimo 40-50min cada):
-   - Matemática e suas Tecnologias
-   - Linguagens, Códigos e suas Tecnologias (Português + Literatura + Inglês/Espanhol + Artes)
-   - Ciências da Natureza e suas Tecnologias (Física, Química, Biologia)
-   - Ciências Humanas e suas Tecnologias (História, Geografia, Filosofia, Sociologia)
-   + Redação 1x/semana (sábado ideal, 50-60min)
-   + Simulado quinzenal (avise nas dicas)
-6. PESO POR FRAQUEZA: as matérias citadas como pontos fracos recebem PESO DOBRADO no tempo total semanal. Outras matérias aparecem 1-2x/semana com pelo menos 40-50min cada.
-7. FOCO NA META: o tópico escolhido para cada bloco deve ser PRIORITARIO PARA "${meta}". Se a meta menciona medicina/biologia, dê peso extra a Biologia/Química. Se engenharia, Matemática/Física. Se direito/humanidades, Português/Redação/História/Filosofia. Continue cobrindo TUDO, mas com peso direcionado.
-8. NUNCA "1h matemática, descansa, mais 1h matemática". Alterne matérias dentro do dia (ex.: Mat 25min → pausa → Bio 25min → pausa → Mat exercícios 20min → pausa → Redação leitura 20min).
-9. TÓPICOS REAIS DO ENEM (use estes, não invente nomes vagos):
-   - Matemática: Razão/proporção, Porcentagem, Função afim, Função quadrática, Função exponencial, Função logarítmica, PA/PG, Geometria plana (áreas), Geometria espacial (volumes), Trigonometria no triângulo, Estatística (média/mediana/moda), Probabilidade básica, Análise combinatória, Matrizes/sistemas.
-   - Física: Cinemática (MRU/MRUV), Leis de Newton, Trabalho e energia, Hidrostática, Termologia, Calorimetria, Ondas, Óptica geométrica, Eletrostática, Circuitos elétricos, Eletromagnetismo.
-   - Química: Atomística, Tabela periódica, Ligações químicas, Funções inorgânicas, Estequiometria, Soluções, Termoquímica, Cinética, Equilíbrio, Eletroquímica, Química orgânica (funções, isomeria, reações), Química ambiental.
-   - Biologia: Citologia, Bioquímica celular, Histologia, Genética (1ª/2ª lei, grupos sanguíneos), Evolução, Ecologia (cadeias, biomas, ciclos), Fisiologia humana (sistemas), Botânica, Zoologia, Biotecnologia.
-   - História: Brasil Colônia, Brasil Império, República Velha, Era Vargas, Ditadura Militar, Redemocratização, Revolução Industrial, Guerras Mundiais, Guerra Fria, Descolonização Africana, Globalização.
-   - Geografia: Cartografia, Geomorfologia, Climatologia, Hidrografia, Geografia agrária, Industrialização, Urbanização, Geopolítica mundial, Meio ambiente, Globalização econômica.
-   - Filosofia: Pré-socráticos, Sócrates/Platão/Aristóteles, Idade Média (Agostinho/Tomás), Modernos (Descartes/Hobbes/Locke/Rousseau/Kant), Hegel/Marx, Existencialismo, Escola de Frankfurt.
-   - Sociologia: Durkheim (fato social), Weber (ação social), Marx (classes), Movimentos sociais, Cidadania, Indústria cultural.
-   - Linguagens (Português): Interpretação de texto, Funções da linguagem, Variação linguística, Figuras de linguagem, Gêneros textuais, Coesão e coerência, Sintaxe (período composto), Concordância, Regência, Crase.
-   - Literatura: Quinhentismo, Barroco, Arcadismo, Romantismo, Realismo/Naturalismo, Parnasianismo/Simbolismo, Pré-Modernismo, Modernismo (1ª/2ª/3ª fase), Contemporânea.
-   - Inglês: Reading comprehension, Cognatos/falsos cognatos, Tempos verbais, Phrasal verbs.
-   - Redação: Estrutura dissertativa-argumentativa, Tese, Repertório sociocultural, Coesão, Proposta de intervenção (5 elementos).
-10. HORÁRIO: comece SEMPRE em ${String(horaInicio).padStart(2,"0")}:00 (horário declarado pelo aluno). Use APENAS os slots horários listados na regra 2, em ordem cronológica.
-11. DICAS: 5-7 dicas ESPECÍFICAS, com tom humano, evitando frases genéricas tipo "estude todos os dias". Boas dicas mencionam: técnica de Feynman, flashcards Anki, simulado quinzenal, revisão por mapa mental nos domingos, banco TRI ENEM, correção da redação na segunda após escrever no sábado, etc.
-12. RESUMO: 2-3 frases motivacionais que MENCIONEM A META do aluno e as fraquezas declaradas (personalize).
+1. CADA SESSÃO TEM DURAÇÃO ENTRE 20 E 40 MINUTOS. NUNCA crie um bloco com mais de 40 min. NUNCA agrupe "2h direto na mesma matéria". É proibido um bloco do tipo "20:00 às 22:00".
+2. LÓGICA DE DECISÃO POR DIFICULDADE:
+   • ALTA dificuldade (fraqueza declarada / prioridade da meta) → 40 min
+   • MÉDIA dificuldade → 30 min
+   • BAIXA dificuldade ou REVISÃO → 20 min
+3. Cada dia ativo terá EXATAMENTE ${slots.length} blocos, usando NA ORDEM estes slots já calculados (horário + duração + intensidade sugerida):
+${slotsResumo}
+   Use EXATAMENTE esses horários — não invente outros, não junte blocos, não pule nenhum, não estenda além do horário declarado.
+4. Slots de intensidade "alta" (40min) recebem matérias mais críticas (fraquezas + prioridade da meta). "media" (30min) recebem carga regular. "baixa" (20min) recebem revisão espaçada, leitura leve, exercícios curtos ou Inglês.
+5. Cobertura semanal das 4 áreas + redação: Matemática • Linguagens (Português/Literatura/Inglês) • Ciências da Natureza (Fis/Quim/Bio) • Ciências Humanas (Hist/Geo/Filo/Socio) • Redação 1x/semana (sábado ideal).
+6. Sequência pedagógica por matéria: TEORIA → EXEMPLOS RESOLVIDOS → EXERCÍCIOS → REVISÃO ESPAÇADA (em dias diferentes).
+7. Encadeamento real: equação 2º grau antes de função 2º grau, cinemática antes de dinâmica, sintaxe antes de coesão.
+8. Variação anti-fadiga: alterne áreas dentro do dia. NUNCA "Mat → Mat → Mat" seguidos.
+9. Peso por fraqueza: matérias citadas como fracas recebem PESO DOBRADO no tempo semanal.
+10. Cronograma de ${diasSemana} dias ativos. Dias ATIVOS: ${diasAtivos.join(", ")}. Dias de DESCANSO: ${diasDescanso.join(", ")} — devolva esses dias com 1 bloco apenas, horario "—", tipo "descanso".
+11. Comece sempre em ${String(horaInicio).padStart(2,"0")}:00.
+12. Atividades possíveis (campo "topico"): teoria + resumo ativo, resolução de questões ENEM, correção de erros, revisão espaçada, simulado curto, treino de redação.
+13. TÓPICOS REAIS DO ENEM (use estes nomes, não invente vagos):
+   - Matemática: Razão/proporção, Porcentagem, Função afim, Função quadrática, Função exponencial, Função logarítmica, PA/PG, Geometria plana, Geometria espacial, Trigonometria, Estatística, Probabilidade, Análise combinatória.
+   - Física: Cinemática, Leis de Newton, Trabalho e energia, Hidrostática, Termologia, Ondas, Óptica, Eletrostática, Circuitos, Eletromagnetismo.
+   - Química: Atomística, Tabela periódica, Ligações, Funções inorgânicas, Estequiometria, Soluções, Termoquímica, Equilíbrio, Eletroquímica, Orgânica.
+   - Biologia: Citologia, Genética, Evolução, Ecologia, Fisiologia humana, Botânica, Biotecnologia.
+   - História: Brasil Colônia/Império/República/Vargas/Ditadura, Revolução Industrial, Guerras Mundiais, Guerra Fria.
+   - Geografia: Cartografia, Climatologia, Geografia agrária, Urbanização, Geopolítica, Meio ambiente.
+   - Filosofia: Pré-socráticos, Sócrates/Platão/Aristóteles, Modernos, Hegel/Marx, Existencialismo.
+   - Sociologia: Durkheim, Weber, Marx, Movimentos sociais, Indústria cultural.
+   - Português: Interpretação, Funções da linguagem, Figuras, Gêneros textuais, Coesão, Sintaxe, Concordância, Crase.
+   - Literatura: Quinhentismo até Modernismo 3ª fase.
+   - Inglês: Reading, Cognatos, Tempos verbais.
+   - Redação: Estrutura dissertativo-argumentativa, Tese, Repertório sociocultural, Proposta de intervenção.
+14. Dicas (5-7): específicas e humanas — técnica de Feynman, flashcards Anki, simulado quinzenal, correção da redação na segunda após escrever no sábado, banco TRI ENEM.
+15. Resumo (2-3 frases) menciona META e FRAQUEZAS do aluno.
+16. FOCO NA META "${meta}": medicina/biologia → peso extra Bio/Quím. Engenharia → Mat/Física. Direito/humanidades → Port/Redação/Hist/Filo.
 
 Retorne SEMPRE via tool_call.`;
 
-    const userPrompt = `Monte o plano semanal para este aluno:
-- Carga: ${horasDia}h/dia em ${diasSemana} dias da semana, começando às ${String(horaInicio).padStart(2,"0")}:00
-- SLOTS OBRIGATÓRIOS por dia ativo (use TODOS, na ordem): ${slotsHorarios.join(" | ")}
+    const userPrompt = `Monte o plano semanal:
+- Tempo: ${horasDia}h/dia em ${diasSemana} dias, começando às ${String(horaInicio).padStart(2,"0")}:00
+- Slots obrigatórios (use TODOS, na ordem, respeitando 20/30/40 min): ${slotsResumo}
 - Dias ativos: ${diasAtivos.join(", ")}
 - Dias de descanso: ${diasDescanso.join(", ")}
-- Pontos fracos declarados: ${fraquezas || "não informados (cobertura equilibrada)"}
+- Fraquezas declaradas (ALTA dificuldade — slots de 40min): ${fraquezas || "não informadas — distribua equilibrado"}
 - Meta: ${meta}
 - Dias até a prova: ${diasAteProva}
 
-Cada dia ativo deve ter EXATAMENTE ${slotsHorarios.length} blocos de no máximo 40 minutos. Os outros dias aparecem como descanso. Cumpra a sequência pedagógica e o foco na meta.`;
+Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhum bloco com mais de 40 min. Cumpra sequência pedagógica e foco na meta.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
