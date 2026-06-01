@@ -162,14 +162,6 @@ function AuthPage() {
         </div>
         <Card className="card-glass p-6">
           {/* 1-CLICK OAUTH NO TOPO — entrada mais rápida possível */}
-          {tab === "login" && (
-            <div className="mb-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-3">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-              <p className="text-xs font-medium text-amber-200">
-                Atenção: só entre com Google/Apple se você <strong>já tem conta</strong> com esse mesmo email. Caso contrário, clique em <strong>Cadastrar</strong> primeiro para evitar erro.
-              </p>
-            </div>
-          )}
           {tab === "signup" && (
             <div className="mb-3 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/10 p-3">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
