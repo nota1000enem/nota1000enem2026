@@ -452,6 +452,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "respostas_aluno_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "questoes_simulado_publica"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "respostas_aluno_tentativa_id_fkey"
             columns: ["tentativa_id"]
             isOneToOne: false
@@ -673,9 +680,63 @@ export type Database = {
           },
         ]
       }
+      questoes_simulado_publica: {
+        Row: {
+          alt_a: string | null
+          alt_b: string | null
+          alt_c: string | null
+          alt_d: string | null
+          alt_e: string | null
+          area: string | null
+          enunciado: string | null
+          id: string | null
+          numero: number | null
+          peso: number | null
+          simulado_id: string | null
+        }
+        Insert: {
+          alt_a?: string | null
+          alt_b?: string | null
+          alt_c?: string | null
+          alt_d?: string | null
+          alt_e?: string | null
+          area?: string | null
+          enunciado?: string | null
+          id?: string | null
+          numero?: number | null
+          peso?: number | null
+          simulado_id?: string | null
+        }
+        Update: {
+          alt_a?: string | null
+          alt_b?: string | null
+          alt_c?: string | null
+          alt_d?: string | null
+          alt_e?: string | null
+          area?: string | null
+          enunciado?: string | null
+          id?: string | null
+          numero?: number | null
+          peso?: number | null
+          simulado_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questoes_simulado_simulado_id_fkey"
+            columns: ["simulado_id"]
+            isOneToOne: false
+            referencedRelation: "simulados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       cleanup_redacoes_antigas: { Args: never; Returns: undefined }
+      corrigir_simulado: {
+        Args: { _respostas: Json; _simulado_id: string }
+        Returns: Json
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -735,6 +796,8 @@ export type Database = {
           read_ct: number
         }[]
       }
+      tier_rank: { Args: { _t: string }; Returns: number }
+      user_plan_tier: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never

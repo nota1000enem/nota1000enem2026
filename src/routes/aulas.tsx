@@ -136,8 +136,8 @@ const trilhas: Trilha[] = [
     cor: "from-emerald-500/30 to-emerald-500/5",
     thumb: thumbNatureza,
     aulas: [
-      { t: "RESOLUÇÃO 2º simulado enem SAS 2026 - NATUREZA PARTE I", min: 129 },
       { t: "INTENSIVÃO ENEM: Revisão COMPLETA de Ciências da Natureza", min: 550 },
+      { t: "RESOLUÇÃO 2º simulado enem SAS 2026 - NATUREZA PARTE I", min: 129 },
       { t: "💪 CORREÇÃO DO ENEM NATUREZA 2025 (45 Acertos) - Ciências da Natureza", min: 201 },
       { t: "Como GABARITAR Ciências da NATUREZA do Enem 2026 na PRÁTICA", min: 40 },
       { t: "🍀🤯 Ciências da Natureza e suas Tecnologias para o ENEM 2026: Revisão Completa 3 ANOS EM 4 HORAS!!", min: 267 },
