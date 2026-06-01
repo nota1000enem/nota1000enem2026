@@ -199,6 +199,36 @@ export type Database = {
         }
         Relationships: []
       }
+      email_verifications: {
+        Row: {
+          attempts: number
+          codigo: string
+          created_at: string
+          email: string
+          expires_at: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          codigo: string
+          created_at?: string
+          email: string
+          expires_at: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          codigo?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_transactions: {
         Row: {
           created_at: string
@@ -270,6 +300,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string | null
+          email_verified_at: string | null
           estado: string | null
           full_name: string | null
           id: string
@@ -283,6 +314,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          email_verified_at?: string | null
           estado?: string | null
           full_name?: string | null
           id: string
@@ -296,6 +328,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          email_verified_at?: string | null
           estado?: string | null
           full_name?: string | null
           id?: string
@@ -745,6 +778,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      gerar_codigo_verificacao_email: { Args: never; Returns: Json }
       get_minhas_tentativas: {
         Args: { _user_id: string }
         Returns: {
@@ -798,6 +832,7 @@ export type Database = {
       }
       tier_rank: { Args: { _t: string }; Returns: number }
       user_plan_tier: { Args: { _user_id: string }; Returns: string }
+      verificar_codigo_email: { Args: { _codigo: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
