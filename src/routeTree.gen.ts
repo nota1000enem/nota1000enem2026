@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
+import { Route as ProvaRealRouteImport } from './routes/prova-real'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PlanoEstudoRouteImport } from './routes/plano-estudo'
 import { Route as PerfilRouteImport } from './routes/perfil'
@@ -50,6 +51,11 @@ const RankingRoute = RankingRouteImport.update({
 const QuestoesRoute = QuestoesRouteImport.update({
   id: '/questoes',
   path: '/questoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProvaRealRoute = ProvaRealRouteImport.update({
+  id: '/prova-real',
+  path: '/prova-real',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
+  '/prova-real': typeof ProvaRealRoute
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
+  '/prova-real': typeof ProvaRealRoute
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/plano-estudo': typeof PlanoEstudoRoute
   '/planos': typeof PlanosRoute
+  '/prova-real': typeof ProvaRealRoute
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
+    | '/prova-real'
     | '/questoes'
     | '/ranking'
     | '/redacao'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
+    | '/prova-real'
     | '/questoes'
     | '/ranking'
     | '/redacao'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/plano-estudo'
     | '/planos'
+    | '/prova-real'
     | '/questoes'
     | '/ranking'
     | '/redacao'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   PlanoEstudoRoute: typeof PlanoEstudoRoute
   PlanosRoute: typeof PlanosRoute
+  ProvaRealRoute: typeof ProvaRealRoute
   QuestoesRoute: typeof QuestoesRoute
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
@@ -287,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/questoes'
       fullPath: '/questoes'
       preLoaderRoute: typeof QuestoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prova-real': {
+      id: '/prova-real'
+      path: '/prova-real'
+      fullPath: '/prova-real'
+      preLoaderRoute: typeof ProvaRealRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -386,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   PlanoEstudoRoute: PlanoEstudoRoute,
   PlanosRoute: PlanosRoute,
+  ProvaRealRoute: ProvaRealRoute,
   QuestoesRoute: QuestoesRoute,
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
