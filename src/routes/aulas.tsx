@@ -221,12 +221,9 @@ function Aulas() {
             })
             .map((tr) => (
               <div key={tr.area}>
-                <div className="mb-4 flex items-end justify-between gap-3">
-                  <div>
-                    <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
-                    <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
-                  </div>
-                  <Badge variant="outline" className="border-primary/40 text-primary">Trilha completa</Badge>
+                <div className="mb-4">
+                  <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
+                  <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
                 </div>
                 <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
                   <CarouselContent>
