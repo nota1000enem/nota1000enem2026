@@ -161,8 +161,10 @@ function SimuladoPage() {
           <h2 className="mt-10 mb-3 text-xl font-semibold">Gabarito comentado</h2>
           <div className="space-y-3">
             {questoes.map((q, i) => {
-              const marc = respostas[q.id];
-              const ok = marc && marc.toUpperCase() === q.resposta_correta.toUpperCase();
+              const g = resultado.gabarito[q.id];
+              const marc = g?.marcada ?? respostas[q.id] ?? null;
+              const ok = g?.ok ?? false;
+              const correta = g?.correta ?? "—";
               return (
                 <Card key={q.id} className="p-4">
                   <div className="flex items-start gap-3">
@@ -172,7 +174,7 @@ function SimuladoPage() {
                       <p className="mt-1 text-sm">{q.enunciado}</p>
                       <p className="mt-2 text-xs">
                         Sua resposta: <span className={ok ? "text-green-500 font-semibold" : "text-destructive font-semibold"}>{marc ?? "—"}</span>
-                        {" · "}Gabarito: <span className="text-primary font-semibold">{q.resposta_correta}</span>
+                        {" · "}Gabarito: <span className="text-primary font-semibold">{correta}</span>
                       </p>
                     </div>
                   </div>
