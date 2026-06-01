@@ -28,6 +28,8 @@ const VIDEO_LINKS: Record<string, string> = {
   "TUDO de Matemática do Ensino FUNDAMENTAL pro ENEM 2026 (pra quem tem MUITA DIFICULDADE)": "https://youtu.be/JQfJMJrV5Bk",
   "AULÃO ENEM: O que mais cai em FÍSICA no Enem": "https://www.youtube.com/live/DYpF0DJHfk0",
   "TUDO de QUÍMICA GERAL pro ENEM 2026 (GANHE MUITOS ACERTOS)": "https://youtu.be/S5O-_kHn3W0",
+  "Revisão Completa ENEM: Códigos, Linguagens e Redação!": "https://youtu.be/wSTuQIFBW7o",
+  "TUDO sobre FUNÇÕES DA LINGUAGEM pro ENEM - Referencial, conativa, metalinguística, poética, fática": "https://youtu.be/fN-tmG-kzzw",
   "10 horas de aulas (Linguagens códigos e suas tecnologias)": "https://youtu.be/KwtFbA6QLWI",
   "TODOS OS EXERCÍCIOS - LINGUAGENS": "https://youtu.be/sTqMFMEMxr8",
   "11 Horas de Aula (Linguagens códigos e suas tecnologias)": "https://youtu.be/EcFsAkgu-_A",
