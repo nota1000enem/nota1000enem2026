@@ -14,13 +14,29 @@ export function WeeklyRetentionSummary({ userId }: WeeklyRetentionSummaryProps) 
   const [redacoes, setRedacoes] = useState<number[]>([]);
   const [simulados, setSimulados] = useState<number[]>([]);
   const [periodo, setPeriodo] = useState<{ inicio: Date; fim: Date } | null>(null);
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 7);
-    setPeriodo({ inicio: start, fim: end });
+    // Anchor da semana persistido localmente. Só aparece como "resumo da semana passada"
+    // depois que 7 dias se passarem desde o anchor. Quando aparece, ao iniciar nova semana
+    // o anchor é reiniciado.
+    const KEY = "weekly_anchor_v1";
+    const stored = localStorage.getItem(KEY);
+    const now = new Date();
+    let anchor = stored ? new Date(stored) : null;
+    if (!anchor || isNaN(anchor.getTime())) {
+      anchor = new Date(now);
+      anchor.setHours(0, 0, 0, 0);
+      localStorage.setItem(KEY, anchor.toISOString());
+    }
+    const fim = new Date(anchor);
+    fim.setDate(fim.getDate() + 7);
+    if (now >= fim) {
+      setPeriodo({ inicio: anchor, fim });
+      setMostrar(true);
+    } else {
+      setMostrar(false);
+    }
   }, []);
 
   useEffect(() => {
