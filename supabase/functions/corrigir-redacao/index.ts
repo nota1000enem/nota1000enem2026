@@ -79,24 +79,16 @@ serve(async (req) => {
         },
       );
     }
-    const { data: prof } = await admin
-      .from("profiles")
-      .select("plan, plan_vitalicio")
-      .eq("id", user.id)
-      .maybeSingle();
+    const { data: prof } = await admin.from("profiles").select("plan, plan_vitalicio").eq("id", user.id).maybeSingle();
     const planoUsuario = (prof?.plan as string) ?? "free";
-    const modoRigidoLiberado =
-      prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
+    const modoRigidoLiberado = prof?.plan_vitalicio === true || ["pro", "full", "vitalicio"].includes(planoUsuario);
 
     const { texto, tema, modoRigido } = await req.json();
     if (!texto || typeof texto !== "string" || texto.trim().length < 50) {
-      return new Response(
-        JSON.stringify({ error: "Texto muito curto. Cole sua redação completa." }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Texto muito curto. Cole sua redação completa." }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
     if (!tema || typeof tema !== "string" || tema.trim().length < 8) {
       return new Response(JSON.stringify({ error: "O TEMA E OBRIGATÓRIO PRA PROSSEGUIR" }), {
@@ -107,8 +99,7 @@ serve(async (req) => {
     if (texto.length > 2500) {
       return new Response(
         JSON.stringify({
-          error:
-            "Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres.",
+          error: "Limite de caracteres excedido. Reduza sua redação para no máximo 2500 caracteres.",
         }),
         {
           status: 400,
@@ -138,9 +129,14 @@ serve(async (req) => {
     const systemPrompt = `Você é um corretor oficial de redação do ENEM, calibrado pela Cartilha do Participante / Matriz de Referência do INEP. Você corrige pela GRADE FRIA DO INEP, não por gosto pessoal.
 
 ==== CALIBRAGEM POR FAIXA (USE COMO ÂNCORA) ====
-Antes de pontuar, classifique o texto MENTALMENTE em UMA destas faixas e ancore as competências:
-- Fuga total do tema: 0–200 (nota_total)
-- Texto muito curto (<10 linhas) ou desestruturado grave: 0–400
+==== CALIBRAGEM POR FAIXA (VERIFICAÇÃO FINAL) ====
+
+Use as faixas abaixo apenas como verificação de plausibilidade após calcular as cinco competências.
+Nunca ajuste competências para encaixar uma faixa.
+A nota final deve resultar exclusivamente da soma de C1, C2, C3, C4 e C5.
+
+- Fuga total do tema: 0–100 (nota_total)
+- Texto muito curto (<10 linhas) ou desestruturado grave: 0–300
 - Tema correto mas SIMPLES, repetitivo, argumentação pobre, intervenção vaga: 320–520
 - Boa redação com poucos repertórios, intervenção com 2-3 elementos: 600–800
 - Boa redação com repertório legítimo + intervenção com 4 elementos: 800–920
@@ -197,7 +193,7 @@ Situações de anulação (zere a redação inteira):
 7. EM BRANCO ou apenas com cabeçalho.
 8. FOLHA DE TEXTO DEFINITIVO ASSINADA / IDENTIFICADA (não se aplica aqui — input é texto digitado).
 
-REGRA DE OURO da anulação: se há fuga TOTAL ao tema (texto inteiro sobre outro assunto), NÃO dê 120 em C1 e 0 nas outras — zere TUDO. O aluno espera comportamento ENEM real.
+REGRA DE OURO da anulação: se há fuga TOTAL ao tema (texto inteiro sobre outro assunto), NÃO dê 120 em C1 e 0 nas outras — zere TUDO, pois fuga TOTAL e zero direto sem olhar o resto . O aluno espera comportamento ENEM real.
 
 Se a redação NÃO se enquadra em nenhuma das 8 situações acima, "anulada" = false, "motivo_anulacao" = "", e avalie normalmente pelas 5 competências.
 
@@ -243,6 +239,31 @@ Cite com aplicação concreta. Ex.: "Para reforçar a tese sobre desigualdade di
 - "comentario_geral": evite frases prontas. Cite UM ponto forte real e UM gargalo real do texto, com a frase/argumento específico do aluno. Tom de professor humano, não de relatório automático.
 - "repertorios": só se C2 < 200; vazio ou elogio se já tem repertório bom.
 - "erros_gramaticais": SÓ erros REAIS com frase + correção + regra. RELEIA a lista de falsos positivos antes de incluir qualquer item. Vazio é melhor que erro inventado.
+==== CALIBRAÇÃO POR REDAÇÕES REAIS ====
+Nota 1000:
+Projeto autoral, repertório produtivo integrado,
+progressão argumentativa sofisticada,
+intervenção completa e detalhada.
+
+Nota 900:
+Excelente redação com pequenas limitações
+de aprofundamento ou refinamento.
+
+Nota 800:
+Boa redação, coerente,
+argumentação correta,
+mas previsível.
+
+Nota 600:
+Cumpre o tema,
+mas com desenvolvimento superficial.
+
+Nota 400:
+Tema parcialmente atendido,
+argumentação limitada.
+
+Nota 0:
+Anulação conforme cartilha.
 
 ${
   modoRigidoFinal
@@ -289,8 +310,14 @@ Retorne SEMPRE via tool_call estruturado.`;
                   sugestoes: { type: "array", items: { type: "string" } },
                   melhorias: { type: "array", items: { type: "string" } },
                   repertorios: { type: "array", items: { type: "string" } },
-                  anulada: { type: "boolean", description: "true se a redação se enquadra em qualquer situação de zero automático do INEP" },
-                  motivo_anulacao: { type: "string", description: "regra violada quando anulada=true; string vazia quando anulada=false" },
+                  anulada: {
+                    type: "boolean",
+                    description: "true se a redação se enquadra em qualquer situação de zero automático do INEP",
+                  },
+                  motivo_anulacao: {
+                    type: "string",
+                    description: "regra violada quando anulada=true; string vazia quando anulada=false",
+                  },
                 },
                 required: [
                   "competencia_1",
@@ -351,7 +378,8 @@ Retorne SEMPRE via tool_call estruturado.`;
       parsed.competencia_5 = 0;
       parsed.nota_total = 0;
       const motivo = parsed.motivo_anulacao || "Situação de zero automático do INEP";
-      parsed.comentario_geral = `⚠️ REDAÇÃO ANULADA — Nota 0/1000.\n\nMotivo: ${motivo}\n\n${parsed.comentario_geral || ""}`.trim();
+      parsed.comentario_geral =
+        `⚠️ REDAÇÃO ANULADA — Nota 0/1000.\n\nMotivo: ${motivo}\n\n${parsed.comentario_geral || ""}`.trim();
     } else {
       // Garante soma correta
       const soma =
@@ -368,12 +396,9 @@ Retorne SEMPRE via tool_call estruturado.`;
     });
   } catch (e) {
     console.error(e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
