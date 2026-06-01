@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { ProfileIncompleteBanner } from "@/components/profile-incomplete-banner";
 
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
 import { Lock, Crown, Zap } from "lucide-react";
@@ -204,9 +205,11 @@ function RedacaoPage() {
         <p className="mt-2 text-muted-foreground">
           Cole abaixo e receba avaliação completa pelas 5 competências.
         </p>
-        
+
+        <div className="mt-6"><ProfileIncompleteBanner /></div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
+
           <Card className="card-glass p-6">
             {bloqueado && (
               <div className="mb-4 rounded-lg border border-primary/40 bg-primary/5 p-4">
