@@ -44,6 +44,20 @@ const ANOS: Ano[] = [
       { dia: 2, prova: "/pdfs/enem-2024-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2024-dia-2.pdf" },
     ],
   },
+  {
+    ano: 2023,
+    provas: [
+      { dia: 1, prova: "/pdfs/enem-2023-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2023-dia-1.pdf" },
+      { dia: 2, prova: "/pdfs/enem-2023-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2023-dia-2.pdf" },
+    ],
+  },
+  {
+    ano: 2022,
+    provas: [
+      { dia: 1, prova: "/pdfs/enem-2022-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2022-dia-1.pdf" },
+      { dia: 2, prova: "/pdfs/enem-2022-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2022-dia-2.pdf" },
+    ],
+  },
 ];
 
 function ProvaRealPage() {
