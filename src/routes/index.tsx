@@ -153,11 +153,16 @@ function Index() {
               <span className="gradient-text text-glow">NOTA 1000 ENEM 2026</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              <span className="font-semibold text-foreground">DESCUBRA O FUTURO AGORA MESMO!</span>{" "}
-              Corrija redações, treine questões difíceis e estude com metodologia focada em
-              aprovação. Vídeo aulas, corretor de redação, plano de estudos — TUDO focado na sua
-              aprovação.{" "}
-              <span className="font-semibold text-primary">TESTE GRÁTIS AGORA MESMO.</span>
+              <span className="block font-semibold text-foreground">DESCUBRA O FUTURO AGORA MESMO!</span>
+              <span className="mt-2 block">
+                Corrija redações, treine questões difíceis e estude com metodologia focada em
+                aprovação. Vídeo aulas, corretor de redação, plano de estudos — TUDO focado na sua
+                aprovação.
+              </span>
+              <span className="mt-2 block">
+                <span className="font-semibold text-primary">TESTE GRÁTIS AGORA MESMO.</span>{" "}
+                <span className="font-semibold text-foreground">Não precisa cartão de crédito.</span>
+              </span>
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/redacao">
