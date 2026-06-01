@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { renderAsync } from '@react-email/components'
+import { render } from '@react-email/components'
 import { parseEmailWebhookPayload } from '@lovable.dev/email-js'
 import { WebhookError, verifyWebhookRequest } from '@lovable.dev/webhooks-js'
 import { createClient } from '@supabase/supabase-js'
@@ -12,12 +12,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Confirme seu email — Nota 1000 ENEM',
+  invite: 'Você foi convidado — Nota 1000 ENEM',
+  magiclink: 'Seu link de acesso — Nota 1000 ENEM',
+  recovery: 'Redefina sua senha — Nota 1000 ENEM',
+  email_change: 'Confirme seu novo email — Nota 1000 ENEM',
+  reauthentication: 'Seu código de verificação — Nota 1000 ENEM',
 }
 
 // Template mapping
@@ -31,7 +31,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "nota1000enem2026"
+const SITE_NAME = "Nota 1000 ENEM"
 const SENDER_DOMAIN = "notify.nota1000enem.online"
 const ROOT_DOMAIN = "nota1000enem.online"
 const FROM_DOMAIN = "nota1000enem.online"
