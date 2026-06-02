@@ -1,11 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, FileText, Download, CheckCircle2, Lock, Crown } from "lucide-react";
+import { Sparkles, FileText, Download, CheckCircle2, Lock, Crown, Loader2 } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { useState } from "react";
+import { toast } from "sonner";
+import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
 
 export const Route = createFileRoute("/prova-real")({
   head: () => ({
@@ -23,40 +27,36 @@ export const Route = createFileRoute("/prova-real")({
 
 type Ano = {
   ano: number;
-  provas: {
-    dia: 1 | 2;
-    prova: string;
-    gabarito: string;
-  }[];
+  provas: { dia: 1 | 2; prova: string; gabarito: string }[];
 };
 
 const ANOS: Ano[] = [
   {
     ano: 2025,
     provas: [
-      { dia: 1, prova: "/pdfs/enem-2025-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2025-dia-1.pdf" },
-      { dia: 2, prova: "/pdfs/enem-2025-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2025-dia-2.pdf" },
+      { dia: 1, prova: "enem-2025-dia-1.pdf", gabarito: "gabarito-enem-2025-dia-1.pdf" },
+      { dia: 2, prova: "enem-2025-dia-2.pdf", gabarito: "gabarito-enem-2025-dia-2.pdf" },
     ],
   },
   {
     ano: 2024,
     provas: [
-      { dia: 1, prova: "/pdfs/enem-2024-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2024-dia-1.pdf" },
-      { dia: 2, prova: "/pdfs/enem-2024-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2024-dia-2.pdf" },
+      { dia: 1, prova: "enem-2024-dia-1.pdf", gabarito: "gabarito-enem-2024-dia-1.pdf" },
+      { dia: 2, prova: "enem-2024-dia-2.pdf", gabarito: "gabarito-enem-2024-dia-2.pdf" },
     ],
   },
   {
     ano: 2023,
     provas: [
-      { dia: 1, prova: "/pdfs/enem-2023-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2023-dia-1.pdf" },
-      { dia: 2, prova: "/pdfs/enem-2023-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2023-dia-2.pdf" },
+      { dia: 1, prova: "enem-2023-dia-1.pdf", gabarito: "gabarito-enem-2023-dia-1.pdf" },
+      { dia: 2, prova: "enem-2023-dia-2.pdf", gabarito: "gabarito-enem-2023-dia-2.pdf" },
     ],
   },
   {
     ano: 2022,
     provas: [
-      { dia: 1, prova: "/pdfs/enem-2022-dia-1.pdf", gabarito: "/pdfs/gabarito-enem-2022-dia-1.pdf" },
-      { dia: 2, prova: "/pdfs/enem-2022-dia-2.pdf", gabarito: "/pdfs/gabarito-enem-2022-dia-2.pdf" },
+      { dia: 1, prova: "enem-2022-dia-1.pdf", gabarito: "gabarito-enem-2022-dia-1.pdf" },
+      { dia: 2, prova: "enem-2022-dia-2.pdf", gabarito: "gabarito-enem-2022-dia-2.pdf" },
     ],
   },
 ];
@@ -64,11 +64,22 @@ const ANOS: Ano[] = [
 function ProvaRealPage() {
   const { isPaid, loading } = usePlanAccess();
   const navigate = useNavigate();
+  const fetchUrl = useServerFn(getPremiumPdfUrl);
+  const [baixando, setBaixando] = useState<string | null>(null);
 
-  function handleDownload(e: React.MouseEvent) {
+  async function baixar(arquivo: string) {
     if (!isPaid) {
-      e.preventDefault();
       navigate({ to: "/planos" });
+      return;
+    }
+    try {
+      setBaixando(arquivo);
+      const { url } = await fetchUrl({ data: { file: arquivo } });
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao gerar link.");
+    } finally {
+      setBaixando(null);
     }
   }
 
@@ -94,8 +105,7 @@ function ProvaRealPage() {
               <div className="text-sm flex-1">
                 <p className="font-semibold">Provas REAIS do ENEM são exclusivas para alunos pagos</p>
                 <p className="mt-1 text-muted-foreground">
-                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as
-                  PROVAS REAIS DO ENEM.
+                  Assine qualquer plano (Light, Pro, Full ou Vitalício) para liberar todas as PROVAS REAIS DO ENEM.
                 </p>
               </div>
               <Link to="/planos">
@@ -141,28 +151,34 @@ function ProvaRealPage() {
                         </h3>
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        {isPaid ? (
-                          <a href={p.prova} target="_blank" rel="noopener noreferrer">
-                            <Button className="w-full glow-blue">
-                              <Download className="mr-1 h-4 w-4" /> Prova Dia {p.dia}
-                            </Button>
-                          </a>
-                        ) : (
-                          <Button onClick={handleDownload} variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
-                            <Lock className="mr-1 h-4 w-4" /> Prova Dia {p.dia}
-                          </Button>
-                        )}
-                        {isPaid ? (
-                          <a href={p.gabarito} target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
-                              <CheckCircle2 className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}
-                            </Button>
-                          </a>
-                        ) : (
-                          <Button onClick={handleDownload} variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10">
-                            <Lock className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => baixar(p.prova)}
+                          disabled={baixando === p.prova}
+                          variant={isPaid ? "default" : "outline"}
+                          className={isPaid ? "w-full glow-blue" : "w-full border-primary/40 text-primary hover:bg-primary/10"}
+                        >
+                          {baixando === p.prova ? (
+                            <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Gerando…</>
+                          ) : isPaid ? (
+                            <><Download className="mr-1 h-4 w-4" /> Prova Dia {p.dia}</>
+                          ) : (
+                            <><Lock className="mr-1 h-4 w-4" /> Prova Dia {p.dia}</>
+                          )}
+                        </Button>
+                        <Button
+                          onClick={() => baixar(p.gabarito)}
+                          disabled={baixando === p.gabarito}
+                          variant="outline"
+                          className="w-full border-primary/40 text-primary hover:bg-primary/10"
+                        >
+                          {baixando === p.gabarito ? (
+                            <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Gerando…</>
+                          ) : isPaid ? (
+                            <><CheckCircle2 className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}</>
+                          ) : (
+                            <><Lock className="mr-1 h-4 w-4" /> Gabarito Dia {p.dia}</>
+                          )}
+                        </Button>
                       </div>
                     </div>
                   ))}
