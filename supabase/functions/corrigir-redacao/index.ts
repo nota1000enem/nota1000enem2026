@@ -54,7 +54,11 @@ serve(async (req) => {
     }
     const supaUrl = Deno.env.get("SUPABASE_URL")!;
     const supaService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supaAnon = Deno.env.get("SUPABASE_ANON_KEY")!;
     const admin = createClient(supaUrl, supaService);
+    const userClient = createClient(supaUrl, supaAnon, {
+      global: { headers: { Authorization: `Bearer ${authHeader}` } },
+    });
     const {
       data: { user },
       error: uerr,
@@ -65,7 +69,14 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const { data: pode } = await admin.rpc("pode_corrigir_redacao", { _user_id: user.id });
+    const { data: pode, error: podeError } = await userClient.rpc("pode_corrigir_redacao", { _user_id: user.id });
+    if (podeError) {
+      console.error("Erro ao validar limite de redação:", podeError);
+      return new Response(JSON.stringify({ error: "Não foi possível validar seu acesso. Faça login novamente." }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const podeObj = pode as { pode?: boolean; motivo?: string } | null;
     if (!podeObj?.pode) {
       return new Response(
