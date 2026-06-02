@@ -1,11 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, AlertTriangle, FileText, Download, Lock, Crown } from "lucide-react";
+import { Sparkles, AlertTriangle, FileText, Download, Lock, Crown, Loader2 } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { useState } from "react";
+import { toast } from "sonner";
+import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
 
 export const Route = createFileRoute("/pdfs")({
   head: () => ({
@@ -20,19 +24,33 @@ export const Route = createFileRoute("/pdfs")({
 type Pdf = { nome: string; descricao: string; arquivo: string };
 
 const PDFS: Pdf[] = [
-  { nome: "PDF 1 — 50 Questões", descricao: "Bloco inicial — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-1.pdf" },
-  { nome: "PDF 2 — 50 Questões", descricao: "Segundo bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-2.pdf" },
-  { nome: "PDF 3 — 50 Questões", descricao: "Terceiro bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-3.pdf" },
-  { nome: "PDF 4 — 50 Questões", descricao: "Quarto bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-4.pdf" },
-  { nome: "PDF 5 — 50 Questões", descricao: "Quinto bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-5.pdf" },
-  { nome: "PDF 6 — 50 Questões", descricao: "Sexto bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-6.pdf" },
-  { nome: "PDF 7 — 50 Questões", descricao: "Sétimo bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-7.pdf" },
-  { nome: "PDF 8 — 50 Questões", descricao: "Oitavo bloco — questões mistas ENEM.", arquivo: "/pdfs/50-questoes-8.pdf" },
+  { nome: "PDF 1 — 50 Questões", descricao: "Bloco inicial — questões mistas ENEM.", arquivo: "50-questoes-1.pdf" },
+  { nome: "PDF 2 — 50 Questões", descricao: "Segundo bloco — questões mistas ENEM.", arquivo: "50-questoes-2.pdf" },
+  { nome: "PDF 3 — 50 Questões", descricao: "Terceiro bloco — questões mistas ENEM.", arquivo: "50-questoes-3.pdf" },
+  { nome: "PDF 4 — 50 Questões", descricao: "Quarto bloco — questões mistas ENEM.", arquivo: "50-questoes-4.pdf" },
+  { nome: "PDF 5 — 50 Questões", descricao: "Quinto bloco — questões mistas ENEM.", arquivo: "50-questoes-5.pdf" },
+  { nome: "PDF 6 — 50 Questões", descricao: "Sexto bloco — questões mistas ENEM.", arquivo: "50-questoes-6.pdf" },
+  { nome: "PDF 7 — 50 Questões", descricao: "Sétimo bloco — questões mistas ENEM.", arquivo: "50-questoes-7.pdf" },
+  { nome: "PDF 8 — 50 Questões", descricao: "Oitavo bloco — questões mistas ENEM.", arquivo: "50-questoes-8.pdf" },
 ];
 
 function PdfsPage() {
   const { isPaid: planoPago, loading: planLoading } = usePlanAccess();
   const carregado = !planLoading;
+  const fetchUrl = useServerFn(getPremiumPdfUrl);
+  const [baixando, setBaixando] = useState<string | null>(null);
+
+  async function baixar(arquivo: string) {
+    try {
+      setBaixando(arquivo);
+      const { url } = await fetchUrl({ data: { file: arquivo } });
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao gerar link.");
+    } finally {
+      setBaixando(null);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,11 +114,17 @@ function PdfsPage() {
               <h3 className="mt-2 text-xl font-bold text-primary">{p.nome}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{p.descricao}</p>
               {planoPago ? (
-                <a href={p.arquivo} target="_blank" rel="noopener noreferrer" download>
-                  <Button className="mt-4 w-full glow-blue">
-                    <Download className="mr-1 h-4 w-4" /> Baixar PDF
-                  </Button>
-                </a>
+                <Button
+                  onClick={() => baixar(p.arquivo)}
+                  disabled={baixando === p.arquivo}
+                  className="mt-4 w-full glow-blue"
+                >
+                  {baixando === p.arquivo ? (
+                    <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Gerando link…</>
+                  ) : (
+                    <><Download className="mr-1 h-4 w-4" /> Baixar PDF</>
+                  )}
+                </Button>
               ) : (
                 <Link to="/planos">
                   <Button className="mt-4 w-full" variant="outline">
