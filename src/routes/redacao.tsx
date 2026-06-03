@@ -98,7 +98,7 @@ function RedacaoPage() {
     if (bloqueado) {
       const msgs: Record<string, string> = {
         limite_gratuito_atingido:
-          "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
+          "Você já usou suas 2 correções gratuitas. Escolha um plano para continuar.",
         limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês (${usadas}/${limite}). Faça upgrade para corrigir mais.`,
         creditos_esgotados:
           "Seus créditos de redação acabaram neste ciclo. Renove seu plano para corrigir mais.",
