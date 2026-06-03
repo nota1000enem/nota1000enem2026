@@ -407,6 +407,9 @@ function RedacaoPage() {
                     </div>
                   ))}
                 </div>
+                <h3 className="text-lg font-bold text-primary text-glow">
+                  Como melhorar sua redação
+                </h3>
                 <div className="rounded-lg border border-border/60 bg-background/60 p-4">
                   <h4 className="text-sm font-semibold">Comentário geral</h4>
                   <p className="mt-2 text-sm text-muted-foreground">{resultado.comentario_geral}</p>
