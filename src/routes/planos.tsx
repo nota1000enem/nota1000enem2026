@@ -121,6 +121,7 @@ const planos: Array<{
       "Plano de Estudo com IA",
       "Repertórios automáticos",
       "Cronograma inteligente",
+      "Grupo VIP + Network",
     ],
   },
   {
