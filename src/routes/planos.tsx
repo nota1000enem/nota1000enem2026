@@ -149,6 +149,7 @@ const planos: Array<{
       "Repertórios automáticos",
       "Estratégias de aprovação",
       "Atualizações futuras",
+      "Grupo VIP + Network",
     ],
   },
   {
