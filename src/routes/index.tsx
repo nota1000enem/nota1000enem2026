@@ -682,6 +682,7 @@ function Index() {
                   "Repertórios automáticos",
                   "Estratégias de aprovação",
                   "Atualizações futuras",
+                  "Grupo VIP + Network",
                 ],
               },
               {
