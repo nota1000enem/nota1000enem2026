@@ -179,6 +179,7 @@ const planos: Array<{
       "Estratégias de aprovação",
       "Atualizações futuras incluídas",
       "Sem renovação, sem cobrança recorrente",
+      "Grupo VIP + Network",
     ],
   },
 ];
