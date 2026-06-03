@@ -167,7 +167,7 @@ function Index() {
             <div className="flex flex-wrap gap-3">
               <Link to="/redacao">
                 <Button size="lg" className="glow-blue">
-                  Ver Minha Nota Grátis <ArrowRight className="ml-1 h-4 w-4" />
+                  Corrigir minha Redação Grátis <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
               <Link to="/planos">
