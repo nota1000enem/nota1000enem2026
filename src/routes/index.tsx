@@ -100,13 +100,13 @@ function Index() {
   const heroAutoplay = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
-  const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number }>>([]);
+  const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number; avatar_url: string | null; estado: string | null; idade: number | null }>>([]);
   const checkoutFn = useServerFn(createCheckout);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
   const promo = useFakePromoTimer();
   useEffect(() => {
-    supabase.rpc("get_top_semana").then(({ data }) => {
-      if (data && Array.isArray(data)) setTopSemana(data.slice(0, 3));
+    supabase.rpc("get_ranking_global").then(({ data }) => {
+      if (data && Array.isArray(data)) setTopSemana((data as Array<{ nome: string; melhor_nota: number; avatar_url: string | null; estado: string | null; idade: number | null }>).slice(0, 3));
     });
   }, []);
   async function handleBuy(planType: PlanType) {
