@@ -374,12 +374,15 @@ function Index() {
           <p className="mt-3 text-muted-foreground">
             Ranking ao vivo dos alunos com as melhores notas dos últimos 7 dias.
           </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 grid-cols-3">
             {(topSemana.length > 0
               ? topSemana.map((t, i) => ({
                   pos: `${i + 1}º`,
                   nome: t.nome,
                   nota: t.melhor_nota,
+                  avatar_url: t.avatar_url,
+                  estado: t.estado,
+                  idade: t.idade,
                   color:
                     i === 0 ? "text-yellow-400" : i === 1 ? "text-slate-300" : "text-orange-400",
                   ring:
@@ -390,40 +393,42 @@ function Index() {
                         : "ring-orange-400/60",
                   glow: i === 0 ? "glow-blue" : "",
                 }))
-              : [
-                  {
-                    pos: "1º",
-                    nome: "—",
-                    nota: 0,
-                    color: "text-yellow-400",
-                    ring: "ring-yellow-400/60",
-                    glow: "glow-blue",
-                  },
-                  {
-                    pos: "2º",
-                    nome: "—",
-                    nota: 0,
-                    color: "text-slate-300",
-                    ring: "ring-slate-300/60",
-                    glow: "",
-                  },
-                  {
-                    pos: "3º",
-                    nome: "—",
-                    nota: 0,
-                    color: "text-orange-400",
-                    ring: "ring-orange-400/60",
-                    glow: "",
-                  },
-                ]
+              : [0, 1, 2].map((i) => ({
+                  pos: `${i + 1}º`,
+                  nome: "—",
+                  nota: 0,
+                  avatar_url: null as string | null,
+                  estado: null as string | null,
+                  idade: null as number | null,
+                  color:
+                    i === 0 ? "text-yellow-400" : i === 1 ? "text-slate-300" : "text-orange-400",
+                  ring:
+                    i === 0
+                      ? "ring-yellow-400/60"
+                      : i === 1
+                        ? "ring-slate-300/60"
+                        : "ring-orange-400/60",
+                  glow: i === 0 ? "glow-blue" : "",
+                }))
             ).map((p) => (
-              <Card key={p.pos} className={`card-glass p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
-                <Trophy className={`mx-auto h-8 w-8 ${p.color}`} />
-                <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">
+              <Card key={p.pos} className={`card-glass p-3 md:p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
+                <div className={`mx-auto h-14 w-14 md:h-20 md:w-20 overflow-hidden rounded-full border-2 border-background ring-2 ${p.ring} bg-muted`}>
+                  {p.avatar_url ? (
+                    <img src={p.avatar_url} alt={p.nome} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="grid h-full w-full place-content-center">
+                      <Trophy className={`h-6 w-6 md:h-8 md:w-8 ${p.color} opacity-50`} />
+                    </div>
+                  )}
+                </div>
+                <p className={`mt-2 text-[10px] md:text-xs uppercase tracking-wider font-semibold ${p.color}`}>
                   {p.pos} lugar
                 </p>
-                <p className="mt-2 text-lg font-semibold">{p.nome}</p>
-                <p className="mt-2 text-4xl font-bold gradient-text text-glow">{p.nota || "—"}</p>
+                <p className="mt-1 text-sm md:text-lg font-semibold truncate">{p.nome}</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">
+                  {[p.idade ? `${p.idade} anos` : null, p.estado].filter(Boolean).join(" · ") || "\u00a0"}
+                </p>
+                <p className="mt-2 text-2xl md:text-4xl font-bold gradient-text text-glow">{p.nota || "—"}</p>
               </Card>
             ))}
           </div>
