@@ -97,6 +97,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
       },
+      { name: "description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
+      { property: "og:description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
+      { name: "twitter:description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xvSin4UK0fNHvOIZHbyfLrJYcW42/social-images/social-1780448932539-840enem2026.png.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xvSin4UK0fNHvOIZHbyfLrJYcW42/social-images/social-1780448932539-840enem2026.png.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
