@@ -703,6 +703,7 @@ function Index() {
                   "Plano de Estudo com IA vitalício",
                   "Atualizações futuras incluídas",
                   "Sem renovação, sem cobrança recorrente",
+                  "Grupo VIP + Network",
                 ],
               },
             ];
