@@ -16,14 +16,14 @@ export function Navbar() {
   // (free continua vendo Planos pra poder fazer upgrade).
   const baseLinks = [
     { to: "/", label: "Início", hide: !!user },
-    { to: "/redacao", label: "Corrigir Redação", hide: false },
+    { to: "/redacao", label: "Redação", hide: false },
+    { to: "/plano-estudo", label: "Plano de Estudo", hide: false },
+    { to: "/questoes", label: "Simulados", hide: false },
     { to: "/aulas", label: "Vídeo Aulas", hide: false },
-    { to: "/questoes", label: "1.000 Questões", hide: false },
     { to: "/pdfs", label: "PDFs", hide: false },
-    { to: "/prova-real", label: "Prova Enem", hide: false },
-    { to: "/plano-estudo", label: "Plano de Estudo", hide: !!user && false },
+    { to: "/prova-real", label: "Provas ENEM", hide: false },
     { to: "/ranking", label: "Ranking", hide: false },
-    { to: "/planos", label: "Planos", hide: !!user && isPaid },
+    { to: "/planos", label: "Preço", hide: !!user && isPaid },
   ];
   const links = baseLinks.filter((l) => !l.hide);
 

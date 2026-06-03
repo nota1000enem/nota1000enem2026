@@ -98,7 +98,7 @@ function RedacaoPage() {
     if (bloqueado) {
       const msgs: Record<string, string> = {
         limite_gratuito_atingido:
-          "Você já usou suas 3 correções gratuitas. Escolha um plano para continuar.",
+          "Você já usou suas 2 correções gratuitas. Escolha um plano para continuar.",
         limite_mensal_atingido: `Você atingiu o limite de ${limite} redações deste mês (${usadas}/${limite}). Faça upgrade para corrigir mais.`,
         creditos_esgotados:
           "Seus créditos de redação acabaram neste ciclo. Renove seu plano para corrigir mais.",
@@ -218,7 +218,7 @@ function RedacaoPage() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
                       {motivoBloqueio === "limite_gratuito_atingido" &&
-                        `Você usou suas 3 correções gratuitas (${usadas}/3).`}
+                        `Você usou suas 2 correções gratuitas (${usadas}/2).`}
                       {motivoBloqueio === "limite_mensal_atingido" &&
                         `Limite mensal atingido (${usadas}/${limite}).`}
                       {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
@@ -407,6 +407,9 @@ function RedacaoPage() {
                     </div>
                   ))}
                 </div>
+                <h3 className="text-lg font-bold text-primary text-glow">
+                  Como melhorar sua redação
+                </h3>
                 <div className="rounded-lg border border-border/60 bg-background/60 p-4">
                   <h4 className="text-sm font-semibold">Comentário geral</h4>
                   <p className="mt-2 text-sm text-muted-foreground">{resultado.comentario_geral}</p>

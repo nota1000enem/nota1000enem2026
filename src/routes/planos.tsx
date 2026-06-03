@@ -95,6 +95,7 @@ const planos: Array<{
       "Cronograma de 30 dias",
       "Templates de redação nota 1000",
       "Acesso básico IA",
+      "Grupo VIP + Network",
     ],
   },
   {
@@ -120,6 +121,7 @@ const planos: Array<{
       "Plano de Estudo com IA",
       "Repertórios automáticos",
       "Cronograma inteligente",
+      "Grupo VIP + Network",
     ],
   },
   {
@@ -147,6 +149,7 @@ const planos: Array<{
       "Repertórios automáticos",
       "Estratégias de aprovação",
       "Atualizações futuras",
+      "Grupo VIP + Network",
     ],
   },
   {
@@ -176,6 +179,7 @@ const planos: Array<{
       "Estratégias de aprovação",
       "Atualizações futuras incluídas",
       "Sem renovação, sem cobrança recorrente",
+      "Grupo VIP + Network",
     ],
   },
 ];
