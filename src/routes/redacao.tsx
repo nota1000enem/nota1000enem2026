@@ -218,7 +218,7 @@ function RedacaoPage() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
                       {motivoBloqueio === "limite_gratuito_atingido" &&
-                        `Você usou suas 3 correções gratuitas (${usadas}/3).`}
+                        `Você usou suas 2 correções gratuitas (${usadas}/2).`}
                       {motivoBloqueio === "limite_mensal_atingido" &&
                         `Limite mensal atingido (${usadas}/${limite}).`}
                       {motivoBloqueio === "assinatura_expirada" && "Sua assinatura expirou."}
