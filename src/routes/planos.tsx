@@ -95,6 +95,7 @@ const planos: Array<{
       "Cronograma de 30 dias",
       "Templates de redação nota 1000",
       "Acesso básico IA",
+      "Grupo VIP + Network",
     ],
   },
   {
