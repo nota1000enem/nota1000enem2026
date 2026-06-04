@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2, Camera, MapPin, Cake } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { enviarCodigoVerificacao, verificarCodigoEmail } from "@/lib/email-verification.functions";
+
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu Perfil – Nota 1000 ENEM" }] }),
