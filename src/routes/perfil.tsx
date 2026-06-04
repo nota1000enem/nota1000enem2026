@@ -75,7 +75,7 @@ function PerfilPage() {
       setResetEmail(data.user.email ?? "");
       const { data: p } = await supabase
         .from("profiles")
-        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade")
+        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade,email_verified_at")
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
