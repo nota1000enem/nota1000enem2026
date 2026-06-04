@@ -461,3 +461,100 @@ function RankingProfileEditor({ profile, onSaved }: { profile: Profile | null; o
     </div>
   );
 }
+
+function EmailVerificationBlock({ verified }: { verified: boolean }) {
+  const [codigo, setCodigo] = useState("");
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifiedNow, setVerifiedNow] = useState(verified);
+  const enviar = useServerFn(enviarCodigoVerificacao);
+  const verificar = useServerFn(verificarCodigoEmail);
+
+  useEffect(() => setVerifiedNow(verified), [verified]);
+
+  async function handleEnviar() {
+    setSending(true);
+    try {
+      const r = await enviar({});
+      if ((r as { ok: boolean; motivo?: string; aguarde_segundos?: number }).ok) {
+        toast.success("Código enviado! Verifique sua caixa de entrada (pode ir para spam).");
+      } else if ((r as { motivo?: string }).motivo === "cooldown") {
+        toast.error(`Aguarde ${(r as { aguarde_segundos?: number }).aguarde_segundos ?? 60}s para reenviar.`);
+      } else {
+        toast.error("Não foi possível enviar o código. Tente novamente.");
+      }
+    } catch (e) {
+      toast.error("Erro ao enviar código. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleVerificar() {
+    if (!/^\d{6}$/.test(codigo.trim())) {
+      toast.error("Digite os 6 dígitos do código.");
+      return;
+    }
+    setVerifying(true);
+    try {
+      const r = await verificar({ data: { codigo: codigo.trim() } }) as { ok: boolean; motivo?: string };
+      if (r.ok) {
+        setVerifiedNow(true);
+        setCodigo("");
+        toast.success("Email verificado com sucesso!");
+      } else {
+        const motivos: Record<string, string> = {
+          sem_codigo: "Nenhum código pendente. Envie um novo.",
+          expirado: "Código expirado. Envie um novo.",
+          tentativas_excedidas: "Muitas tentativas. Envie um novo código.",
+          codigo_invalido: "Código inválido. Confira os 6 dígitos.",
+        };
+        toast.error(motivos[r.motivo ?? ""] ?? "Não foi possível verificar.");
+      }
+    } catch {
+      toast.error("Erro ao verificar. Tente novamente.");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  if (verifiedNow) {
+    return (
+      <div className="mt-4 rounded-lg border border-green-500/30 bg-green-500/5 p-3">
+        <div className="flex items-center gap-2 text-sm text-green-400">
+          <CheckCircle2 className="h-4 w-4" />
+          <span className="font-semibold">Email verificado</span>
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">Sua conta está confirmada.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
+      <Label className="text-xs font-semibold text-primary">Verificar email (código de 6 dígitos)</Label>
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Para garantir que esse email é seu, enviaremos um código. Você tem <strong>7 dias</strong> a partir do cadastro para verificar.
+      </p>
+      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+        <Input
+          placeholder="Código de 6 dígitos"
+          maxLength={6}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          className="sm:max-w-[180px]"
+        />
+        <Button type="button" variant="outline" onClick={handleEnviar} disabled={sending}>
+          {sending && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+          Enviar código
+        </Button>
+        <Button type="button" onClick={handleVerificar} disabled={verifying || codigo.length !== 6}>
+          {verifying && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+          Verificar
+        </Button>
+      </div>
+    </div>
+  );
+}
