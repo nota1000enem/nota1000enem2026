@@ -186,9 +186,8 @@ function PerfilPage() {
           </div>
 
           {/* Verificação de email — código de 6 dígitos */}
-          <EmailVerificationBlock
-            verified={!!(profile as Profile & { email_verified_at?: string | null })?.email_verified_at}
-          />
+          <EmailVerificationBlock verified={!!profile?.email_verified_at} />
+
 
         </Card>
 
