@@ -15,12 +15,12 @@ export const Route = createFileRoute("/prova-real")({
   head: () => ({
     meta: [
       { title: "Prova REAL ENEM – Provas e Gabaritos Oficiais | Nota 1000 ENEM" },
-      {
-        name: "description",
-        content:
-          "Baixe as provas reais do ENEM 2022, 2023, 2024 e 2025 (Dia 1 e Dia 2) com gabaritos oficiais em PDF.",
-      },
+      { name: "description", content: "Baixe as provas reais do ENEM 2022, 2023, 2024 e 2025 (Dia 1 e Dia 2) com gabaritos oficiais em PDF." },
+      { property: "og:title", content: "Provas ENEM Oficiais (2022-2025) com Gabarito" },
+      { property: "og:description", content: "Baixe todas as provas e gabaritos ENEM de 2022 a 2025." },
+      { property: "og:url", content: "https://nota1000enem.online/prova-real" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/prova-real" }],
   }),
   component: ProvaRealPage,
 });
