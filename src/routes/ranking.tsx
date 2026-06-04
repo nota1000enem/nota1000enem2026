@@ -137,7 +137,21 @@ function RankingPage() {
                 ))}
               </div>
             )}
+
+            {!isLogged && rows.length > 3 && (
+              <Card className="card-glass mt-8 p-8 text-center border-primary/40 bg-primary/5">
+                <Lock className="mx-auto h-10 w-10 text-primary" />
+                <h2 className="mt-3 text-xl font-semibold">Ranking completo é exclusivo para alunos logados</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Faça login para ver os {rows.length - 3} demais colocados e disputar seu lugar no TOP 3.
+                </p>
+                <Link to="/auth" className="mt-4 inline-block">
+                  <Button className="glow-blue">Entrar / Criar conta</Button>
+                </Link>
+              </Card>
+            )}
           </>
+
         )}
       </section>
       <Footer />
