@@ -60,9 +60,13 @@ const VIDEO_LINKS: Record<string, string> = {
 export const Route = createFileRoute("/aulas")({
   head: () => ({
     meta: [
-      { title: "Vídeo Aulas ENEM – Nota 1000 ENEM" },
-      { name: "description", content: "Vídeo aulas focadas em alta performance no ENEM: redação, matemática, linguagens e mais." },
+      { title: "Vídeo Aulas ENEM – Trilhas por área | Nota 1000 ENEM" },
+      { name: "description", content: "Vídeo aulas focadas em alta performance no ENEM: redação, matemática, linguagens, humanas e natureza. Aula nova toda semana." },
+      { property: "og:title", content: "Vídeo Aulas ENEM por área" },
+      { property: "og:description", content: "Trilhas semanais de Matemática, Linguagens, Humanas, Natureza e Redação." },
+      { property: "og:url", content: "https://nota1000enem.online/aulas" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/aulas" }],
   }),
   component: Aulas,
 });
