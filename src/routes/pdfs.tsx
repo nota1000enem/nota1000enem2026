@@ -14,9 +14,13 @@ import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
 export const Route = createFileRoute("/pdfs")({
   head: () => ({
     meta: [
-      { title: "PDFs ENEM – Nota 1000 ENEM" },
-      { name: "description", content: "Baixe PDFs de questões ENEM para estudar offline." },
+      { title: "PDFs ENEM – 50 questões por área para baixar | Nota 1000 ENEM" },
+      { name: "description", content: "Baixe PDFs de questões ENEM para estudar offline: 50 questões por arquivo, cobrindo todas as áreas do exame." },
+      { property: "og:title", content: "PDFs ENEM – Estude offline" },
+      { property: "og:description", content: "Pacotes de questões ENEM em PDF para download e estudo offline." },
+      { property: "og:url", content: "https://nota1000enem.online/pdfs" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/pdfs" }],
   }),
   component: PdfsPage,
 });
