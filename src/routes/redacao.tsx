@@ -22,13 +22,13 @@ import { Lock, Crown, Zap } from "lucide-react";
 export const Route = createFileRoute("/redacao")({
   head: () => ({
     meta: [
-      { title: "Corrigir Redação com IA – Nota 1000 ENEM" },
-      {
-        name: "description",
-        content:
-          "Cole sua redação do ENEM e receba correção completa pelas 5 competências em segundos.",
-      },
+      { title: "Corrigir Redação ENEM com IA – Nota 1000 ENEM" },
+      { name: "description", content: "Cole sua redação do ENEM e receba correção completa pelas 5 competências em segundos. Nota 0-1000 na grade oficial INEP." },
+      { property: "og:title", content: "Corrigir Redação ENEM com IA – Nota 1000 ENEM" },
+      { property: "og:description", content: "Correção da redação ENEM por IA pelas 5 competências, em segundos." },
+      { property: "og:url", content: "https://nota1000enem.online/redacao" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/redacao" }],
   }),
   component: RedacaoPage,
 });
