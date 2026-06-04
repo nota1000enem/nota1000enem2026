@@ -178,6 +178,7 @@ Texto simples, repetitivo, com pouca argumentação, mas SEM erros gramaticais g
 
 ==== FALSOS POSITIVOS PROIBIDOS (NUNCA APONTAR COMO ERRO) ====
 NÃO aponte como erro nenhum dos casos abaixo — são CORRETOS no português culto:
+- "Porém,", "Contudo,", "Entretanto,", "Todavia,", "No entanto," NO INÍCIO de oração — a vírgula DEPOIS desses conectivos deslocados é OBRIGATÓRIA e CORRETA. NUNCA marque como erro "uso da vírgula antes/depois de Porém" — é regra básica de pontuação. Se aparecer "Porém, nem tudo..." está PERFEITO.
 - "Existem notícias falsas / Nelas existem muitas informações" → verbo EXISTIR concorda normalmente com o sujeito; está CERTO. Só HAVER (impessoal) fica no singular. NÃO confunda.
 - "Por isso a desinformação cresce" → vírgula após "Por isso", "Portanto", "Assim" no início da oração é OPCIONAL/estilística, NÃO obrigatória. NÃO marque como erro.
 - "Hodierno", "outrossim", "destarte", "perenizam", "supracitado" → vocabulário CULTO, valorizado em C1.
@@ -186,6 +187,10 @@ NÃO aponte como erro nenhum dos casos abaixo — são CORRETOS no português cu
 - "Mesmo" com função de "ele/ela próprio" — coloquial mas tolerado, não derruba pontos.
 - Início de período com "E", "Mas", "Pois" — estilístico, NÃO é erro.
 - Concordância com sujeito posposto ("Existem problemas", "Houve discussões") quando o verbo é EXISTIR, ACONTECER, OCORRER (não HAVER) — sempre concorda.
+
+==== PROIBIDO: NOTAS UNIFORMES / ROBÓTICAS ====
+É TERMINANTEMENTE PROIBIDO devolver notas iguais em todas as 5 competências (ex.: 80/80/80/80/80, 120/120/120/120/120, 160/160/160/160/160) OU padrões claramente artificiais como "80, 80, 80, 160, 160". Corretor humano DESEQUILIBRA. Antes de finalizar, RELEIA suas 5 notas — se duas ou mais consecutivas forem idênticas SEM razão concreta extraída do texto, ajuste em ±40 para refletir diferença real entre gramática, repertório, argumentação, coesão e proposta. Cada competência mede coisa diferente; é improvável que todas mereçam exatamente a mesma faixa.
+
 
 ==== REGRAS GERAIS — INVIOLÁVEIS ====
 - Cada competência: 0 a 200, múltiplos de 40 (0, 40, 80, 120, 160, 200).
