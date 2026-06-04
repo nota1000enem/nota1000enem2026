@@ -29,7 +29,9 @@ type Profile = {
   avatar_url: string | null;
   estado: string | null;
   idade: number | null;
+  email_verified_at: string | null;
 };
+
 
 const ESTADOS_BR = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 
