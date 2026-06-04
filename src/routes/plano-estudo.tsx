@@ -27,13 +27,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/plano-estudo")({
   head: () => ({
     meta: [
-      { title: "Plano de Estudo Semanal com IA – Nota 1000 ENEM" },
-      {
-        name: "description",
-        content:
-          "Gere um plano de estudo SEMANAL personalizado para o ENEM com sequência pedagógica real, blocos curtos e foco nas suas fraquezas.",
-      },
+      { title: "Plano de Estudo ENEM Semanal com IA | Nota 1000 ENEM" },
+      { name: "description", content: "Gere um plano de estudo SEMANAL personalizado para o ENEM com sequência pedagógica real, blocos curtos e foco nas suas fraquezas." },
+      { property: "og:title", content: "Plano de Estudo ENEM Semanal com IA" },
+      { property: "og:description", content: "Plano semanal personalizado para o ENEM, focado nas suas fraquezas." },
+      { property: "og:url", content: "https://nota1000enem.online/plano-estudo" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/plano-estudo" }],
   }),
   component: PlanoEstudoPage,
 });

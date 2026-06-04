@@ -31,12 +31,13 @@ import Autoplay from "embla-carousel-autoplay";
 export const Route = createFileRoute("/planos")({
   head: () => ({
     meta: [
-      { title: "Planos – Nota 1000 ENEM" },
-      {
-        name: "description",
-        content: "Escolha o plano ideal para sua aprovação no ENEM. A partir de R$ 19,90/mês.",
-      },
+      { title: "Planos Nota 1000 ENEM – A partir de R$ 19,90/mês" },
+      { name: "description", content: "Escolha o plano ideal para sua aprovação no ENEM: correção de redação por IA, simulados, vídeo aulas e plano de estudo. A partir de R$ 19,90/mês." },
+      { property: "og:title", content: "Planos Nota 1000 ENEM" },
+      { property: "og:description", content: "Correção de redação por IA, simulados e vídeo aulas. A partir de R$ 19,90/mês." },
+      { property: "og:url", content: "https://nota1000enem.online/planos" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/planos" }],
   }),
   component: Planos,
 });

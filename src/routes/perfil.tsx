@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2, Mail, User as UserIcon, Shield, Crown, Loader2, Camera, MapPin, Cake } from "lucide-react";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { enviarCodigoVerificacao, verificarCodigoEmail } from "@/lib/email-verification.functions";
+
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu Perfil – Nota 1000 ENEM" }] }),
@@ -26,7 +29,9 @@ type Profile = {
   avatar_url: string | null;
   estado: string | null;
   idade: number | null;
+  email_verified_at: string | null;
 };
+
 
 const ESTADOS_BR = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 
@@ -70,7 +75,7 @@ function PerfilPage() {
       setResetEmail(data.user.email ?? "");
       const { data: p } = await supabase
         .from("profiles")
-        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade")
+        .select("id,email,full_name,plan,plan_expires_at,plan_vitalicio,avatar_url,estado,idade,email_verified_at")
         .eq("id", data.user.id)
         .maybeSingle();
       setProfile(p as Profile | null);
@@ -180,35 +185,10 @@ function PerfilPage() {
             <p className="mt-1 text-xs text-muted-foreground">Email vinculado à sua conta.</p>
           </div>
 
-          {/* Verificação de email — interface pronta; envio real ativa após config. do domínio */}
-          <div className="mt-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
-            <Label className="text-xs font-semibold text-primary">Verificar email (código de 6 dígitos)</Label>
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              Para garantir que esse email é seu, enviaremos um código. Contas não verificadas em <strong>7 dias</strong> serão removidas.
-            </p>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-              <Input
-                placeholder="Código de 6 dígitos"
-                maxLength={6}
-                inputMode="numeric"
-                pattern="[0-9]*"
-                className="sm:max-w-[180px]"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => toast.info("Verificação de email será ativada em breve — aguarde a configuração do domínio.")}
-              >
-                Enviar código
-              </Button>
-              <Button
-                type="button"
-                onClick={() => toast.info("Verificação de email será ativada em breve.")}
-              >
-                Verificar
-              </Button>
-            </div>
-          </div>
+          {/* Verificação de email — código de 6 dígitos */}
+          <EmailVerificationBlock verified={!!profile?.email_verified_at} />
+
+
         </Card>
 
         {/* Foto, Estado e Idade (Ranking) */}
@@ -478,6 +458,103 @@ function RankingProfileEditor({ profile, onSaved }: { profile: Profile | null; o
         {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         Salvar estado e idade
       </Button>
+    </div>
+  );
+}
+
+function EmailVerificationBlock({ verified }: { verified: boolean }) {
+  const [codigo, setCodigo] = useState("");
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifiedNow, setVerifiedNow] = useState(verified);
+  const enviar = useServerFn(enviarCodigoVerificacao);
+  const verificar = useServerFn(verificarCodigoEmail);
+
+  useEffect(() => setVerifiedNow(verified), [verified]);
+
+  async function handleEnviar() {
+    setSending(true);
+    try {
+      const r = await enviar({});
+      if ((r as { ok: boolean; motivo?: string; aguarde_segundos?: number }).ok) {
+        toast.success("Código enviado! Verifique sua caixa de entrada (pode ir para spam).");
+      } else if ((r as { motivo?: string }).motivo === "cooldown") {
+        toast.error(`Aguarde ${(r as { aguarde_segundos?: number }).aguarde_segundos ?? 60}s para reenviar.`);
+      } else {
+        toast.error("Não foi possível enviar o código. Tente novamente.");
+      }
+    } catch (e) {
+      toast.error("Erro ao enviar código. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleVerificar() {
+    if (!/^\d{6}$/.test(codigo.trim())) {
+      toast.error("Digite os 6 dígitos do código.");
+      return;
+    }
+    setVerifying(true);
+    try {
+      const r = await verificar({ data: { codigo: codigo.trim() } }) as { ok: boolean; motivo?: string };
+      if (r.ok) {
+        setVerifiedNow(true);
+        setCodigo("");
+        toast.success("Email verificado com sucesso!");
+      } else {
+        const motivos: Record<string, string> = {
+          sem_codigo: "Nenhum código pendente. Envie um novo.",
+          expirado: "Código expirado. Envie um novo.",
+          tentativas_excedidas: "Muitas tentativas. Envie um novo código.",
+          codigo_invalido: "Código inválido. Confira os 6 dígitos.",
+        };
+        toast.error(motivos[r.motivo ?? ""] ?? "Não foi possível verificar.");
+      }
+    } catch {
+      toast.error("Erro ao verificar. Tente novamente.");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  if (verifiedNow) {
+    return (
+      <div className="mt-4 rounded-lg border border-green-500/30 bg-green-500/5 p-3">
+        <div className="flex items-center gap-2 text-sm text-green-400">
+          <CheckCircle2 className="h-4 w-4" />
+          <span className="font-semibold">Email verificado</span>
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">Sua conta está confirmada.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
+      <Label className="text-xs font-semibold text-primary">Verificar email (código de 6 dígitos)</Label>
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Para garantir que esse email é seu, enviaremos um código. Você tem <strong>7 dias</strong> a partir do cadastro para verificar.
+      </p>
+      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+        <Input
+          placeholder="Código de 6 dígitos"
+          maxLength={6}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          className="sm:max-w-[180px]"
+        />
+        <Button type="button" variant="outline" onClick={handleEnviar} disabled={sending}>
+          {sending && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+          Enviar código
+        </Button>
+        <Button type="button" onClick={handleVerificar} disabled={verifying || codigo.length !== 6}>
+          {verifying && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+          Verificar
+        </Button>
+      </div>
     </div>
   );
 }

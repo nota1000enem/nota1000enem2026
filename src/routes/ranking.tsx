@@ -6,14 +6,18 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Medal, Award, Sparkles, TrendingUp, MapPin, User as UserIcon } from "lucide-react";
+import { Trophy, Sparkles, TrendingUp, MapPin, User as UserIcon, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
       { title: "Ranking ENEM – Top alunos com nota 1000 em Redação" },
       { name: "description", content: "Veja o ranking dos melhores alunos do ENEM em correção de redação por IA. Compita pelo TOP 3 nacional e mostre sua nota." },
+      { property: "og:title", content: "Ranking ENEM – Top alunos Nota 1000" },
+      { property: "og:description", content: "Compita pelo TOP 3 nacional na correção de redação por IA." },
+      { property: "og:url", content: "https://nota1000enem.online/ranking" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/ranking" }],
   }),
   component: RankingPage,
 });
@@ -31,17 +35,23 @@ type Row = {
 function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.rpc("get_ranking_global");
-      setRows((data as unknown as Row[]) ?? []);
+      const [{ data: rk }, { data: auth }] = await Promise.all([
+        supabase.rpc("get_ranking_global"),
+        supabase.auth.getUser(),
+      ]);
+      setRows((rk as unknown as Row[]) ?? []);
+      setIsLogged(!!auth.user);
       setLoading(false);
     })();
   }, []);
 
   const podio = rows.slice(0, 3);
-  const resto = rows.slice(3, 100);
+  const resto = isLogged ? rows.slice(3, 100) : [];
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -127,7 +137,21 @@ function RankingPage() {
                 ))}
               </div>
             )}
+
+            {!isLogged && rows.length > 3 && (
+              <Card className="card-glass mt-8 p-8 text-center border-primary/40 bg-primary/5">
+                <Lock className="mx-auto h-10 w-10 text-primary" />
+                <h2 className="mt-3 text-xl font-semibold">Ranking completo é exclusivo para alunos logados</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Faça login para ver os {rows.length - 3} demais colocados e disputar seu lugar no TOP 3.
+                </p>
+                <Link to="/auth" className="mt-4 inline-block">
+                  <Button className="glow-blue">Entrar / Criar conta</Button>
+                </Link>
+              </Card>
+            )}
           </>
+
         )}
       </section>
       <Footer />

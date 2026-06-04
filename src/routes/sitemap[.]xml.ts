@@ -14,11 +14,14 @@ const entries: SitemapEntry[] = [
   { path: "/redacao", changefreq: "weekly", priority: "0.9" },
   { path: "/questoes", changefreq: "weekly", priority: "0.9" },
   { path: "/aulas", changefreq: "weekly", priority: "0.9" },
+  { path: "/pdfs", changefreq: "weekly", priority: "0.8" },
+  { path: "/prova-real", changefreq: "weekly", priority: "0.8" },
   { path: "/plano-estudo", changefreq: "weekly", priority: "0.8" },
   { path: "/ranking", changefreq: "daily", priority: "0.7" },
   { path: "/planos", changefreq: "weekly", priority: "0.9" },
   { path: "/auth", changefreq: "monthly", priority: "0.4" },
 ];
+
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
