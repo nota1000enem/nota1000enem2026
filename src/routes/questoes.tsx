@@ -10,7 +10,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 
 export const Route = createFileRoute("/questoes")({
-  head: () => ({ meta: [{ title: "1.000 Questões ENEM – Nota 1000 ENEM" }] }),
+  head: () => ({
+    meta: [
+      { title: "1.000 Questões ENEM com Simulados Cronometrados | Nota 1000 ENEM" },
+      { name: "description", content: "Simulados ENEM com mais de 1.000 questões nas 4 áreas: Linguagens, Humanas, Natureza e Matemática. Correção na escala 0-1000." },
+      { property: "og:title", content: "Simulados ENEM – 1.000 questões com gabarito" },
+      { property: "og:description", content: "Simulados ENEM cronometrados com correção na escala 0-1000." },
+      { property: "og:url", content: "https://nota1000enem.online/questoes" },
+    ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/questoes" }],
+  }),
   component: QuestoesPage,
 });
 
