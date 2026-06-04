@@ -63,20 +63,6 @@ function QuestoesPage() {
         </p>
 
 
-        <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-primary" />
-            <div className="text-sm">
-              <p className="font-semibold">PROVAS ESPECIAIS</p>
-              <p className="mt-1 text-muted-foreground">
-                APENAS as provas 5, 6, 7 e 8 possuem algumas questões de super raciocínio
-                (CASO NÃO ENTENDA É SÓ PULAR PRA PRÓXIMA PROVA), com perguntas muito curtas
-                pra testar a inteligência de cada um em condições inviáveis/difíceis! BOAS PROVAS
-              </p>
-            </div>
-          </div>
-        </Card>
-
         {carregado && !planoPago && (
           <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
             <div className="flex items-start gap-3">
