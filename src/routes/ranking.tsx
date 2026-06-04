@@ -6,14 +6,18 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Medal, Award, Sparkles, TrendingUp, MapPin, User as UserIcon } from "lucide-react";
+import { Trophy, Sparkles, TrendingUp, MapPin, User as UserIcon, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
       { title: "Ranking ENEM – Top alunos com nota 1000 em Redação" },
       { name: "description", content: "Veja o ranking dos melhores alunos do ENEM em correção de redação por IA. Compita pelo TOP 3 nacional e mostre sua nota." },
+      { property: "og:title", content: "Ranking ENEM – Top alunos Nota 1000" },
+      { property: "og:description", content: "Compita pelo TOP 3 nacional na correção de redação por IA." },
+      { property: "og:url", content: "https://nota1000enem.online/ranking" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/ranking" }],
   }),
   component: RankingPage,
 });
@@ -31,17 +35,23 @@ type Row = {
 function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.rpc("get_ranking_global");
-      setRows((data as unknown as Row[]) ?? []);
+      const [{ data: rk }, { data: auth }] = await Promise.all([
+        supabase.rpc("get_ranking_global"),
+        supabase.auth.getUser(),
+      ]);
+      setRows((rk as unknown as Row[]) ?? []);
+      setIsLogged(!!auth.user);
       setLoading(false);
     })();
   }, []);
 
   const podio = rows.slice(0, 3);
-  const resto = rows.slice(3, 100);
+  const resto = isLogged ? rows.slice(3, 100) : [];
+
 
   return (
     <div className="min-h-screen bg-background">
