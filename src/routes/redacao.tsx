@@ -407,11 +407,11 @@ function RedacaoPage() {
                     </div>
                   ))}
                 </div>
-                <h3 className="text-lg font-bold text-primary text-glow">
+                <h2 className="text-lg font-bold text-primary text-glow">
                   Como melhorar sua redação
-                </h3>
+                </h2>
                 <div className="rounded-lg border border-border/60 bg-background/60 p-4">
-                  <h4 className="text-sm font-semibold">Comentário geral</h4>
+                  <h3 className="text-sm font-semibold">Comentário geral</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{resultado.comentario_geral}</p>
                 </div>
                 {(["erros_gramaticais", "sugestoes", "melhorias", "repertorios"] as const).map(
@@ -429,7 +429,7 @@ function RedacaoPage() {
                         key={k}
                         className="rounded-lg border border-border/60 bg-background/60 p-4"
                       >
-                        <h4 className="text-sm font-semibold">{titles[k]}</h4>
+                        <h3 className="text-sm font-semibold">{titles[k]}</h3>
                         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                           {arr.map((it, i) => (
                             <li key={i}>

@@ -181,7 +181,6 @@ function Index() {
                 <Star className="h-4 w-4 fill-primary text-primary" /> 4.9/5 alunos
               </div>
               <div>+ de 78 mil redações corrigidas</div>
-              <div>Garantia 7 dias</div>
             </div>
           </div>
           <div className="relative">
