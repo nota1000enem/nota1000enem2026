@@ -108,7 +108,7 @@ function QuestoesPage() {
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
               </div>
-              <h3 className="mt-2 text-xl font-bold text-primary">{s.nome}</h3>
+              <h2 className="mt-2 text-xl font-bold text-primary">{s.nome}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{s.descricao}</p>
               <Button
                 onClick={() => handleProva(s.id)}
