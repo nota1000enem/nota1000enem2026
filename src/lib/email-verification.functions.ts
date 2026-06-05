@@ -60,6 +60,7 @@ export const enviarCodigoVerificacao = createServerFn({ method: "POST" })
         html: buildHtml(r.codigo!),
         text: `Seu código de verificação Nota 1000 ENEM: ${r.codigo}\nExpira em 30 minutos.`,
         purpose: "transactional",
+        idempotency_key: messageId,
         label: "verificacao_email",
         queued_at: new Date().toISOString(),
       },

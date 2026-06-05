@@ -251,7 +251,7 @@ function RedacaoPage() {
                 <Zap className="h-3 w-3" />
                 {access.isPaid
                   ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
-                  : `${Math.max(0, 3 - usadas)}/3 grátis`}
+                  : `${Math.max(0, 2 - usadas)}/2 Grátis`}
               </span>
             </div>
             <Input
