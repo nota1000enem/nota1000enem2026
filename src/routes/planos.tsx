@@ -207,6 +207,7 @@ const galeria = [
 function Planos() {
   const checkoutFn = useServerFn(createCheckout);
   const confirmarFn = useServerFn(forcarConfirmacaoMP);
+  const checkoutInFlightRef = useRef<PlanType | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
   const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(() => {
     if (typeof window === "undefined") return null;
@@ -289,6 +290,8 @@ function Planos() {
   }, [aguardandoPgto]);
 
   async function handleCheckout(planType: PlanType, label: string) {
+    if (checkoutInFlightRef.current) return;
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -297,6 +300,7 @@ function Planos() {
       window.location.href = "/auth?redirect=/planos";
       return;
     }
+    checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
     try {
       try {
@@ -325,6 +329,7 @@ function Planos() {
         e instanceof Error ? e.message : `Não foi possível abrir o checkout de ${label}.`,
       );
     } finally {
+      checkoutInFlightRef.current = null;
       setLoadingPlan(null);
     }
   }
