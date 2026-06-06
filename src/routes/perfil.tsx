@@ -502,14 +502,14 @@ function EmailVerificationBlock({ verified }: { verified: boolean }) {
       if (r.ok) {
         setVerifiedNow(true);
         setCodigo("");
-        setVerificationMessage("Sucesso!");
-        toast.success("Sucesso!");
+        setVerificationMessage("Sucesso !");
+        toast.success("Sucesso !");
       } else {
         const motivos: Record<string, string> = {
           sem_codigo: "Nenhum código pendente. Envie um novo.",
           expirado: "Código expirado. Envie um novo.",
           tentativas_excedidas: "Muitas tentativas. Envie um novo código.",
-          codigo_invalido: "Os números não conferem! Verifique.",
+          codigo_invalido: "Os números não conferem ! Verifique.",
         };
         const message = motivos[r.motivo ?? ""] ?? "Não foi possível verificar.";
         setVerificationMessage(message);
