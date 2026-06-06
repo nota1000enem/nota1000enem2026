@@ -143,7 +143,7 @@ function RedacaoPage() {
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const r = data as Resultado;
       setResultado(r);
-      await supabase.from("redacoes").insert({
+      const { error: insertError } = await supabase.from("redacoes").insert({
         user_id: user!.id,
         tema,
         texto,
@@ -156,9 +156,11 @@ function RedacaoPage() {
         feedback: r,
         modo_rigido: modoRigido,
       });
+      if (insertError) throw insertError;
       if (typeof window !== "undefined") {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ event: "redacao_enviada" });
+        const w = window as Window & { dataLayer?: Array<Record<string, unknown>> };
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({ event: "redacao_enviada" });
       }
       await recarregarStatus();
       toast.success(`Correção concluída! Nota: ${r.nota_total}/1000`);
