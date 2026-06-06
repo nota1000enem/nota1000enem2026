@@ -156,6 +156,10 @@ function RedacaoPage() {
         feedback: r,
         modo_rigido: modoRigido,
       });
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "redacao_enviada" });
+      }
       await recarregarStatus();
       toast.success(`Correção concluída! Nota: ${r.nota_total}/1000`);
     } catch (e) {

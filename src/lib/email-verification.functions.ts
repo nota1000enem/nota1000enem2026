@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+const EMAIL_SENDER_DOMAIN = "notify.nota1000enem.online";
+
 const LOGO_URL =
   "https://nota1000enem.online/__l5e/assets-v1/57a726f7-1152-4ab2-81de-891e2b61a236/nota1000-logo.png";
 
@@ -42,6 +44,12 @@ export const enviarCodigoVerificacao = createServerFn({ method: "POST" })
     if (!r.ok) return r;
 
     const messageId = `email-verif-${userId}-${Date.now()}`;
+    const unsubscribeToken = crypto.randomUUID();
+    await supabaseAdmin.from("email_unsubscribe_tokens").insert({
+      token: unsubscribeToken,
+      email: r.email!,
+    });
+
     await supabaseAdmin.from("email_send_log").insert({
       message_id: messageId,
       template_name: "verificacao_email",
@@ -55,11 +63,12 @@ export const enviarCodigoVerificacao = createServerFn({ method: "POST" })
         message_id: messageId,
         to: r.email,
         from: "Nota 1000 ENEM <noreply@nota1000enem.online>",
-        sender_domain: "notify.nota1000enem.online",
+        sender_domain: EMAIL_SENDER_DOMAIN,
         subject: "Seu código de verificação — Nota 1000 ENEM",
         html: buildHtml(r.codigo!),
         text: `Seu código de verificação Nota 1000 ENEM: ${r.codigo}\nExpira em 30 minutos.`,
         purpose: "transactional",
+        unsubscribe_token: unsubscribeToken,
         idempotency_key: messageId,
         label: "verificacao_email",
         queued_at: new Date().toISOString(),
