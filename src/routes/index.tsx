@@ -102,6 +102,7 @@ function Index() {
   );
   const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number; avatar_url: string | null; estado: string | null; idade: number | null }>>([]);
   const checkoutFn = useServerFn(createCheckout);
+  const checkoutInFlightRef = useRef<PlanType | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
   const promo = useFakePromoTimer();
   useEffect(() => {
@@ -110,6 +111,8 @@ function Index() {
     });
   }, []);
   async function handleBuy(planType: PlanType) {
+    if (checkoutInFlightRef.current) return;
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -117,6 +120,7 @@ function Index() {
       window.location.href = `/auth?redirect=/planos`;
       return;
     }
+    checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
     try {
       const res = await checkoutFn({ data: { planType } });
@@ -125,6 +129,7 @@ function Index() {
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "Não foi possível abrir o checkout.");
       setLoadingPlan(null);
+      checkoutInFlightRef.current = null;
     }
   }
   // Intercala: print, aluno, print, aluno...
