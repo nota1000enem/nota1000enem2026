@@ -53,17 +53,27 @@ function SimuladoPage() {
 
   useEffect(() => {
     (async () => {
+      if (loading) return;
+      if (!user) {
+        setFetching(false);
+        return;
+      }
+
+      setFetching(true);
       const { data: sim } = await supabase.from("simulados").select("nome").eq("id", id).maybeSingle();
       setSimNome(sim?.nome ?? "Simulado");
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("questoes_simulado_publica")
         .select("*")
         .eq("simulado_id", id)
         .order("numero", { ascending: true });
+      if (error) {
+        toast.error("Não conseguimos carregar as questões. Reabra a prova em instantes.");
+      }
       setQuestoes((data as Questao[]) ?? []);
       setFetching(false);
     })();
-  }, [id]);
+  }, [id, loading, user]);
 
   const atual = questoes[idx];
   const total = questoes.length;

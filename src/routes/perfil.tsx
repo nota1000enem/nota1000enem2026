@@ -467,6 +467,7 @@ function EmailVerificationBlock({ verified }: { verified: boolean }) {
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verifiedNow, setVerifiedNow] = useState(verified);
+  const [verificationMessage, setVerificationMessage] = useState("");
   const enviar = useServerFn(enviarCodigoVerificacao);
   const verificar = useServerFn(verificarCodigoEmail);
 
@@ -501,15 +502,18 @@ function EmailVerificationBlock({ verified }: { verified: boolean }) {
       if (r.ok) {
         setVerifiedNow(true);
         setCodigo("");
-        toast.success("Email verificado com sucesso!");
+        setVerificationMessage("Sucesso !");
+        toast.success("Sucesso !");
       } else {
         const motivos: Record<string, string> = {
           sem_codigo: "Nenhum código pendente. Envie um novo.",
           expirado: "Código expirado. Envie um novo.",
           tentativas_excedidas: "Muitas tentativas. Envie um novo código.",
-          codigo_invalido: "Código inválido. Confira os 6 dígitos.",
+          codigo_invalido: "Os números não conferem ! Verifique.",
         };
-        toast.error(motivos[r.motivo ?? ""] ?? "Não foi possível verificar.");
+        const message = motivos[r.motivo ?? ""] ?? "Não foi possível verificar.";
+        setVerificationMessage(message);
+        toast.error(message);
       }
     } catch {
       toast.error("Erro ao verificar. Tente novamente.");
@@ -525,7 +529,9 @@ function EmailVerificationBlock({ verified }: { verified: boolean }) {
           <CheckCircle2 className="h-4 w-4" />
           <span className="font-semibold">Email verificado</span>
         </div>
-        <p className="mt-1 text-[11px] text-muted-foreground">Sua conta está confirmada.</p>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          {verificationMessage || "Sua conta está confirmada."}
+        </p>
       </div>
     );
   }
@@ -555,6 +561,9 @@ function EmailVerificationBlock({ verified }: { verified: boolean }) {
           Verificar
         </Button>
       </div>
+      {verificationMessage && (
+        <p className="mt-2 text-xs font-semibold text-destructive">{verificationMessage}</p>
+      )}
     </div>
   );
 }
