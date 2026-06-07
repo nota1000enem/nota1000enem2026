@@ -11,7 +11,13 @@ import { ArrowRight, ArrowLeft, Trophy, Loader2, CheckCircle2, XCircle, AlertTri
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/simulado/$id")({
-  head: () => ({ meta: [{ title: "Simulado ENEM – Nota 1000 ENEM" }] }),
+  head: () => ({
+    meta: [
+      { title: "Simulado ENEM – Nota 1000 ENEM" },
+      { name: "description", content: "Faça um simulado ENEM cronometrado e acompanhe sua nota na escala 0-1000." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: SimuladoPage,
 });
 

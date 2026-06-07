@@ -10,7 +10,14 @@ import { toast } from "sonner";
 import { KeyRound, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Redefinir senha – Nota 1000 ENEM" }] }),
+  head: () => ({
+    meta: [
+      { title: "Redefinir senha – Nota 1000 ENEM" },
+      { name: "description", content: "Defina uma nova senha para sua conta Nota 1000 ENEM." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/reset-password" }],
+  }),
   component: ResetPasswordPage,
 });
 

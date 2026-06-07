@@ -21,8 +21,10 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard – Nota 1000 ENEM" },
-      { name: "description", content: "Acompanhe seu progresso e suas redações corrigidas." },
+      { name: "description", content: "Acompanhe seu progresso e suas redações corrigidas no Nota 1000 ENEM." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/dashboard" }],
   }),
   component: Dashboard,
 });

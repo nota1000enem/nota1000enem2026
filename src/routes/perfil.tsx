@@ -15,7 +15,14 @@ import { enviarCodigoVerificacao, verificarCodigoEmail } from "@/lib/email-verif
 
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({ meta: [{ title: "Meu Perfil – Nota 1000 ENEM" }] }),
+  head: () => ({
+    meta: [
+      { title: "Meu Perfil – Nota 1000 ENEM" },
+      { name: "description", content: "Gerencie seu perfil, foto, dados pessoais e verificação de e-mail no Nota 1000 ENEM." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/perfil" }],
+  }),
   component: PerfilPage,
 });
 
