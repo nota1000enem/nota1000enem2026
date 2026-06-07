@@ -60,9 +60,16 @@ serve(async (req) => {
       (planoSub !== "free" && statusAtivo(sub?.status) && futuro(sub?.current_period_end)) ||
       (planoAssinatura !== "free" && statusAtivo(assinatura?.status) && futuro(assinatura?.vence_em));
     if (!liberado) {
-      return new Response(JSON.stringify({ error: "Plano de Estudo com IA disponível apenas para assinaturas pagas e Vitalício." }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      // Política: 1 plano grátis por aluno (igual à correção de redação).
+      const { count: planosCount } = await admin
+        .from("planos_estudo")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      if ((planosCount ?? 0) >= 1) {
+        return new Response(JSON.stringify({ error: "Você já usou seu plano de estudo grátis. Assine qualquer plano pago para gerar planos ilimitados." }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     const body = await req.json();

@@ -127,9 +127,9 @@ function PlanoEstudoPage() {
       toast.error("Ainda estamos verificando sua assinatura. Tente novamente em alguns segundos.");
       return;
     }
-    if (!liberado) {
+    if (!liberado && historico.length >= 1) {
       toast.error(
-        "Plano de Estudo com IA está disponível apenas nas assinaturas pagas e no Vitalício.",
+        "Você já usou seu plano de estudo grátis. Assine qualquer plano pago para gerar planos ilimitados.",
       );
       return;
     }
@@ -205,15 +205,15 @@ function PlanoEstudoPage() {
           </p>
         </div>
 
-        {!liberado && !carregandoPlano && !loading && user && (
+        {!liberado && !carregandoPlano && !loading && user && historico.length >= 1 && (
           <Card className="card-glass mt-8 border-primary/40 p-8 text-center">
             <Lock className="mx-auto h-12 w-12 text-primary" />
             <h2 className="mt-4 text-2xl font-bold">
-              Disponível apenas para <span className="gradient-text">planos pagos</span>
+              Você já usou seu <span className="gradient-text">plano grátis</span>
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              O Plano de Estudo com IA é exclusivo para assinantes <b>Light, Pro, Full</b> e{" "}
-              <b>Vitalício</b>.
+              Cada aluno recebe <b>1 plano de estudo grátis</b> para testar. Para gerar novos planos
+              semanais ilimitados, assine <b>Light, Pro, Full</b> ou <b>Vitalício</b>.
             </p>
             <Link to="/planos" className="mt-6 inline-block">
               <Button size="lg" className="glow-blue">
@@ -223,7 +223,17 @@ function PlanoEstudoPage() {
           </Card>
         )}
 
-        {liberado && (
+        {!liberado && !carregandoPlano && !loading && user && historico.length === 0 && (
+          <div className="mt-4 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-3 text-xs">
+            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <p className="text-muted-foreground">
+              <b>Você tem 1 plano de estudo grátis pra testar.</b> Depois disso, é preciso assinar
+              um plano pago para gerar novos cronogramas.
+            </p>
+          </div>
+        )}
+
+        {(liberado || historico.length === 0) && (
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
             <Card id="plano-gerado" className="card-glass scroll-mt-24 p-6">
               <div className="grid grid-cols-2 gap-3">
