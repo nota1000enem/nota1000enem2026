@@ -42,18 +42,18 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ENEM 2026: Corretor de Redação ENEM com IA + Simulados | Nota 1000 ENEM" },
+      { title: "Nota 1000 ENEM – Redação por IA + Simulados ENEM 2026" },
       {
         name: "description",
         content:
-          "Plataforma #1 de preparação para o ENEM: correção de Redação ENEM por IA nota 0-1000, mais de 1.000 questões, simulados cronometrados, vídeo aulas e plano de estudo personalizado. Treine como quem tira nota 1000.",
+          "Correção de Redação ENEM por IA (0-1000), 1.000 questões, simulados, vídeo aulas e plano de estudo. Treine como quem tira nota 1000.",
       },
-      { name: "keywords", content: "ENEM, ENEM 2026, redação ENEM, corretor de redação, correção de redação por IA, nota 1000 ENEM, simulado ENEM, questões ENEM, vídeo aulas ENEM, plano de estudo ENEM" },
-      { property: "og:title", content: "ENEM 2026 – Correção de Redação por IA + Simulados | Nota 1000 ENEM" },
+      { name: "keywords", content: "ENEM 2026, redação ENEM, corretor de redação IA, nota 1000, simulado ENEM, questões ENEM, vídeo aulas ENEM" },
+      { property: "og:title", content: "Nota 1000 ENEM – Redação por IA + Simulados" },
       {
         property: "og:description",
         content:
-          "Corrija sua Redação do ENEM por IA em segundos, treine com simulados e vídeo aulas. Metodologia focada em nota 1000.",
+          "Corrija sua Redação do ENEM por IA em segundos, treine com simulados e vídeo aulas.",
       },
       { property: "og:url", content: "https://nota1000enem.online/" },
       { property: "og:type", content: "website" },
@@ -122,7 +122,20 @@ function Index() {
     }
     checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
+    const PLAN_VALUES_HOME: Record<PlanType, number> = {
+      LIGHT: 19.9, PRO: 29.9, FULL: 49.9, VITALICIO: 499,
+    };
     try {
+      try {
+        const { pixelTrack } = await import("@/lib/meta-pixel");
+        pixelTrack("InitiateCheckout", {
+          content_name: `Plano ${planType}`,
+          content_category: "subscription",
+          content_ids: [planType],
+          currency: "BRL",
+          value: PLAN_VALUES_HOME[planType],
+        });
+      } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida");
       window.location.href = res.init_point;

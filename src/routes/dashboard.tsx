@@ -21,8 +21,10 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard – Nota 1000 ENEM" },
-      { name: "description", content: "Acompanhe seu progresso e suas redações corrigidas." },
+      { name: "description", content: "Acompanhe seu progresso e suas redações corrigidas no Nota 1000 ENEM." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/dashboard" }],
   }),
   component: Dashboard,
 });
@@ -65,9 +67,12 @@ function Dashboard() {
     const status = params.get("status");
     const plan = params.get("plan")?.toUpperCase() ?? "";
     const paymentId = params.get("payment_id") ?? params.get("collection_id") ?? "sem_id";
+    // dedup cross-tab via localStorage para garantir 1 Purchase por pagamento
     const purchaseKey = `mp_purchase_${plan}_${paymentId}`;
-    if (status === "success" && plan in PLAN_VALUES && !sessionStorage.getItem(purchaseKey)) {
-      sessionStorage.setItem(purchaseKey, "1");
+    if (status === "success" && plan in PLAN_VALUES && !localStorage.getItem(purchaseKey)) {
+      localStorage.setItem(purchaseKey, String(Date.now()));
+      const value = PLAN_VALUES[plan];
+      // Meta Pixel — Purchase
       import("@/lib/meta-pixel")
         .then(({ pixelTrack }) => {
           pixelTrack("Purchase", {
@@ -75,10 +80,25 @@ function Dashboard() {
             content_category: "subscription",
             content_ids: [plan],
             currency: "BRL",
-            value: PLAN_VALUES[plan],
+            value,
           });
         })
         .catch(() => {});
+      // Google Tag Manager / Google Ads — purchase
+      try {
+        // @ts-ignore
+        window.dataLayer = window.dataLayer || [];
+        // @ts-ignore
+        window.dataLayer.push({
+          event: "purchase",
+          ecommerce: {
+            transaction_id: paymentId,
+            value,
+            currency: "BRL",
+            items: [{ item_id: plan, item_name: `Plano ${plan}`, price: value, quantity: 1 }],
+          },
+        });
+      } catch {}
     }
   }, []);
 

@@ -11,7 +11,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Crown, Calendar, CreditCard, Check, Infinity as Inf, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/minha-assinatura")({
-  head: () => ({ meta: [{ title: "Minha Assinatura – Nota 1000 ENEM" }] }),
+  head: () => ({
+    meta: [
+      { title: "Minha Assinatura – Nota 1000 ENEM" },
+      { name: "description", content: "Gerencie sua assinatura, créditos e renovação no Nota 1000 ENEM." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/minha-assinatura" }],
+  }),
   component: MinhaAssinaturaPage,
 });
 
