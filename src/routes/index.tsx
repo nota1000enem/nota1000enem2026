@@ -122,7 +122,20 @@ function Index() {
     }
     checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
+    const PLAN_VALUES_HOME: Record<PlanType, number> = {
+      LIGHT: 19.9, PRO: 29.9, FULL: 49.9, VITALICIO: 499,
+    };
     try {
+      try {
+        const { pixelTrack } = await import("@/lib/meta-pixel");
+        pixelTrack("InitiateCheckout", {
+          content_name: `Plano ${planType}`,
+          content_category: "subscription",
+          content_ids: [planType],
+          currency: "BRL",
+          value: PLAN_VALUES_HOME[planType],
+        });
+      } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida");
       window.location.href = res.init_point;
