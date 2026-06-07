@@ -119,7 +119,7 @@ type RepertorioItem = {
 
 const repertorios: Array<{
   area: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: typeof Scale;
   itens: RepertorioItem[];
 }> = [
   {

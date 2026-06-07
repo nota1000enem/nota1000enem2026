@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RepertorioEnemRouteImport } from './routes/repertorio-enem'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
@@ -38,6 +39,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RepertorioEnemRoute = RepertorioEnemRouteImport.update({
+  id: '/repertorio-enem',
+  path: '/repertorio-enem',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedacaoRoute = RedacaoRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/simulado/$id': typeof SimuladoIdRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
     | '/simulado/$id'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
     | '/simulado/$id'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
     | '/simulado/$id'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   QuestoesRoute: typeof QuestoesRoute
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
+  RepertorioEnemRoute: typeof RepertorioEnemRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SimuladoIdRoute: typeof SimuladoIdRoute
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/repertorio-enem': {
+      id: '/repertorio-enem'
+      path: '/repertorio-enem'
+      fullPath: '/repertorio-enem'
+      preLoaderRoute: typeof RepertorioEnemRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redacao': {
@@ -450,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuestoesRoute: QuestoesRoute,
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
+  RepertorioEnemRoute: RepertorioEnemRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SimuladoIdRoute: SimuladoIdRoute,
