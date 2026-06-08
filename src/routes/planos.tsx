@@ -38,6 +38,37 @@ export const Route = createFileRoute("/planos")({
       { property: "og:url", content: "https://nota1000enem.online/planos" },
     ],
     links: [{ rel: "canonical", href: "https://nota1000enem.online/planos" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: [
+            { name: "ENEM Light", price: "19.90", desc: "15 redações/mês, 1.000 questões e simulados, plano de estudo IA." },
+            { name: "ENEM Pro", price: "29.90", desc: "30 redações/mês, todas as áreas, simulados e plano de estudo IA." },
+            { name: "ENEM Full", price: "39.90", desc: "Redações ilimitadas, todas as áreas, vídeo aulas e plano de estudo IA." },
+            { name: "ENEM Vitalício", price: "297.00", desc: "Acesso vitalício a todos os recursos: redações, simulados, vídeo aulas e plano de estudo IA." },
+          ].map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Product",
+              name: p.name,
+              description: p.desc,
+              brand: { "@type": "Brand", name: "Nota 1000 ENEM" },
+              offers: {
+                "@type": "Offer",
+                price: p.price,
+                priceCurrency: "BRL",
+                availability: "https://schema.org/InStock",
+                url: "https://nota1000enem.online/planos",
+              },
+            },
+          })),
+        }),
+      },
+    ],
   }),
   component: Planos,
 });

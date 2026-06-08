@@ -67,6 +67,49 @@ export const Route = createFileRoute("/aulas")({
       { property: "og:url", content: "https://nota1000enem.online/aulas" },
     ],
     links: [{ rel: "canonical", href: "https://nota1000enem.online/aulas" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: "Vídeo Aulas ENEM – Trilhas por área",
+          description:
+            "Trilhas de vídeo aulas para o ENEM cobrindo Matemática, Linguagens, Ciências Humanas, Ciências da Natureza e Redação.",
+          provider: {
+            "@type": "EducationalOrganization",
+            name: "Nota 1000 ENEM",
+            sameAs: "https://nota1000enem.online",
+          },
+          inLanguage: "pt-BR",
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "online",
+            courseWorkload: "PT40H",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: Object.entries(VIDEO_LINKS).slice(0, 20).map(([title, url], i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "VideoObject",
+              name: title,
+              description: title,
+              contentUrl: url,
+              embedUrl: url,
+              uploadDate: "2025-01-01",
+              thumbnailUrl: "https://nota1000enem.online/logo-nota1000.png",
+            },
+          })),
+        }),
+      },
+    ],
   }),
   component: Aulas,
 });
