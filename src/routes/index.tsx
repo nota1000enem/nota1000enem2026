@@ -218,6 +218,8 @@ function Index() {
                         height={1024}
                         className="aspect-square w-full rounded-2xl object-cover"
                         loading={i === 0 ? "eager" : "lazy"}
+                        fetchPriority={i === 0 ? "high" : "auto"}
+                        decoding={i === 0 ? "sync" : "async"}
                       />
                     </div>
                   </CarouselItem>
