@@ -18,6 +18,7 @@ const entries: SitemapEntry[] = [
   { path: "/prova-real", changefreq: "weekly", priority: "0.8" },
   { path: "/plano-estudo", changefreq: "weekly", priority: "0.8" },
   { path: "/repertorio-enem", changefreq: "weekly", priority: "0.9" },
+  { path: "/redacao-pronta", changefreq: "monthly", priority: "0.7" },
   { path: "/ranking", changefreq: "daily", priority: "0.7" },
   { path: "/planos", changefreq: "weekly", priority: "0.9" },
   { path: "/auth", changefreq: "monthly", priority: "0.4" },
