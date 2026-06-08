@@ -58,7 +58,10 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://nota1000enem.online/" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://nota1000enem.online/" }],
+    links: [
+      { rel: "canonical", href: "https://nota1000enem.online/" },
+      { rel: "preload", as: "image", href: printNota1000, fetchpriority: "high" },
+    ],
   }),
   component: Index,
 });
