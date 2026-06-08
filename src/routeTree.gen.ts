@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RepertorioEnemRouteImport } from './routes/repertorio-enem'
+import { Route as RedacaoProntaRouteImport } from './routes/redacao-pronta'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as QuestoesRouteImport } from './routes/questoes'
@@ -44,6 +45,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RepertorioEnemRoute = RepertorioEnemRouteImport.update({
   id: '/repertorio-enem',
   path: '/repertorio-enem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedacaoProntaRoute = RedacaoProntaRouteImport.update({
+  id: '/redacao-pronta',
+  path: '/redacao-pronta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedacaoRoute = RedacaoRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/redacao-pronta': typeof RedacaoProntaRoute
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/redacao-pronta': typeof RedacaoProntaRoute
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/questoes': typeof QuestoesRoute
   '/ranking': typeof RankingRoute
   '/redacao': typeof RedacaoRoute
+  '/redacao-pronta': typeof RedacaoProntaRoute
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/redacao-pronta'
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/redacao-pronta'
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/questoes'
     | '/ranking'
     | '/redacao'
+    | '/redacao-pronta'
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
@@ -294,6 +306,7 @@ export interface RootRouteChildren {
   QuestoesRoute: typeof QuestoesRoute
   RankingRoute: typeof RankingRoute
   RedacaoRoute: typeof RedacaoRoute
+  RedacaoProntaRoute: typeof RedacaoProntaRoute
   RepertorioEnemRoute: typeof RepertorioEnemRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/repertorio-enem'
       fullPath: '/repertorio-enem'
       preLoaderRoute: typeof RepertorioEnemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redacao-pronta': {
+      id: '/redacao-pronta'
+      path: '/redacao-pronta'
+      fullPath: '/redacao-pronta'
+      preLoaderRoute: typeof RedacaoProntaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redacao': {
@@ -470,6 +490,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuestoesRoute: QuestoesRoute,
   RankingRoute: RankingRoute,
   RedacaoRoute: RedacaoRoute,
+  RedacaoProntaRoute: RedacaoProntaRoute,
   RepertorioEnemRoute: RepertorioEnemRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
