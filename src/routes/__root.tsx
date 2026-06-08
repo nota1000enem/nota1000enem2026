@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Plataforma brasileira de preparação para o ENEM: correção de redação por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+          "Plataforma de preparação para o ENEM: correção de redação por IA, simulados, banco de questões e vídeo aulas. Treine para a nota 1000.",
       },
       { name: "author", content: "Nota 1000 ENEM" },
       { property: "og:site_name", content: "Nota 1000 ENEM" },
@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+          "Correção de redação ENEM por IA, simulados, banco de questões e vídeo aulas. Treine para a nota 1000.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -95,11 +95,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Correção de redação ENEM por IA, simulados, banco de questões, vídeo aulas e plano de estudo personalizado.",
+          "Correção de redação ENEM por IA, simulados, banco de questões e vídeo aulas. Treine para a nota 1000.",
       },
-      { name: "description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
-      { property: "og:description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
-      { name: "twitter:description", content: "Nota1000ENEM é uma plataforma preparatória para o ENEM com correção de redação, simulados online, videoaulas, PDFs de estudo e provas anteriores. Modelo ENEM" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xvSin4UK0fNHvOIZHbyfLrJYcW42/social-images/social-1780448932539-840enem2026.png.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xvSin4UK0fNHvOIZHbyfLrJYcW42/social-images/social-1780448932539-840enem2026.png.webp" },
     ],

@@ -16,7 +16,11 @@ export const Route = createFileRoute("/simulado/$id")({
       { title: "Simulado ENEM – Nota 1000 ENEM" },
       { name: "description", content: "Faça um simulado ENEM cronometrado e acompanhe sua nota na escala 0-1000." },
       { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Simulado ENEM – Nota 1000 ENEM" },
+      { property: "og:description", content: "Faça um simulado ENEM cronometrado e acompanhe sua nota na escala 0-1000." },
+      { property: "og:url", content: "https://nota1000enem.online/simulado" },
     ],
+    links: [{ rel: "canonical", href: "https://nota1000enem.online/simulado" }],
   }),
   component: SimuladoPage,
 });
