@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = "https://nota1000enem.online";
 
@@ -9,7 +10,7 @@ interface SitemapEntry {
   priority?: string;
 }
 
-const entries: SitemapEntry[] = [
+const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/redacao", changefreq: "weekly", priority: "0.9" },
   { path: "/questoes", changefreq: "weekly", priority: "0.9" },
@@ -24,11 +25,40 @@ const entries: SitemapEntry[] = [
   { path: "/auth", changefreq: "monthly", priority: "0.4" },
 ];
 
+// Auth-private routes (/dashboard, /perfil, /minha-assinatura, /reset-password)
+// are intentionally excluded — they are user-specific and disallowed in robots.txt.
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const entries: SitemapEntry[] = [...staticEntries];
+
+        // Add /simulado/$id entries for every active simulado.
+        try {
+          const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
+          const key =
+            process.env.SUPABASE_PUBLISHABLE_KEY ??
+            process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+          if (url && key) {
+            const sb = createClient(url, key);
+            const { data } = await sb
+              .from("simulados")
+              .select("id")
+              .eq("ativo", true)
+              .order("ordem");
+            for (const row of data ?? []) {
+              entries.push({
+                path: `/simulado/${row.id}`,
+                changefreq: "monthly",
+                priority: "0.6",
+              });
+            }
+          }
+        } catch {
+          // best-effort: ship the static sitemap if DB is unreachable
+        }
+
         const urls = entries
           .map((e) =>
             [
