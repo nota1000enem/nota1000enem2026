@@ -42,11 +42,11 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nota 1000 ENEM – Redação por IA + Simulados ENEM 2026" },
+      { title: "ENEM 2026: Corretor de Redação com IA | Nota 1000 ENEM" },
       {
         name: "description",
         content:
-          "Correção de Redação ENEM por IA (0-1000), 1.000 questões, simulados, vídeo aulas e plano de estudo. Treine como quem tira nota 1000.",
+          "Plataforma de preparação para o ENEM: correção de Redação por IA, 1.000+ questões, simulados e plano de estudo personalizado. Treine para a nota 1000.",
       },
       { name: "keywords", content: "ENEM 2026, redação ENEM, corretor de redação IA, nota 1000, simulado ENEM, questões ENEM, vídeo aulas ENEM" },
       { property: "og:title", content: "Nota 1000 ENEM – Redação por IA + Simulados" },
