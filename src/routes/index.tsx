@@ -58,7 +58,10 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://nota1000enem.online/" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://nota1000enem.online/" }],
+    links: [
+      { rel: "canonical", href: "https://nota1000enem.online/" },
+      { rel: "preload", as: "image", href: printNota1000, fetchpriority: "high" },
+    ],
   }),
   component: Index,
 });
@@ -218,6 +221,8 @@ function Index() {
                         height={1024}
                         className="aspect-square w-full rounded-2xl object-cover"
                         loading={i === 0 ? "eager" : "lazy"}
+                        fetchPriority={i === 0 ? "high" : "auto"}
+                        decoding={i === 0 ? "sync" : "async"}
                       />
                     </div>
                   </CarouselItem>
