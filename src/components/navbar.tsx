@@ -17,6 +17,7 @@ export function Navbar() {
   const baseLinks = [
     { to: "/", label: "Início", hide: !!user },
     { to: "/redacao", label: "Redação", hide: false },
+    { to: "/redacao-pronta", label: "Redação Pronta", hide: false },
     { to: "/plano-estudo", label: "Plano de Estudo", hide: false },
     { to: "/questoes", label: "Simulados", hide: false },
     { to: "/aulas", label: "Vídeo Aulas", hide: false },
