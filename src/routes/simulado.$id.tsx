@@ -36,6 +36,17 @@ type Questao = {
 
 type GabaritoItem = { questao_id: string; marcada: string | null; correta: string; ok: boolean };
 
+const SIMULADO_CORRECTION_TIMEOUT_MS = 30_000;
+
+async function withSimuladoTimeout<T>(promise: PromiseLike<T>, message: string): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(message)), SIMULADO_CORRECTION_TIMEOUT_MS);
+  });
+  return Promise.race([Promise.resolve(promise), timeout]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+}
 
 const AREA_LABEL: Record<string, string> = {
   LINGUAGENS: "Linguagens",
@@ -98,29 +109,34 @@ function SimuladoPage() {
   async function finalizar() {
     if (!user || finished) return;
     setSaving(true);
+    try {
+      const { data, error } = await withSimuladoTimeout(
+        supabase.rpc("corrigir_simulado", {
+          _simulado_id: id,
+          _respostas: respostas,
+        }),
+        "A correção da prova demorou demais. Tente novamente em instantes.",
+      );
 
-    const { data, error } = await supabase.rpc("corrigir_simulado", {
-      _simulado_id: id,
-      _respostas: respostas,
-    });
+      if (error || !data) {
+        throw new Error("Não conseguimos corrigir sua prova. Tente novamente.");
+      }
 
-    if (error || !data) {
-      toast.error("Não conseguimos corrigir sua prova. Tente novamente.");
+      const r = data as unknown as {
+        nota: number; acertos: number; total: number;
+        porArea: Record<string, { acertos: number; total: number }>;
+        gabarito: GabaritoItem[];
+      };
+      const gabMap: Record<string, GabaritoItem> = {};
+      for (const g of r.gabarito) gabMap[g.questao_id] = g;
+
+      setResultado({ nota: r.nota, acertos: r.acertos, total: r.total, porArea: r.porArea, gabarito: gabMap });
+      setFinished(true);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não conseguimos corrigir sua prova. Tente novamente.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const r = data as unknown as {
-      nota: number; acertos: number; total: number;
-      porArea: Record<string, { acertos: number; total: number }>;
-      gabarito: GabaritoItem[];
-    };
-    const gabMap: Record<string, GabaritoItem> = {};
-    for (const g of r.gabarito) gabMap[g.questao_id] = g;
-
-    setResultado({ nota: r.nota, acertos: r.acertos, total: r.total, porArea: r.porArea, gabarito: gabMap });
-    setFinished(true);
-    setSaving(false);
   }
 
 
