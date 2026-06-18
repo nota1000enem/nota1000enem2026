@@ -47,6 +47,18 @@ type Resultado = {
   repertorios: string[];
 };
 
+const CORRECTION_TIMEOUT_MS = 75_000;
+
+async function withTimeout<T>(promise: PromiseLike<T>, message: string): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(message)), CORRECTION_TIMEOUT_MS);
+  });
+  return Promise.race([Promise.resolve(promise), timeout]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+}
+
 function RedacaoPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -56,6 +68,7 @@ function RedacaoPage() {
   const [modoRigido, setModoRigido] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [resultado, setResultado] = useState<Resultado | null>(null);
+  const [correctionError, setCorrectionError] = useState<string | null>(null);
   const [bloqueado, setBloqueado] = useState(false);
   const [motivoBloqueio, setMotivoBloqueio] = useState<string>("");
   const [limite, setLimite] = useState<number>(1);
@@ -135,10 +148,14 @@ function RedacaoPage() {
 
     setSubmitting(true);
     setResultado(null);
+    setCorrectionError(null);
     try {
-      const { data, error } = await supabase.functions.invoke("corrigir-redacao", {
-        body: { texto, tema, modoRigido },
-      });
+      const { data, error } = await withTimeout(
+        supabase.functions.invoke("corrigir-redacao", {
+          body: { texto, tema, modoRigido },
+        }),
+        "A correção demorou demais para responder. Tente novamente em instantes.",
+      );
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const r = data as Resultado;
@@ -165,7 +182,9 @@ function RedacaoPage() {
       await recarregarStatus();
       toast.success(`Correção concluída! Nota: ${r.nota_total}/1000`);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao corrigir");
+      const message = e instanceof Error ? e.message : "Erro ao corrigir";
+      setCorrectionError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -377,10 +396,17 @@ function RedacaoPage() {
           </Card>
 
           <Card className="card-glass p-6">
-            {!resultado && !submitting && (
+            {!resultado && !submitting && !correctionError && (
               <div className="grid h-full place-content-center text-center text-muted-foreground">
                 <Brain className="mx-auto h-12 w-12 opacity-30" />
                 <p className="mt-3 text-sm">O resultado da IA aparecerá aqui.</p>
+              </div>
+            )}
+            {!resultado && !submitting && correctionError && (
+              <div className="grid h-full place-content-center text-center">
+                <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-5 text-sm text-destructive">
+                  {correctionError}
+                </div>
               </div>
             )}
             {submitting && (
