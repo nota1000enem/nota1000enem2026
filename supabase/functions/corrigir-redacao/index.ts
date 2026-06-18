@@ -343,11 +343,11 @@ Retorne SEMPRE via tool_call estruturado.`;
           JSON.stringify({
             error: "Limite de requisições atingido. Tente novamente em instantes.",
           }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       if (resp.status === 402)
         return new Response(JSON.stringify({ error: "Créditos da IA esgotados." }), {
-          status: 402,
+          status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       const t = await resp.text();
@@ -393,7 +393,7 @@ Retorne SEMPRE via tool_call estruturado.`;
       return new Response(
         JSON.stringify({ error: "A correção demorou demais para responder. Tente novamente em instantes." }),
         {
-          status: 504,
+        status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
