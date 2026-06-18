@@ -6,6 +6,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const AI_TIMEOUT_MS = 55_000;
+
 // Pool grande de repertórios — a IA escolhe 1-2 SE a redação não usou, com rotação aleatória
 // para evitar o vício de Bauman/Foucault. Rotacionado por seed no momento da chamada.
 const POOL_REPERTORIOS = [
@@ -273,11 +275,14 @@ ${
 
 Retorne SEMPRE via tool_call estruturado.`;
 
+    const aiController = new AbortController();
+    const aiTimeout = setTimeout(() => aiController.abort(), AI_TIMEOUT_MS);
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      signal: aiController.signal,
+      headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         temperature: 0,
         top_p: 0.1,
         seed,
@@ -330,7 +335,7 @@ Retorne SEMPRE via tool_call estruturado.`;
         ],
         tool_choice: { type: "function", function: { name: "avaliar_redacao" } },
       }),
-    });
+    }).finally(() => clearTimeout(aiTimeout));
 
     if (!resp.ok) {
       if (resp.status === 429)
@@ -347,7 +352,7 @@ Retorne SEMPRE via tool_call estruturado.`;
         });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "Erro na IA" }), {
+      return new Response(JSON.stringify({ error: "A IA não conseguiu responder agora. Tente novamente em instantes." }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -384,6 +389,15 @@ Retorne SEMPRE via tool_call estruturado.`;
     });
   } catch (e) {
     console.error(e);
+    if (e instanceof DOMException && e.name === "AbortError") {
+      return new Response(
+        JSON.stringify({ error: "A correção demorou demais para responder. Tente novamente em instantes." }),
+        {
+          status: 504,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
     return new Response(
       JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }),
       {
