@@ -145,8 +145,8 @@ serve(async (req) => {
     const shuffled = indexed.slice(0, 8).map((x) => x.r);
     const repertoriosSugeridos = shuffled.map((r) => `- ${r}`).join("\n");
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada");
 
     const systemPrompt = `Você é um corretor oficial de redação do ENEM, calibrado pela Cartilha do Participante / Matriz de Referência do INEP. Você corrige pela GRADE FRIA DO INEP, não por gosto pessoal.
 
