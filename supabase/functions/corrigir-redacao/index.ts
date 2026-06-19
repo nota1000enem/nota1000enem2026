@@ -277,12 +277,12 @@ Retorne SEMPRE via tool_call estruturado.`;
 
     const aiController = new AbortController();
     const aiTimeout = setTimeout(() => aiController.abort(), AI_TIMEOUT_MS);
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       signal: aiController.signal,
-      headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${GEMINI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gemini-2.0-flash",
         temperature: 0,
         top_p: 0.1,
         seed,
