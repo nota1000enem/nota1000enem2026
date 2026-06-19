@@ -125,8 +125,8 @@ serve(async (req) => {
       .join(" | ");
     const slotsHorarios = slots.map(s => s.horario);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada");
 
     const distribuicoes: Record<number, string[]> = {
       4: ["Segunda-feira","Quarta-feira","Sexta-feira","Sábado"],
