@@ -325,21 +325,16 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
           }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
-      if (resp.status === 402)
-        return new Response(JSON.stringify({ error: "Créditos da IA esgotados." }), {
-          status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "A IA não conseguiu responder agora. Tente novamente em instantes." }), {
+      return new Response(JSON.stringify({ error: "A IA não conseguiu responder agora. Verifique a chave Gemini ou tente novamente em instantes." }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const data = await resp.json();
-    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    const args = extractGeminiJson(data);
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
