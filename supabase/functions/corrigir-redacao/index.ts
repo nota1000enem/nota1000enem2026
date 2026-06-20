@@ -17,6 +17,10 @@ function extractGeminiJson(data: unknown): string | null {
   return fenced?.[1]?.trim() || text;
 }
 
+function geminiUrl(model: string, key: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+}
+
 // Pool grande de repertórios — a IA escolhe 1-2 SE a redação não usou, com rotação aleatória
 // para evitar o vício de Bauman/Foucault. Rotacionado por seed no momento da chamada.
 const POOL_REPERTORIOS = [
@@ -301,21 +305,31 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
 
     const aiController = new AbortController();
     const aiTimeout = setTimeout(() => aiController.abort(), AI_TIMEOUT_MS);
-    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` }],
+        },
+      ],
+      generationConfig: { temperature: 0, topP: 0.1, responseMimeType: "application/json" },
+    });
+    let resp = await fetch(geminiUrl("gemini-2.0-flash", GEMINI_API_KEY), {
       method: "POST",
       signal: aiController.signal,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` }],
-          },
-        ],
-        generationConfig: { temperature: 0, topP: 0.1, responseMimeType: "application/json" },
-      }),
-    }).finally(() => clearTimeout(aiTimeout));
+      body: requestBody,
+    });
+    if (resp.status === 429) {
+      resp = await fetch(geminiUrl("gemini-2.0-flash-lite", GEMINI_API_KEY), {
+        method: "POST",
+        signal: aiController.signal,
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+      });
+    }
+    clearTimeout(aiTimeout);
 
     if (!resp.ok) {
       if (resp.status === 429)
