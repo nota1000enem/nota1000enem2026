@@ -21,6 +21,22 @@ function geminiUrl(model: string, key: string) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
 }
 
+async function callGeminiWithFallback(key: string, body: string, signal: AbortSignal) {
+  const models = ["gemini-2.0-flash", "gemini-1.5-flash-8b", "gemini-1.5-flash"];
+  let lastResponse: Response | null = null;
+  for (const model of models) {
+    const response = await fetch(geminiUrl(model, key), {
+      method: "POST",
+      signal,
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+    if (![404, 429, 503].includes(response.status)) return response;
+    lastResponse = response;
+  }
+  return lastResponse!;
+}
+
 // Pool grande de repertórios — a IA escolhe 1-2 SE a redação não usou, com rotação aleatória
 // para evitar o vício de Bauman/Foucault. Rotacionado por seed no momento da chamada.
 const POOL_REPERTORIOS = [
@@ -315,20 +331,7 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
       ],
       generationConfig: { temperature: 0, topP: 0.1, responseMimeType: "application/json" },
     });
-    let resp = await fetch(geminiUrl("gemini-2.0-flash", GEMINI_API_KEY), {
-      method: "POST",
-      signal: aiController.signal,
-      headers: { "Content-Type": "application/json" },
-      body: requestBody,
-    });
-    if (resp.status === 429) {
-      resp = await fetch(geminiUrl("gemini-2.0-flash-lite", GEMINI_API_KEY), {
-        method: "POST",
-        signal: aiController.signal,
-        headers: { "Content-Type": "application/json" },
-        body: requestBody,
-      });
-    }
+    const resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody, aiController.signal);
     clearTimeout(aiTimeout);
 
     if (!resp.ok) {
