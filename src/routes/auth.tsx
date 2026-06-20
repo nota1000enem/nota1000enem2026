@@ -9,7 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
-import { Sparkles, AlertCircle } from "lucide-react";
+import { Sparkles, CircleAlert as AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Entrar – Nota 1000 ENEM" }] }),
@@ -33,11 +33,23 @@ function AuthPage() {
       setErroLogin("Conta não existe, cadastre-se ou revise os dados.");
       setTab("signup");
     }
-    // Limpa qualquer dado autopreenchido pelo navegador ao abrir a página
     setEmail("");
     setPassword("");
     setName("");
-    supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
+
+    // Handle OAuth callback: Supabase processes the #access_token hash and fires SIGNED_IN
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session) {
+        nav({ to: "/dashboard" });
+      }
+    });
+
+    // Also handle already-authenticated users landing here
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) nav({ to: "/dashboard" });
+    });
+
+    return () => subscription.unsubscribe();
   }, [nav]);
 
   function validarSenha(s: string): string | null {
@@ -138,15 +150,14 @@ function AuthPage() {
     }
   }
   async function google() {
-    // Marca a intenção (login vs cadastro) pra checar do outro lado após OAuth
     sessionStorage.setItem("oauth_intent", tab);
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
     if (r.error) toast.error("Erro ao entrar com Google. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
   }
   async function apple() {
     sessionStorage.setItem("oauth_intent", tab);
-    const r = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin + "/dashboard" });
+    const r = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin + "/auth" });
     if (r.error) toast.error("Erro ao entrar com Apple. Tente novamente.");
     else if (!r.redirected) nav({ to: "/dashboard" });
   }
