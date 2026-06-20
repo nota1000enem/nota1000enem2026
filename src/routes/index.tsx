@@ -38,6 +38,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { CorretorRedacao } from '@/components/CorretorRedacao';
+
+export default function Home() {
+  return <CorretorRedacao />;
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
