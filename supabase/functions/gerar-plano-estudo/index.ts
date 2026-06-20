@@ -22,6 +22,21 @@ function geminiUrl(model: string, key: string) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
 }
 
+async function callGeminiWithFallback(key: string, body: string) {
+  const models = ["gemini-2.0-flash", "gemini-1.5-flash-8b", "gemini-1.5-flash"];
+  let lastResponse: Response | null = null;
+  for (const model of models) {
+    const response = await fetch(geminiUrl(model, key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+    if (![404, 429, 503].includes(response.status)) return response;
+    lastResponse = response;
+  }
+  return lastResponse!;
+}
+
 function normalizarPlano(plano?: string | null) {
   const s = (plano ?? "free").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_-]+/g, "").trim();
   if (s.includes("vitalicio")) return "vitalicio";
@@ -218,18 +233,7 @@ Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhu
       ],
       generationConfig: { temperature: 0.4, responseMimeType: "application/json" },
     });
-    let resp = await fetch(geminiUrl("gemini-2.0-flash", GEMINI_API_KEY), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: requestBody,
-    });
-    if (resp.status === 429) {
-      resp = await fetch(geminiUrl("gemini-2.0-flash-lite", GEMINI_API_KEY), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: requestBody,
-      });
-    }
+    const resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody);
 
     if (!resp.ok) {
       if (resp.status === 429) return new Response(JSON.stringify({ error: "Limite atingido. Tente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
