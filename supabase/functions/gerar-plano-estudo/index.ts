@@ -18,6 +18,10 @@ function extractGeminiJson(data: unknown): string | null {
   return fenced?.[1]?.trim() || text;
 }
 
+function geminiUrl(model: string, key: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+}
+
 function normalizarPlano(plano?: string | null) {
   const s = (plano ?? "free").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_-]+/g, "").trim();
   if (s.includes("vitalicio")) return "vitalicio";
@@ -207,17 +211,25 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
 
 Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhum bloco com mais de 40 min. Cumpra sequência pedagógica e foco na meta.`;
 
-    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [
+        { role: "user", parts: [{ text: userPrompt }] },
+      ],
+      generationConfig: { temperature: 0.4, responseMimeType: "application/json" },
+    });
+    let resp = await fetch(geminiUrl("gemini-2.0-flash", GEMINI_API_KEY), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [
-          { role: "user", parts: [{ text: userPrompt }] },
-        ],
-        generationConfig: { temperature: 0.4, responseMimeType: "application/json" },
-      }),
+      body: requestBody,
     });
+    if (resp.status === 429) {
+      resp = await fetch(geminiUrl("gemini-2.0-flash-lite", GEMINI_API_KEY), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+      });
+    }
 
     if (!resp.ok) {
       if (resp.status === 429) return new Response(JSON.stringify({ error: "Limite atingido. Tente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
