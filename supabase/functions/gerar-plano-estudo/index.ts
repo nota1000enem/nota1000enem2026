@@ -221,14 +221,14 @@ Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhu
 
     if (!resp.ok) {
       if (resp.status === 429) return new Response(JSON.stringify({ error: "Limite atingido. Tente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "Créditos esgotados." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 403) return new Response(JSON.stringify({ error: "Chave Gemini inválida ou sem permissão." }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "Erro na IA" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "A IA não conseguiu gerar o plano agora. Verifique a chave Gemini ou tente novamente." }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const data = await resp.json();
-    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    const args = extractGeminiJson(data);
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
