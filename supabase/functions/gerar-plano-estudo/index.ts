@@ -134,8 +134,8 @@ serve(async (req) => {
       .join(" | ");
     const slotsHorarios = slots.map(s => s.horario);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada");
 
     const distribuicoes: Record<number, string[]> = {
       4: ["Segunda-feira","Quarta-feira","Sexta-feira","Sábado"],
@@ -182,7 +182,19 @@ ${slotsResumo}
 15. Resumo (2-3 frases) menciona META e FRAQUEZAS do aluno.
 16. FOCO NA META "${meta}": medicina/biologia → peso extra Bio/Quím. Engenharia → Mat/Física. Direito/humanidades → Port/Redação/Hist/Filo.
 
-Retorne SEMPRE via tool_call.`;
+Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exatamente esta estrutura:
+{
+  "resumo": string,
+  "dicas_gerais": string[],
+  "cronograma": [
+    {
+      "dia": string,
+      "blocos": [
+        { "horario": string, "materia": string, "topico": string, "tipo": string }
+      ]
+    }
+  ]
+}`;
 
     const userPrompt = `Monte o plano semanal:
 - Tempo: ${horasDia}h/dia em ${diasSemana} dias, começando às ${String(horaInicio).padStart(2,"0")}:00
