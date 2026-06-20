@@ -207,57 +207,15 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
 
 Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhum bloco com mais de 40 min. Cumpra sequência pedagógica e foco na meta.`;
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [
+          { role: "user", parts: [{ text: userPrompt }] },
         ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "montar_plano",
-            description: "Monta um plano de estudo semanal para o ENEM",
-            parameters: {
-              type: "object",
-              properties: {
-                resumo: { type: "string" },
-                dicas_gerais: { type: "array", items: { type: "string" } },
-                cronograma: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      dia: { type: "string" },
-                      blocos: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            horario: { type: "string" },
-                            materia: { type: "string" },
-                            topico: { type: "string" },
-                            tipo: { type: "string", description: "teoria | exemplos | exercicio | redacao | revisao | simulado | descanso | leitura" },
-                          },
-                          required: ["horario", "materia", "topico", "tipo"],
-                          additionalProperties: false,
-                        },
-                      },
-                    },
-                    required: ["dia", "blocos"],
-                    additionalProperties: false,
-                  },
-                },
-              },
-              required: ["resumo", "dicas_gerais", "cronograma"],
-              additionalProperties: false,
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "montar_plano" } },
+        generationConfig: { temperature: 0.4, responseMimeType: "application/json" },
       }),
     });
 
