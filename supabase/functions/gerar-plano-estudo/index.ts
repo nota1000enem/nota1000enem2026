@@ -9,6 +9,15 @@ const corsHeaders = {
 // Ordem dos dias da semana (PT-BR canônico)
 const DIAS_SEMANA = ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
 
+function extractGeminiJson(data: unknown): string | null {
+  const candidate = (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> })
+    .candidates?.[0];
+  const text = candidate?.content?.parts?.map((part) => part.text ?? "").join("\n").trim();
+  if (!text) return null;
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  return fenced?.[1]?.trim() || text;
+}
+
 function normalizarPlano(plano?: string | null) {
   const s = (plano ?? "free").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_-]+/g, "").trim();
   if (s.includes("vitalicio")) return "vitalicio";
