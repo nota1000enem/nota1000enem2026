@@ -8,6 +8,35 @@ const corsHeaders = {
 
 const AI_TIMEOUT_MS = 55_000;
 
+function extractGeminiJson(data: unknown): string | null {
+  const candidate = (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> })
+    .candidates?.[0];
+  const text = candidate?.content?.parts?.map((part) => part.text ?? "").join("\n").trim();
+  if (!text) return null;
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  return fenced?.[1]?.trim() || text;
+}
+
+function geminiUrl(model: string, key: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+}
+
+async function callGeminiWithFallback(key: string, body: string, signal: AbortSignal) {
+  const models = ["gemini-2.0-flash", "gemini-1.5-flash-8b", "gemini-1.5-flash"];
+  let lastResponse: Response | null = null;
+  for (const model of models) {
+    const response = await fetch(geminiUrl(model, key), {
+      method: "POST",
+      signal,
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+    if (![404, 429, 503].includes(response.status)) return response;
+    lastResponse = response;
+  }
+  return lastResponse!;
+}
+
 // Pool grande de repertórios — a IA escolhe 1-2 SE a redação não usou, com rotação aleatória
 // para evitar o vício de Bauman/Foucault. Rotacionado por seed no momento da chamada.
 const POOL_REPERTORIOS = [
@@ -145,8 +174,8 @@ serve(async (req) => {
     const shuffled = indexed.slice(0, 8).map((x) => x.r);
     const repertoriosSugeridos = shuffled.map((r) => `- ${r}`).join("\n");
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada");
 
     const systemPrompt = `Você é um corretor oficial de redação do ENEM, calibrado pela Cartilha do Participante / Matriz de Referência do INEP. Você corrige pela GRADE FRIA DO INEP, não por gosto pessoal.
 
@@ -273,69 +302,37 @@ ${
     : `Tom construtivo e MOTIVADOR, mas FIEL à grade INEP. Não infle, não invente, não use template. Comentários específicos ao texto, com tom humano (sem "como modelo de IA"), curtos e diretos.`
 }
 
-Retorne SEMPRE via tool_call estruturado.`;
+Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exatamente estes campos:
+{
+  "competencia_1": number,
+  "competencia_2": number,
+  "competencia_3": number,
+  "competencia_4": number,
+  "competencia_5": number,
+  "nota_total": number,
+  "comentario_geral": string,
+  "erros_gramaticais": string[],
+  "sugestoes": string[],
+  "melhorias": string[],
+  "repertorios": string[],
+  "anulada": boolean,
+  "motivo_anulacao": string
+}`;
 
     const aiController = new AbortController();
     const aiTimeout = setTimeout(() => aiController.abort(), AI_TIMEOUT_MS);
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      signal: aiController.signal,
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        temperature: 0,
-        top_p: 0.1,
-        seed,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` },
-        ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "avaliar_redacao",
-              description: "Avalia uma redação do ENEM",
-              parameters: {
-                type: "object",
-                properties: {
-                  competencia_1: { type: "integer" },
-                  competencia_2: { type: "integer" },
-                  competencia_3: { type: "integer" },
-                  competencia_4: { type: "integer" },
-                  competencia_5: { type: "integer" },
-                  nota_total: { type: "integer" },
-                  comentario_geral: { type: "string" },
-                  erros_gramaticais: { type: "array", items: { type: "string" } },
-                  sugestoes: { type: "array", items: { type: "string" } },
-                  melhorias: { type: "array", items: { type: "string" } },
-                  repertorios: { type: "array", items: { type: "string" } },
-                  anulada: { type: "boolean", description: "true se a redação se enquadra em qualquer situação de zero automático do INEP" },
-                  motivo_anulacao: { type: "string", description: "regra violada quando anulada=true; string vazia quando anulada=false" },
-                },
-                required: [
-                  "competencia_1",
-                  "competencia_2",
-                  "competencia_3",
-                  "competencia_4",
-                  "competencia_5",
-                  "nota_total",
-                  "comentario_geral",
-                  "erros_gramaticais",
-                  "sugestoes",
-                  "melhorias",
-                  "repertorios",
-                  "anulada",
-                  "motivo_anulacao",
-                ],
-                additionalProperties: false,
-              },
-            },
-          },
-        ],
-        tool_choice: { type: "function", function: { name: "avaliar_redacao" } },
-      }),
-    }).finally(() => clearTimeout(aiTimeout));
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` }],
+        },
+      ],
+      generationConfig: { temperature: 0, topP: 0.1, responseMimeType: "application/json" },
+    });
+    const resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody, aiController.signal);
+    clearTimeout(aiTimeout);
 
     if (!resp.ok) {
       if (resp.status === 429)
@@ -345,21 +342,16 @@ Retorne SEMPRE via tool_call estruturado.`;
           }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
-      if (resp.status === 402)
-        return new Response(JSON.stringify({ error: "Créditos da IA esgotados." }), {
-          status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "A IA não conseguiu responder agora. Tente novamente em instantes." }), {
+      return new Response(JSON.stringify({ error: "A IA não conseguiu responder agora. Verifique a chave Gemini ou tente novamente em instantes." }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const data = await resp.json();
-    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    const args = extractGeminiJson(data);
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 

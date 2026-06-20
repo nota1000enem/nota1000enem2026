@@ -9,6 +9,34 @@ const corsHeaders = {
 // Ordem dos dias da semana (PT-BR canônico)
 const DIAS_SEMANA = ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
 
+function extractGeminiJson(data: unknown): string | null {
+  const candidate = (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> })
+    .candidates?.[0];
+  const text = candidate?.content?.parts?.map((part) => part.text ?? "").join("\n").trim();
+  if (!text) return null;
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  return fenced?.[1]?.trim() || text;
+}
+
+function geminiUrl(model: string, key: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+}
+
+async function callGeminiWithFallback(key: string, body: string) {
+  const models = ["gemini-2.0-flash", "gemini-1.5-flash-8b", "gemini-1.5-flash"];
+  let lastResponse: Response | null = null;
+  for (const model of models) {
+    const response = await fetch(geminiUrl(model, key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+    if (![404, 429, 503].includes(response.status)) return response;
+    lastResponse = response;
+  }
+  return lastResponse!;
+}
+
 function normalizarPlano(plano?: string | null) {
   const s = (plano ?? "free").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_-]+/g, "").trim();
   if (s.includes("vitalicio")) return "vitalicio";
@@ -125,8 +153,8 @@ serve(async (req) => {
       .join(" | ");
     const slotsHorarios = slots.map(s => s.horario);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada");
 
     const distribuicoes: Record<number, string[]> = {
       4: ["Segunda-feira","Quarta-feira","Sexta-feira","Sábado"],
@@ -173,7 +201,19 @@ ${slotsResumo}
 15. Resumo (2-3 frases) menciona META e FRAQUEZAS do aluno.
 16. FOCO NA META "${meta}": medicina/biologia → peso extra Bio/Quím. Engenharia → Mat/Física. Direito/humanidades → Port/Redação/Hist/Filo.
 
-Retorne SEMPRE via tool_call.`;
+Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exatamente esta estrutura:
+{
+  "resumo": string,
+  "dicas_gerais": string[],
+  "cronograma": [
+    {
+      "dia": string,
+      "blocos": [
+        { "horario": string, "materia": string, "topico": string, "tipo": string }
+      ]
+    }
+  ]
+}`;
 
     const userPrompt = `Monte o plano semanal:
 - Tempo: ${horasDia}h/dia em ${diasSemana} dias, começando às ${String(horaInicio).padStart(2,"0")}:00
@@ -186,70 +226,25 @@ Retorne SEMPRE via tool_call.`;
 
 Cada dia ativo: EXATAMENTE ${slots.length} blocos seguindo os slots acima. Nenhum bloco com mais de 40 min. Cumpra sequência pedagógica e foco na meta.`;
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "montar_plano",
-            description: "Monta um plano de estudo semanal para o ENEM",
-            parameters: {
-              type: "object",
-              properties: {
-                resumo: { type: "string" },
-                dicas_gerais: { type: "array", items: { type: "string" } },
-                cronograma: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      dia: { type: "string" },
-                      blocos: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            horario: { type: "string" },
-                            materia: { type: "string" },
-                            topico: { type: "string" },
-                            tipo: { type: "string", description: "teoria | exemplos | exercicio | redacao | revisao | simulado | descanso | leitura" },
-                          },
-                          required: ["horario", "materia", "topico", "tipo"],
-                          additionalProperties: false,
-                        },
-                      },
-                    },
-                    required: ["dia", "blocos"],
-                    additionalProperties: false,
-                  },
-                },
-              },
-              required: ["resumo", "dicas_gerais", "cronograma"],
-              additionalProperties: false,
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "montar_plano" } },
-      }),
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [
+        { role: "user", parts: [{ text: userPrompt }] },
+      ],
+      generationConfig: { temperature: 0.4, responseMimeType: "application/json" },
     });
+    const resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody);
 
     if (!resp.ok) {
       if (resp.status === 429) return new Response(JSON.stringify({ error: "Limite atingido. Tente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "Créditos esgotados." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 403) return new Response(JSON.stringify({ error: "Chave Gemini inválida ou sem permissão." }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await resp.text();
       console.error("AI error", resp.status, t);
-      return new Response(JSON.stringify({ error: "Erro na IA" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "A IA não conseguiu gerar o plano agora. Verifique a chave Gemini ou tente novamente." }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const data = await resp.json();
-    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    const args = extractGeminiJson(data);
     if (!args) throw new Error("Resposta inválida da IA");
     const parsed = JSON.parse(args);
 
