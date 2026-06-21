@@ -6,6 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Lock, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import redacaoPronta from "@/assets/redacao-pronta.png.asset.json";
+import modelo1 from "@/assets/redacao-modelo-1.png.asset.json";
+import modelo2 from "@/assets/redacao-modelo-2.webp.asset.json";
+import modelo3 from "@/assets/redacao-modelo-3.webp.asset.json";
+import modelo4 from "@/assets/redacao-modelo-4.jpg.asset.json";
+import modelo5 from "@/assets/redacao-modelo-5.jpg.asset.json";
+
+const MODELOS_EXTRAS = [
+  { src: modelo1.url, alt: "Modelo de redação ENEM com estrutura introdução, desenvolvimento e conclusão" },
+  { src: modelo2.url, alt: "Exemplo de redação nota 1000 com tese e argumentação" },
+  { src: modelo3.url, alt: "Esqueleto de redação ENEM passo a passo" },
+  { src: modelo4.url, alt: "Sugestão de esqueleto estrutural para texto dissertativo-argumentativo" },
+  { src: modelo5.url, alt: "Modelo completo de redação com introdução, desenvolvimento 1 e 2 e conclusão" },
+];
 
 export const Route = createFileRoute("/redacao-pronta")({
   head: () => ({
