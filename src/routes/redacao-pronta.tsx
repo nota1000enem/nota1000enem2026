@@ -6,6 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Lock, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import redacaoPronta from "@/assets/redacao-pronta.png.asset.json";
+import modelo1 from "@/assets/redacao-modelo-1.png.asset.json";
+import modelo2 from "@/assets/redacao-modelo-2.webp.asset.json";
+import modelo3 from "@/assets/redacao-modelo-3.webp.asset.json";
+import modelo4 from "@/assets/redacao-modelo-4.jpg.asset.json";
+import modelo5 from "@/assets/redacao-modelo-5.jpg.asset.json";
+
+const MODELOS_EXTRAS = [
+  { src: modelo1.url, alt: "Modelo de redação ENEM com estrutura introdução, desenvolvimento e conclusão" },
+  { src: modelo2.url, alt: "Exemplo de redação nota 1000 com tese e argumentação" },
+  { src: modelo3.url, alt: "Esqueleto de redação ENEM passo a passo" },
+  { src: modelo4.url, alt: "Sugestão de esqueleto estrutural para texto dissertativo-argumentativo" },
+  { src: modelo5.url, alt: "Modelo completo de redação com introdução, desenvolvimento 1 e 2 e conclusão" },
+];
 
 export const Route = createFileRoute("/redacao-pronta")({
   head: () => ({
@@ -69,7 +82,7 @@ function RedacaoProntaPage() {
                   Faça Login para acessar Grátis
                 </h2>
                 <p className="max-w-md text-muted-foreground">
-                  Acesso 100% gratuito. Entre com sua conta para ver a redação pronta completa.
+                  Acesso 100% gratuito. Entre com sua conta para ver as redações prontas completas.
                 </p>
                 <Link to="/auth">
                   <Button size="lg" className="glow-blue">
@@ -80,6 +93,33 @@ function RedacaoProntaPage() {
             </div>
           )}
         </Card>
+
+        {!loading && user && (
+          <div className="mt-8 space-y-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold md:text-3xl">
+                Mais <span className="gradient-text">5 Modelos</span> de Redação
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Estruturas variadas para você se inspirar e adaptar ao tema da sua prova.
+              </p>
+            </div>
+            {MODELOS_EXTRAS.map((m, i) => (
+              <Card key={i} className="card-glass overflow-hidden p-0">
+                <img src={m.src} alt={m.alt} className="h-auto w-full" loading="lazy" />
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {!loading && !user && (
+          <div className="mt-8 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
+            <Lock className="mx-auto h-8 w-8 text-primary" />
+            <p className="mt-3 text-sm text-muted-foreground">
+              Faça login para desbloquear <strong>+5 modelos extras</strong> de redação ENEM.
+            </p>
+          </div>
+        )}
       </section>
 
       <Footer />

@@ -156,7 +156,31 @@ function RedacaoPage() {
         }),
         "A correção demorou demais para responder. Tente novamente em instantes.",
       );
-      if (error) throw error;
+      // Se houve erro HTTP (non-2xx), tentar extrair a mensagem real do corpo
+      if (error) {
+        let serverMsg = "";
+        let statusCode: number | undefined;
+        try {
+          const ctx = (error as { context?: { response?: Response } }).context;
+          if (ctx?.response) {
+            statusCode = ctx.response.status;
+            const bodyText = await ctx.response.clone().text();
+            try {
+              const j = JSON.parse(bodyText);
+              serverMsg = j.error || j.message || "";
+              if (j.motivo) serverMsg += ` (motivo: ${j.motivo})`;
+            } catch {
+              serverMsg = bodyText;
+            }
+          }
+        } catch {
+          /* ignore */
+        }
+        const friendly =
+          serverMsg ||
+          (error instanceof Error ? error.message : "Erro desconhecido ao corrigir.");
+        throw new Error(statusCode ? `Erro ${statusCode}: ${friendly}` : friendly);
+      }
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const r = data as Resultado;
       setResultado(r);
@@ -184,7 +208,7 @@ function RedacaoPage() {
     } catch (e) {
       const message = e instanceof Error ? e.message : "Erro ao corrigir";
       setCorrectionError(message);
-      toast.error(message);
+      toast.error(message, { duration: 8000 });
     } finally {
       setSubmitting(false);
     }
