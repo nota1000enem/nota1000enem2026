@@ -21,8 +21,30 @@ function geminiUrl(model: string, key: string) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
 }
 
+async function listAvailableGeminiModels(key: string) {
+  const preferred = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`,
+      { headers: { "Content-Type": "application/json" } },
+    );
+    if (!response.ok) return preferred;
+    const payload = await response.json();
+    const available = new Set(
+      ((payload as { models?: Array<{ name?: string; supportedGenerationMethods?: string[] }> }).models ?? [])
+        .filter((model) => model.supportedGenerationMethods?.includes("generateContent"))
+        .map((model) => model.name?.replace(/^models\//, ""))
+        .filter(Boolean) as string[],
+    );
+    const validPreferred = preferred.filter((model) => available.has(model));
+    return validPreferred.length > 0 ? validPreferred : preferred;
+  } catch (_error) {
+    return preferred;
+  }
+}
+
 async function callGeminiWithFallback(key: string, body: string, signal: AbortSignal) {
-  const models = ["gemini-2.0-flash", "gemini-1.5-flash-8b", "gemini-1.5-flash"];
+  const models = await listAvailableGeminiModels(key);
   let lastResponse: Response | null = null;
   for (const model of models) {
     const response = await fetch(geminiUrl(model, key), {
