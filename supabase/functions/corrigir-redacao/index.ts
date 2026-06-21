@@ -306,12 +306,15 @@ ${repertoriosSugeridos}
 
 Cite com aplicação concreta. Ex.: "Para reforçar a tese sobre desigualdade digital, dados do IBGE (PNAD 2023) mostram que 28% dos domicílios rurais ainda não têm acesso à internet — isso conecta diretamente ao seu argumento sobre exclusão escolar."
 
-==== FEEDBACK (TOM HUMANO, NÃO TEMPLATE) ====
-- Máx 2 melhorias REAIS por competência.
-- "sugestoes" e "melhorias": SEMPRE sobre o texto real, citando trechos. NUNCA frases genéricas tipo "melhorar coesão" ou "use mais conectivos".
-- "comentario_geral": evite frases prontas. Cite UM ponto forte real e UM gargalo real do texto, com a frase/argumento específico do aluno. Tom de professor humano, não de relatório automático.
-- "repertorios": só se C2 < 200; vazio ou elogio se já tem repertório bom.
-- "erros_gramaticais": SÓ erros REAIS com frase + correção + regra. RELEIA a lista de falsos positivos antes de incluir qualquer item. Vazio é melhor que erro inventado.
+==== FEEDBACK (TOM HUMANO, NÃO TEMPLATE) — OBRIGATÓRIO CITAR TRECHOS LITERAIS ====
+- REGRA DE PERSONALIZAÇÃO (CRÍTICA): em PELO MENOS 70% dos comentários (sugestoes, melhorias, comentario_geral), você DEVE citar entre aspas um trecho LITERAL extraído da redação do aluno e indicar o parágrafo (ex.: "no segundo parágrafo, quando você escreve 'a falta de debates acerca da problemática'..."). Comentários genéricos sem citação são PROIBIDOS — se não conseguir extrair um trecho real para sustentar a observação, NÃO inclua o comentário.
+- Para cada item de "melhorias" e "sugestoes", siga o padrão: (1) cite o trecho LITERAL entre aspas + parágrafo, (2) explique o problema/oportunidade específica daquele trecho, (3) mostre como reescrever ou aprofundar — usando o vocabulário do próprio aluno quando possível.
+- Numere os parágrafos do aluno mentalmente (1º = introdução, 2º/3º/4º = desenvolvimentos, último = conclusão) e SEMPRE referencie qual parágrafo está comentando.
+- "comentario_geral": evite frases prontas. Cite UM ponto forte real (com trecho entre aspas) e UM gargalo real (com trecho entre aspas) do texto. Tom de professor humano que LEU a redação, não de relatório automático. Ex.: "Sua tese no 1º parágrafo — 'a passividade dos indivíduos que dá continuidade à problemática' — é forte e original; já no 3º parágrafo, quando você diz 'sua resolução é quase utópica', você enfraquece o próprio argumento ao invés de defender solução viável."
+- Máx 3 melhorias por competência, todas ancoradas em trechos do texto.
+- "repertorios": só se C2 < 200; ao sugerir, conecte o repertório a um trecho LITERAL do aluno (ex.: "Para reforçar sua afirmação 'XYZ' no 2º parágrafo, use o dado...").
+- "erros_gramaticais": SÓ erros REAIS com frase LITERAL do aluno + correção + regra. RELEIA a lista de falsos positivos antes de incluir qualquer item. Vazio é melhor que erro inventado.
+- PROIBIDO: "melhore a coesão", "use mais conectivos", "aprofunde a argumentação", "desenvolva melhor", "trabalhe a proposta" sem citar o trecho exato que motivou a observação. Toda crítica precisa de evidência textual.
 
 ${
   modoRigidoFinal
