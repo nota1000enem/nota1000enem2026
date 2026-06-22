@@ -346,6 +346,9 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
 
     const aiController = new AbortController();
     const aiTimeout = setTimeout(() => aiController.abort(), AI_TIMEOUT_MS);
+    // DETERMINISMO: seed estável derivada do texto+tema (mesma redação = mesma nota)
+    // Exceção: modo rigido pode variar (avaliação mais crítica/severa)
+    const deterministicSeed = modoRigidoFinal ? Math.floor(Math.random() * 2_000_000_000) : (seed % 2_000_000_000);
     const requestBody = JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
       contents: [
@@ -354,9 +357,28 @@ Retorne SOMENTE um JSON válido, sem markdown, sem texto antes/depois, com exata
           parts: [{ text: `Tema: ${tema || "Tema livre do ENEM"}\n\nRedação:\n${texto}` }],
         },
       ],
-      generationConfig: { temperature: 0, topP: 0.1, responseMimeType: "application/json" },
+      generationConfig: {
+        temperature: modoRigidoFinal ? 0.2 : 0,
+        topP: modoRigidoFinal ? 0.5 : 0.1,
+        topK: 1,
+        seed: deterministicSeed,
+        responseMimeType: "application/json",
+      },
     });
-    const resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody, aiController.signal);
+    // Modelo FIXO para garantir reprodutibilidade (mesma redação → mesma nota).
+    // Só usamos fallback se o usuário ativou modo rigido (avaliação variável aceitável).
+    const PRIMARY_MODEL = "gemini-2.5-flash";
+    let resp: Response;
+    if (modoRigidoFinal) {
+      resp = await callGeminiWithFallback(GEMINI_API_KEY, requestBody, aiController.signal);
+    } else {
+      resp = await fetch(geminiUrl(PRIMARY_MODEL, GEMINI_API_KEY), {
+        method: "POST",
+        signal: aiController.signal,
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+      });
+    }
     clearTimeout(aiTimeout);
 
     if (!resp.ok) {
