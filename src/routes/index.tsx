@@ -239,7 +239,7 @@ function Index() {
         {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
         <div className="mx-auto max-w-7xl px-4 pb-16">
           <div className="rounded-2xl border border-primary/20 bg-card/40 p-6 backdrop-blur">
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="mx-auto flex max-w-md flex-col gap-2">
               {[
                 "Matemática e suas Tecnologias",
                 "Linguagens, Códigos e suas Tecnologias",
@@ -248,7 +248,11 @@ function Index() {
                 "Redação",
                 "+ 1.000 questões em VÍDEO",
               ].map((t) => (
-                <Badge key={t} variant="outline" className="border-primary/40 text-primary">
+                <Badge
+                  key={t}
+                  variant="outline"
+                  className="w-full justify-center rounded-full border-primary/40 bg-primary/5 px-4 py-2 text-center text-sm font-medium text-primary"
+                >
                   {t}
                 </Badge>
               ))}
