@@ -67,10 +67,9 @@ export const Route = createFileRoute("/")({
 });
 
 function useFakePromoTimer() {
-  // 30 min de oferta; zera por 10 min; reinicia. Persiste em localStorage.
+  // Contagem regressiva de 30 min sempre ativa: ao zerar, reinicia.
   const ACTIVE = 30 * 60;
-  const PAUSE = 10 * 60;
-  const KEY = "promo_start_ts";
+  const KEY = "promo_start_ts_v2";
   const [now, setNow] = useState(0);
   useEffect(() => {
     if (!localStorage.getItem(KEY)) {
@@ -80,16 +79,10 @@ function useFakePromoTimer() {
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
     return () => clearInterval(id);
   }, []);
-  if (!now) return { active: false, label: "00:00" };
+  if (!now) return { active: true, label: "30:00" };
   const start = Number(localStorage.getItem(KEY) ?? now);
-  const cycle = ACTIVE + PAUSE;
-  const elapsed = (now - start) % cycle;
-  const inActive = elapsed < ACTIVE;
-  if (!inActive) {
-    // Pausa: reinicia o ciclo quando voltar
-    if (elapsed >= cycle - 1) localStorage.setItem(KEY, String(now + 1));
-    return { active: false, label: "00:00" };
-  }
+  const elapsed = (now - start) % ACTIVE;
+  if (elapsed >= ACTIVE - 1) localStorage.setItem(KEY, String(now + 1));
   const remaining = ACTIVE - elapsed;
   const m = String(Math.floor(remaining / 60)).padStart(2, "0");
   const s = String(remaining % 60).padStart(2, "0");
@@ -246,7 +239,7 @@ function Index() {
         {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
         <div className="mx-auto max-w-7xl px-4 pb-16">
           <div className="rounded-2xl border border-primary/20 bg-card/40 p-6 backdrop-blur">
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="mx-auto flex max-w-md flex-col gap-2">
               {[
                 "Matemática e suas Tecnologias",
                 "Linguagens, Códigos e suas Tecnologias",
@@ -255,7 +248,11 @@ function Index() {
                 "Redação",
                 "+ 1.000 questões em VÍDEO",
               ].map((t) => (
-                <Badge key={t} variant="outline" className="border-primary/40 text-primary">
+                <Badge
+                  key={t}
+                  variant="outline"
+                  className="w-full justify-center rounded-full border-primary/40 bg-primary/5 px-4 py-2 text-center text-sm font-medium text-primary"
+                >
                   {t}
                 </Badge>
               ))}
@@ -673,7 +670,7 @@ function Index() {
                 name: "ENEM Pro",
                 planType: "PRO" as PlanType,
                 price: "29,90",
-                oldPrice: "39,90" as string | null,
+                oldPrice: "49,90" as string | null,
                 periodo: "/mês",
                 cta: "Quero o Pro",
                 popular: true,
@@ -697,8 +694,8 @@ function Index() {
               {
                 name: "Full Acess ENEM",
                 planType: "FULL" as PlanType,
-                price: "49,90",
-                oldPrice: null,
+                price: "44,90",
+                oldPrice: "99,90",
                 periodo: "/mês",
                 cta: "Quero Acesso Total",
                 popular: false,
