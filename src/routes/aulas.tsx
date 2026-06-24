@@ -366,7 +366,7 @@ function Aulas() {
               const upgrades = [
                 { tier: "light" as PlanTier, label: "Ver Plano Light — R$ 19,90", variant: "outline" as const },
                 { tier: "pro" as PlanTier, label: "Ver Plano Pro — R$ 29,90", variant: "default" as const, glow: true },
-                { tier: "full" as PlanTier, label: "Ver Plano Full — R$ 49,90", variant: "outline" as const },
+                { tier: "full" as PlanTier, label: "Ver Plano Full — R$ 44,90", variant: "outline" as const },
                 { tier: "vitalicio" as PlanTier, label: "Ver Vitalício — R$ 499", variant: "outline" as const },
               ];
               const order: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];
