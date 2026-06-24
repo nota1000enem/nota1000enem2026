@@ -164,35 +164,40 @@ function Index() {
       <Navbar />
       {/* HERO */}
       <section className="relative gradient-hero overflow-hidden">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
           <div className="space-y-6">
-            <Badge variant="outline" className="border-primary/40 text-primary">
+            <Badge
+              variant="outline"
+              className="border-primary/40 bg-primary/10 text-primary backdrop-blur"
+            >
+              <span className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
               <Sparkles className="mr-1 h-3 w-3" /> IA treinada nas competências do ENEM
             </Badge>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-              Descubra sua nota do ENEM em segundos usando o{" "}
+            <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+              Descubra sua nota do ENEM em segundos com{" "}
               <span className="gradient-text text-glow">NOTA 1000 ENEM 2026</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
-              <span className="block font-semibold text-foreground">DESCUBRA O FUTURO AGORA MESMO!</span>
-              <span className="mt-2 block">
-                Corrija redações, treine questões difíceis e estude com metodologia focada em
-                aprovação. Vídeo aulas, corretor de redação, plano de estudos — TUDO focado na sua
-                aprovação.
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              <span className="block text-xl font-semibold text-foreground">
+                Corrija sua redação com IA e descubra onde melhorar.
               </span>
-              <span className="mt-2 block">
-                <span className="font-semibold text-primary">TESTE GRÁTIS AGORA MESMO.</span>{" "}
-                <span className="font-semibold text-foreground">Não precisa cartão de crédito.</span>
+              <span className="mt-3 block">
+                Vídeo aulas, corretor de redação por competência e plano de estudos personalizado —
+                tudo focado na sua aprovação.
+              </span>
+              <span className="mt-3 block">
+                <span className="font-semibold text-primary">TESTE GRÁTIS AGORA.</span>{" "}
+                <span className="font-semibold text-foreground">Sem cartão de crédito.</span>
               </span>
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/redacao">
-                <Button size="lg" className="glow-blue">
-                  Corrigir minha Redação Grátis <ArrowRight className="ml-1 h-4 w-4" />
+                <Button size="lg" className="glow-blue animate-pulse-glow">
+                  Corrigir minha redação grátis <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
               <Link to="/planos">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="border-primary/40 backdrop-blur hover:bg-primary/10">
                   MAPA da APROVAÇÃO 2026
                 </Button>
               </Link>
@@ -204,35 +209,39 @@ function Index() {
               <div>+ de 78 mil redações corrigidas</div>
             </div>
           </div>
-          <div className="relative">
-            <Carousel
-              opts={{ loop: true, align: "center" }}
-              plugins={[heroAutoplay.current]}
-              className="relative"
-            >
-              <CarouselContent>
-                {heroImgs.map((img, i) => (
-                  <CarouselItem key={i} className="basis-[90%]">
-                    <div className="relative">
-                      <img
-                        src={img.src}
-                        alt={img.alt}
-                        width={1024}
-                        height={1024}
-                        className="aspect-square w-full rounded-2xl object-cover"
-                        loading={i === 0 ? "eager" : "lazy"}
-                        fetchPriority={i === 0 ? "high" : "auto"}
-                        decoding={i === 0 ? "sync" : "async"}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="-left-2 md:-left-4" />
-              <CarouselNext className="-right-2 md:-right-4" />
-            </Carousel>
+          <div className="relative animate-float">
+            <div className="mockup-frame">
+              <Carousel
+                opts={{ loop: true, align: "center" }}
+                plugins={[heroAutoplay.current]}
+                className="relative"
+              >
+                <CarouselContent>
+                  {heroImgs.map((img, i) => (
+                    <CarouselItem key={i} className="basis-full">
+                      <div className="relative overflow-hidden rounded-2xl">
+                        <img
+                          src={img.src}
+                          alt={img.alt}
+                          width={1024}
+                          height={1024}
+                          className="aspect-square w-full rounded-2xl object-cover transition-transform duration-700 hover:scale-[1.02]"
+                          loading={i === 0 ? "eager" : "lazy"}
+                          fetchPriority={i === 0 ? "high" : "auto"}
+                          decoding={i === 0 ? "sync" : "async"}
+                        />
+                        <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="-left-2 border-primary/30 bg-background/70 backdrop-blur md:-left-4" />
+                <CarouselNext className="-right-2 border-primary/30 bg-background/70 backdrop-blur md:-right-4" />
+              </Carousel>
+            </div>
           </div>
         </div>
+
 
         {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
         <div className="mx-auto max-w-7xl px-4 pb-16">
