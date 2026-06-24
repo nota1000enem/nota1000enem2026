@@ -69,7 +69,7 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
   },
   full: {
     nome: "Full",
-    preco: "R$ 49,90 / mês",
+    preco: "R$ 44,90 / mês",
     cor: "text-yellow-400",
     beneficios: [
       "60 redações por mês",
