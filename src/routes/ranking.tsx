@@ -91,26 +91,31 @@ function RankingPage() {
                   { ring: "ring-orange-400/70", color: "text-orange-400", label: "3º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(251,146,60,0.45)]" },
                 ][i];
                 return (
-                  <Card key={r.user_id} className={`card-glass p-3 md:p-6 text-center ring-2 ${cores.ring} ${cores.shadow}`}>
-                    <div className={`mx-auto h-14 w-14 md:h-24 md:w-24 overflow-hidden rounded-full border-2 md:border-4 border-background ring-2 ${cores.ring} bg-muted`}>
-                      {r.avatar_url ? (
-                        <img src={r.avatar_url} alt={r.nome} className="h-full w-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="grid h-full w-full place-content-center">
-                          <UserIcon className="h-6 w-6 md:h-10 md:w-10 text-muted-foreground" />
+                  <Card key={r.user_id} className={`card-glass card-gradient-border p-3 md:p-6 text-center ${cores.shadow}`}>
+                    <div className="relative mx-auto h-14 w-14 md:h-24 md:w-24">
+                      <div className="absolute inset-0 rounded-full p-[2px] btn-gradient-primary">
+                        <div className="h-full w-full overflow-hidden rounded-full bg-muted">
+                          {r.avatar_url ? (
+                            <img src={r.avatar_url} alt={r.nome} className="h-full w-full object-cover" loading="lazy" />
+                          ) : (
+                            <div className="grid h-full w-full place-content-center">
+                              <UserIcon className="h-6 w-6 md:h-10 md:w-10 text-muted-foreground" />
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
                     <Trophy className={`mx-auto mt-2 h-5 w-5 md:h-7 md:w-7 ${cores.color}`} />
                     <p className={`mt-1 text-[10px] md:text-xs uppercase tracking-wider font-semibold ${cores.color}`}>{cores.label}</p>
-                    <p className={`mt-1 text-sm md:text-lg font-semibold truncate ${cores.color}`}>{r.nome}</p>
+                    <p className={`mt-1 text-sm md:text-lg font-semibold truncate font-display ${cores.color}`}>{r.nome}</p>
                     <p className={`text-[10px] md:text-xs truncate ${cores.color} opacity-80`}>
                       {[r.idade ? `${r.idade} anos` : null, r.estado].filter(Boolean).join(" · ") || "—"}
                     </p>
-                    <p className="mt-2 text-2xl md:text-4xl font-bold gradient-text text-glow">{r.melhor_nota}</p>
+                    <p className="mt-2 text-2xl md:text-4xl font-bold gradient-text text-glow font-display">{r.melhor_nota}</p>
                     <p className="text-[10px] md:text-xs text-muted-foreground">/1000</p>
                   </Card>
                 );
+
               })}
             </div>
 
