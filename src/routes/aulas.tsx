@@ -253,15 +253,13 @@ function Aulas() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <section className="mx-auto max-w-7xl px-4 py-12">
-        <Badge variant="outline" className="border-primary/40 text-primary">
-          <Sparkles className="mr-1 h-3 w-3" /> Conteúdo focado em aprovação
-        </Badge>
-        <h1 className="mt-3 text-3xl font-bold md:text-5xl">
+        <h1 className="text-3xl font-bold md:text-5xl font-display">
           Vídeo aulas <span className="gradient-text">Nota 1000 ENEM</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           <span className="font-semibold text-primary">Aula nova toda semana</span> (em cada matéria) até o dia da prova.
         </p>
+
 
         <div className="mt-10 space-y-14">
           {[...trilhas]
