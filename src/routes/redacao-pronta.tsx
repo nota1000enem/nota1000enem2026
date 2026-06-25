@@ -56,7 +56,7 @@ function RedacaoProntaPage() {
           </p>
         </div>
 
-        <Card className="card-glass mt-10 overflow-hidden p-0">
+        <Card className="card-glass card-gradient-border mt-10 overflow-hidden p-0">
           {loading ? (
             <div className="flex h-96 items-center justify-center text-muted-foreground">
               Carregando…
@@ -105,7 +105,7 @@ function RedacaoProntaPage() {
               </p>
             </div>
             {MODELOS_EXTRAS.map((m, i) => (
-              <Card key={i} className="card-glass overflow-hidden p-0">
+              <Card key={i} className="card-glass card-gradient-border overflow-hidden p-0">
                 <img src={m.src} alt={m.alt} className="h-auto w-full" loading="lazy" />
               </Card>
             ))}
