@@ -707,6 +707,8 @@ function Index() {
                 cta: "Quero Acesso Total",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "60 redações por mês",
                   "Tudo do Pro",
                   "Redação completa",
