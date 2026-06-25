@@ -4,20 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -62,26 +48,27 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  /* Nota 1000 ENEM — dark premium SaaS (azul / ciano / roxo) */
-  --background: oklch(0.13 0.025 260);
+  --radius: 0.95rem;
+  /* Nota 1000 ENEM — dark tech (azul / ciano / roxo / magenta) */
+  --background: oklch(0.12 0.028 262);
   --foreground: oklch(0.985 0.005 250);
-  --card: oklch(0.185 0.03 262);
+  --card: oklch(0.18 0.03 262);
   --card-foreground: oklch(0.985 0.005 250);
   --popover: oklch(0.17 0.03 262);
   --popover-foreground: oklch(0.985 0.005 250);
   --primary: oklch(0.72 0.22 235);
   --primary-foreground: oklch(0.1 0.02 250);
-  --secondary: oklch(0.23 0.04 262);
+  --secondary: oklch(0.22 0.04 262);
   --secondary-foreground: oklch(0.985 0.005 250);
-  --muted: oklch(0.22 0.035 262);
+  --muted: oklch(0.21 0.035 262);
   --muted-foreground: oklch(0.72 0.025 250);
-  --accent: oklch(0.7 0.2 215); /* ciano */
+  --accent: oklch(0.7 0.2 215);
   --accent-foreground: oklch(0.1 0.02 250);
   --destructive: oklch(0.62 0.24 25);
   --destructive-foreground: oklch(0.985 0.005 250);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
+  /* Bordas quase invisíveis para não "marcar" boxes — só ficam realçadas no hover/popular */
+  --border: oklch(1 0 0 / 3%);
+  --input: oklch(1 0 0 / 8%);
   --ring: oklch(0.72 0.22 235);
   --chart-1: oklch(0.72 0.22 235);
   --chart-2: oklch(0.7 0.2 215);
@@ -92,52 +79,41 @@
   --sidebar-foreground: oklch(0.985 0.005 250);
   --sidebar-primary: oklch(0.72 0.22 235);
   --sidebar-primary-foreground: oklch(0.1 0.02 250);
-  --sidebar-accent: oklch(0.23 0.04 262);
+  --sidebar-accent: oklch(0.22 0.04 262);
   --sidebar-accent-foreground: oklch(0.985 0.005 250);
-  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-border: oklch(1 0 0 / 3%);
   --sidebar-ring: oklch(0.72 0.22 235);
 
   /* Brand tokens */
   --brand-blue: oklch(0.72 0.22 235);
   --brand-cyan: oklch(0.78 0.18 210);
   --brand-purple: oklch(0.65 0.25 295);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --brand-magenta: oklch(0.68 0.27 330);
+
+  --font-display: "Sora", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Outfit", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
+  --background: oklch(0.12 0.028 262);
   --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
+  --card: oklch(0.18 0.03 262);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
+  --primary: oklch(0.72 0.22 235);
+  --primary-foreground: oklch(0.1 0.02 250);
+  --secondary: oklch(0.22 0.04 262);
   --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
+  --muted: oklch(0.21 0.035 262);
+  --muted-foreground: oklch(0.72 0.025 250);
+  --accent: oklch(0.7 0.2 215);
+  --accent-foreground: oklch(0.1 0.02 250);
+  --destructive: oklch(0.62 0.24 25);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --border: oklch(1 0 0 / 3%);
+  --input: oklch(1 0 0 / 8%);
+  --ring: oklch(0.72 0.22 235);
 }
 
 @layer base {
@@ -146,31 +122,63 @@
   }
 
   html {
-    background:
-      radial-gradient(1200px 600px at 10% -10%, oklch(0.72 0.22 235 / 0.10), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, oklch(0.65 0.25 295 / 0.08), transparent 60%),
-      var(--color-background);
+    background: var(--color-background);
   }
 
   body {
     background: transparent;
     color: var(--color-foreground);
     font-family: var(--font-body);
-    font-feature-settings: "cv11", "ss01", "ss03";
+    font-feature-settings: "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    position: relative;
+    overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, .font-display {
+  /* ===== BACKGROUND TECH GLOBAL — grade animada (em todo o site) ===== */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -2px;
+    z-index: -2;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, oklch(1 0 0 / 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 30%, transparent 90%);
+    animation: grid-drift 28s linear infinite;
+  }
+
+  /* ===== AURORA multicor flutuante (orbe gradiente em movimento, troca de cores) ===== */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: -25%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(35% 30% at 18% 22%, oklch(0.72 0.22 235 / 0.30), transparent 65%),
+      radial-gradient(30% 30% at 80% 18%, oklch(0.65 0.25 295 / 0.28), transparent 65%),
+      radial-gradient(35% 32% at 70% 85%, oklch(0.78 0.18 210 / 0.24), transparent 65%),
+      radial-gradient(28% 26% at 25% 78%, oklch(0.68 0.27 330 / 0.22), transparent 65%);
+    filter: blur(40px);
+    animation: aurora-shift 22s ease-in-out infinite alternate, hue-cycle 18s linear infinite;
+  }
+
+  h1, h2, h3, h4, h5, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
   h1 { font-weight: 700; }
 }
 
-/* ============ Nota 1000 ENEM — utilities premium ============ */
+/* ============ Utilities premium ============ */
 
 .glow-blue {
+  position: relative;
+  overflow: hidden;
   box-shadow:
     0 0 0 1px oklch(0.72 0.22 235 / 0.35) inset,
     0 8px 24px -8px oklch(0.72 0.22 235 / 0.55),
@@ -186,38 +194,25 @@
     0 0 0 1px oklch(0.65 0.25 295 / 0.35) inset,
     0 8px 30px -10px oklch(0.65 0.25 295 / 0.5);
 }
-
 .text-glow {
   text-shadow: 0 0 24px oklch(0.72 0.22 235 / 0.55);
 }
 
 .gradient-hero {
   position: relative;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.72 0.22 235 / 0.22), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 20%, oklch(0.65 0.25 295 / 0.18), transparent 60%),
-    radial-gradient(ellipse 50% 50% at 10% 100%, oklch(0.78 0.18 210 / 0.14), transparent 60%);
-}
-.gradient-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
 
 .gradient-text {
   background: linear-gradient(90deg,
     oklch(0.82 0.18 215),
     oklch(0.74 0.22 240),
-    oklch(0.68 0.26 290));
+    oklch(0.68 0.26 290),
+    oklch(0.7 0.26 330));
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: gradient-shift 8s ease infinite;
 }
 
 .tech-grid {
@@ -227,22 +222,22 @@
   background-size: 48px 48px;
 }
 
-/* Card premium glass — usado em todos os cards principais */
+/* Card glass — SEM borda branca marcada (sutilíssima) */
 .card-glass {
   position: relative;
   background:
-    linear-gradient(180deg, oklch(0.22 0.035 262 / 0.65), oklch(0.16 0.03 262 / 0.5));
+    linear-gradient(180deg, oklch(0.22 0.035 262 / 0.55), oklch(0.16 0.03 262 / 0.45));
   backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid oklch(1 0 0 / 0.08);
+  border: 1px solid transparent;
   border-radius: var(--radius-xl);
   box-shadow:
-    0 1px 0 0 oklch(1 0 0 / 0.06) inset,
-    0 30px 60px -30px oklch(0 0 0 / 0.6);
+    0 1px 0 0 oklch(1 0 0 / 0.04) inset,
+    0 30px 60px -30px oklch(0 0 0 / 0.55);
   transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
 .card-glass:hover {
   transform: translateY(-2px);
-  border-color: oklch(0.72 0.22 235 / 0.35);
+  border-color: oklch(0.72 0.22 235 / 0.45);
   box-shadow:
     0 1px 0 0 oklch(1 0 0 / 0.08) inset,
     0 0 0 1px oklch(0.72 0.22 235 / 0.18),
@@ -258,13 +253,52 @@
   opacity: 0.8;
 }
 
-/* Mockup flutuante para imagens do hero */
+/* Borda gradiente "vivo" em volta de cards — usar com classe extra */
+.card-gradient-border {
+  position: relative;
+}
+.card-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg,
+    oklch(0.78 0.18 210),
+    oklch(0.72 0.22 235),
+    oklch(0.65 0.25 295),
+    oklch(0.7 0.26 330));
+  background-size: 250% 250%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  animation: gradient-shift 10s ease infinite;
+}
+
+/* Linha gradiente divisória (ponta a ponta) */
+.divider-gradient {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    oklch(0.78 0.18 210 / 0.6),
+    oklch(0.72 0.22 235 / 0.9),
+    oklch(0.65 0.25 295 / 0.6),
+    transparent);
+  background-size: 200% 100%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* Mockup flutuante */
 .mockup-frame {
   position: relative;
   border-radius: 1.25rem;
   padding: 0.5rem;
-  background: linear-gradient(180deg, oklch(0.25 0.04 262 / 0.7), oklch(0.16 0.03 262 / 0.5));
-  border: 1px solid oklch(1 0 0 / 0.1);
+  background: linear-gradient(180deg, oklch(0.25 0.04 262 / 0.6), oklch(0.16 0.03 262 / 0.45));
+  border: 1px solid oklch(1 0 0 / 0.05);
   box-shadow:
     0 30px 80px -30px oklch(0.72 0.22 235 / 0.45),
     0 0 0 1px oklch(0.72 0.22 235 / 0.12);
@@ -282,13 +316,47 @@
   z-index: -1;
 }
 
-/* Botão com brilho discreto no hover (aplica em qualquer Button) */
-.glow-blue,
-button.glow-blue,
-a .glow-blue {
-  position: relative;
-  overflow: hidden;
+/* Botões com gradiente multicolor LENTO (efeito "vontade de clicar") */
+.btn-gradient-primary {
+  background: linear-gradient(120deg,
+    oklch(0.78 0.18 210),
+    oklch(0.72 0.22 235),
+    oklch(0.65 0.25 295),
+    oklch(0.72 0.22 235),
+    oklch(0.78 0.18 210));
+  background-size: 300% 300%;
+  color: white;
+  border: none;
+  animation: gradient-shift 14s ease infinite;
+  box-shadow:
+    0 10px 28px -10px oklch(0.72 0.22 235 / 0.6),
+    0 0 0 1px oklch(0.72 0.22 235 / 0.4) inset;
 }
+.btn-gradient-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-gradient-hot {
+  background: linear-gradient(120deg,
+    oklch(0.78 0.22 35),
+    oklch(0.7 0.27 25),
+    oklch(0.68 0.27 330),
+    oklch(0.72 0.22 235),
+    oklch(0.78 0.22 35));
+  background-size: 300% 300%;
+  color: white;
+  border: none;
+  animation: gradient-shift 14s ease infinite;
+  box-shadow:
+    0 12px 30px -10px oklch(0.7 0.27 25 / 0.6),
+    0 0 0 1px oklch(0.78 0.22 35 / 0.55) inset;
+}
+.btn-gradient-hot:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
 .glow-blue::after {
   content: "";
   position: absolute;
@@ -300,7 +368,24 @@ a .glow-blue {
 }
 .glow-blue:hover::after { transform: translateX(120%); }
 
-/* Animações */
+/* ===== Scroll reveal global ===== */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, transform;
+}
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Aplica reveal automaticamente em cards (sem precisar editar JSX) */
+.card-glass {
+  opacity: var(--reveal-op, 1);
+}
+
+/* ===== Animações ===== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -308,8 +393,25 @@ a .glow-blue {
 .animate-float { animation: float 6s ease-in-out infinite; }
 
 @keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes grid-drift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 56px 56px, 56px 56px; }
+}
+
+@keyframes aurora-shift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(3%, -2%, 0) scale(1.08); }
+  100% { transform: translate3d(-2%, 3%, 0) scale(1.04); }
+}
+
+@keyframes hue-cycle {
+  0%   { filter: blur(40px) hue-rotate(0deg); }
+  100% { filter: blur(40px) hue-rotate(360deg); }
 }
 
 @keyframes pulse-glow {
@@ -318,3 +420,7 @@ a .glow-blue {
 }
 .animate-pulse-glow { animation: pulse-glow 2.4s ease-in-out infinite; }
 
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none !important; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
