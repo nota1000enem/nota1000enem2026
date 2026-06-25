@@ -118,6 +118,8 @@ const planos: Array<{
     popular: false,
     upgrade: true,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "15 redações por mês",
       "Linguagens, Códigos e suas Tecnologias",
       "Ciências da Natureza e suas Tecnologias",
@@ -140,6 +142,8 @@ const planos: Array<{
     popular: true,
     upgrade: true,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "30 redações por mês",
       "Tudo do Light",
       "Ciências Humanas e suas Tecnologias",
@@ -166,6 +170,8 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "60 redações por mês",
       "Tudo do Pro",
       "Redação completa",
@@ -194,6 +200,8 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "Acesso ETERNO — sem mensalidade",
       "70 redações por mês (renova a cada 30 dias)",
       "Tudo do Full Acess",
