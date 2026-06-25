@@ -236,38 +236,41 @@ function Index() {
         </div>
 
 
-        {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
-        <div className="mx-auto max-w-7xl px-4 pb-16">
-          <div className="rounded-2xl border border-primary/20 bg-card/40 p-6 backdrop-blur">
-            <div className="mx-auto flex max-w-md flex-col gap-2">
-              {[
-                "Matemática e suas Tecnologias",
-                "Linguagens, Códigos e suas Tecnologias",
-                "Ciências Humanas e suas Tecnologias",
-                "Ciências da Natureza e suas Tecnologias",
-                "Redação",
-                "+ 1.000 questões em VÍDEO",
-              ].map((t) => (
-                <Badge
-                  key={t}
-                  variant="outline"
-                  className="w-full justify-center rounded-full border-primary/40 bg-primary/5 px-4 py-2 text-center text-sm font-medium text-primary"
-                >
+        {/* Faixa de áreas + AULA NOVA — agora em linhas gradiente, mais tech */}
+        <div className="mx-auto max-w-5xl px-4 pb-16">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
+            Trilhas do ENEM
+          </p>
+          <ul className="mt-6 mx-auto max-w-2xl divide-y divide-transparent">
+            {[
+              "Matemática e suas Tecnologias",
+              "Linguagens, Códigos e suas Tecnologias",
+              "Ciências Humanas e suas Tecnologias",
+              "Ciências da Natureza e suas Tecnologias",
+              "Redação",
+              "+ 1.000 questões em VÍDEO",
+            ].map((t, i, arr) => (
+              <li key={t} data-reveal>
+                <div className="py-4 text-center text-base font-medium text-foreground md:text-lg">
                   {t}
-                </Badge>
-              ))}
-            </div>
-            <p className="mx-auto mt-4 max-w-4xl text-center text-sm text-muted-foreground">
-              <span className="font-semibold text-primary">AULA NOVA TODA SEMANA</span> — Estude
-              todas as áreas do ENEM com correções inteligentes, trilhas personalizadas e foco na
-              nota 1000. Tudo em um só lugar. Tenha acesso a tudo{" "}
-              <span className="font-semibold text-foreground">AQUI e AGORA</span>. O sonho da{" "}
-              <span className="gradient-text font-semibold">NOTA 1.000</span> e da Universidade está
-              mais próximo.
+                </div>
+                {i < arr.length - 1 && <div className="divider-gradient" />}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 text-center" data-reveal>
+            <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary ring-1 ring-primary/30">
+              ✦ Aula nova toda semana
+            </span>
+            <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground md:text-base">
+              Estude todas as áreas do ENEM com correções inteligentes, trilhas
+              personalizadas e foco na <span className="gradient-text font-semibold">nota 1.000</span>.
+              Tudo em um só lugar — <span className="font-semibold text-foreground">AQUI e AGORA</span>.
             </p>
           </div>
         </div>
       </section>
+
 
       {/* COMO FUNCIONA */}
       <section className="border-t border-border/40 py-20">
