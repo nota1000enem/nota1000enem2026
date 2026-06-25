@@ -736,6 +736,8 @@ function Index() {
                 cta: "Quero Vitalício",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "Acesso ETERNO — sem mensalidade",
                   "70 redações por mês",
                   "Tudo do Full Acess",
