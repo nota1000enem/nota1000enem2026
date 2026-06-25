@@ -273,7 +273,7 @@ function Index() {
 
 
       {/* COMO FUNCIONA */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
@@ -318,7 +318,7 @@ function Index() {
       </section>
 
       {/* APROVADOS / CHECKLIST DE BENEFÍCIOS */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Resultados
@@ -361,7 +361,7 @@ function Index() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">
@@ -394,7 +394,7 @@ function Index() {
       </section>
 
       {/* TOP NOTAS DA SEMANA */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
@@ -474,7 +474,7 @@ function Index() {
       </section>
 
       {/* DEPOIMENTOS (antes dos planos) */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Provas sociais</Badge>
@@ -630,7 +630,7 @@ function Index() {
       </section>
 
       {/* PLANOS */}
-      <section id="planos" className="border-t border-border/40 py-20">
+      <section id="planos" className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
@@ -821,7 +821,7 @@ function Index() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
