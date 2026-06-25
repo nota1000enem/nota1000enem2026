@@ -657,6 +657,8 @@ function Index() {
                 cta: "Começar Agora",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "15 redações por mês",
                   "Linguagens, Códigos e suas Tecnologias",
                   "Ciências da Natureza e suas Tecnologias",
