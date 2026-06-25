@@ -680,6 +680,8 @@ function Index() {
                 cta: "Quero o Pro",
                 popular: true,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "30 redações por mês",
                   "Tudo do Light",
                   "Ciências Humanas e suas Tecnologias",
