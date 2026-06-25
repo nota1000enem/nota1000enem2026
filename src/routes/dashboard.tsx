@@ -196,44 +196,54 @@ function Dashboard() {
 
         <WeeklyRetentionSummary userId={user?.id} />
 
-        {/* Redação */}
-        <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground">Redação</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="card-glass p-6">
-            <FileText className="h-5 w-5 text-primary" />
-            <p className="mt-3 text-sm text-muted-foreground">Redações corrigidas</p>
-            <p className="mt-1 text-3xl font-bold">{redacoes.length}</p>
-          </Card>
-          <Card className="card-glass p-6">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <p className="mt-3 text-sm text-muted-foreground">Nota média</p>
-            <p className="mt-1 text-3xl font-bold gradient-text">{media}</p>
-          </Card>
-          <Card className="card-glass p-6">
-            <Trophy className="h-5 w-5 text-primary" />
-            <p className="mt-3 text-sm text-muted-foreground">Melhor nota</p>
-            <p className="mt-1 text-3xl font-bold gradient-text">{melhor}</p>
-          </Card>
-        </div>
+        {/* Redação — bloco único com 3 métricas */}
+        <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <FileText className="h-4 w-4 text-primary" /> Redação
+        </h2>
+        <Card className="card-glass card-gradient-border p-0 overflow-hidden">
+          <div className="grid grid-cols-3 divide-x divide-white/5">
+            <div className="p-5 md:p-6">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                <FileText className="h-3.5 w-3.5 text-primary" /> Corrigidas
+              </div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold font-display">{redacoes.length}</p>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                <TrendingUp className="h-3.5 w-3.5 text-primary" /> Nota média
+              </div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text font-display">{media}</p>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                <Trophy className="h-3.5 w-3.5 text-primary" /> Melhor nota
+              </div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text font-display">{melhor}</p>
+            </div>
+          </div>
+        </Card>
 
-        {/* Simulados */}
+        {/* Simulados — bloco único com 3 métricas */}
         <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
           <GraduationCap className="h-4 w-4 text-primary" /> Simulados
         </h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="card-glass p-6">
-            <p className="text-sm text-muted-foreground">Simulados feitos</p>
-            <p className="mt-1 text-3xl font-bold">{tentativas.length}</p>
-          </Card>
-          <Card className="card-glass p-6">
-            <p className="text-sm text-muted-foreground">Nota média</p>
-            <p className="mt-1 text-3xl font-bold gradient-text">{mediaSim}</p>
-          </Card>
-          <Card className="card-glass p-6">
-            <p className="text-sm text-muted-foreground">Melhor nota</p>
-            <p className="mt-1 text-3xl font-bold gradient-text">{melhorSim}</p>
-          </Card>
-        </div>
+        <Card className="card-glass card-gradient-border p-0 overflow-hidden">
+          <div className="grid grid-cols-3 divide-x divide-white/5">
+            <div className="p-5 md:p-6">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">Feitos</div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold font-display">{tentativas.length}</p>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">Nota média</div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text font-display">{mediaSim}</p>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">Melhor nota</div>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text font-display">{melhorSim}</p>
+            </div>
+          </div>
+        </Card>
+
 
         {/* Plano de estudo atual */}
         <h2 className="mt-10 mb-3 text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
