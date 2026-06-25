@@ -208,6 +208,38 @@ function RootComponent() {
     return () => unsub();
   }, [router]);
 
+  // Scroll reveal global: aplica fade-in-up em qualquer .card-glass e [data-reveal]
+  // ao entrar no viewport. Roda em cada navegação SPA também.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const apply = () => {
+      const els = document.querySelectorAll<HTMLElement>(".card-glass, [data-reveal]");
+      els.forEach((el) => {
+        if (!el.hasAttribute("data-reveal")) el.setAttribute("data-reveal", "");
+      });
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-revealed");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      );
+      els.forEach((el) => io.observe(el));
+      return io;
+    };
+    let io = apply();
+    const unsub = router.subscribe("onResolved", () => {
+      io.disconnect();
+      // pequeno delay para o DOM atualizar
+      setTimeout(() => { io = apply(); }, 50);
+    });
+    return () => { io.disconnect(); unsub(); };
+  }, [router]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <main id="main-content">
