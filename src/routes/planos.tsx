@@ -118,6 +118,8 @@ const planos: Array<{
     popular: false,
     upgrade: true,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "15 redações por mês",
       "Linguagens, Códigos e suas Tecnologias",
       "Ciências da Natureza e suas Tecnologias",
@@ -140,6 +142,8 @@ const planos: Array<{
     popular: true,
     upgrade: true,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "30 redações por mês",
       "Tudo do Light",
       "Ciências Humanas e suas Tecnologias",
@@ -166,6 +170,8 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "60 redações por mês",
       "Tudo do Pro",
       "Redação completa",
@@ -194,6 +200,8 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "10 redações nota 1000 prontas",
+      "+ 50 BÔNUS incluso",
       "Acesso ETERNO — sem mensalidade",
       "70 redações por mês (renova a cada 30 dias)",
       "Tudo do Full Acess",
@@ -368,14 +376,14 @@ function Planos() {
   const renderCard = (p: typeof planos[number]) => (
     <Card
       key={p.name}
-      className={`relative h-full p-6 ${p.popular ? "card-glass border-primary/50 glow-blue pt-9" : "card-glass"}`}
+      className={`relative flex h-full flex-col p-6 card-glass ${p.popular ? "card-gradient-border pt-9 glow-blue" : ""}`}
     >
       {p.popular && (
-        <Badge className="absolute top-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
+        <Badge className="absolute top-2 left-1/2 -translate-x-1/2 btn-gradient-hot text-white shadow-md">
           MAIS VENDIDO
         </Badge>
       )}
-      <h3 className="text-xl font-bold">{p.name}</h3>
+      <h3 className="text-xl font-bold font-display">{p.name}</h3>
       <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
       {p.oldPrice && promo.active && (
         <div className="mt-3 flex items-center gap-2">
@@ -387,17 +395,29 @@ function Planos() {
       )}
       <div className="mt-2 flex items-baseline gap-1">
         <span className="text-sm text-muted-foreground">R$</span>
-        <span className="text-5xl font-bold">{p.price}</span>
+        <span className="text-5xl font-bold font-display">{p.price}</span>
         <span className="text-sm text-muted-foreground">{p.periodo}</span>
       </div>
+      <ul className="mt-6 flex-1 space-y-2 text-sm">
+        {p.items.map((it) => (
+          <li key={it} className="flex items-start gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {it}
+          </li>
+        ))}
+      </ul>
+      {p.upgrade && (
+        <p className="mt-4 text-center text-xs text-primary">
+          ↗ Upgrade disponível a qualquer momento
+        </p>
+      )}
       <Button
         onClick={() => handleCheckout(p.planType, p.name)}
         disabled={loadingPlan !== null}
         size="lg"
         className={
           p.popular
-            ? "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base animate-pulse bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 font-extrabold uppercase tracking-wide text-white shadow-xl shadow-orange-500/50 ring-2 ring-amber-300 hover:scale-[1.03] hover:from-amber-300 hover:to-rose-400 transition-all"
-            : "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
+            ? "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base btn-gradient-hot font-extrabold uppercase tracking-wide"
+            : "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base btn-gradient-primary font-bold"
         }
       >
         {loadingPlan === p.planType ? (
@@ -410,20 +430,9 @@ function Planos() {
           <>Assinar {p.name} →</>
         )}
       </Button>
-      {p.upgrade && (
-        <p className="mt-2 text-center text-xs text-primary">
-          ↗ Upgrade disponível a qualquer momento
-        </p>
-      )}
-      <ul className="mt-6 space-y-2 text-sm">
-        {p.items.map((it) => (
-          <li key={it} className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {it}
-          </li>
-        ))}
-      </ul>
     </Card>
   );
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -492,16 +501,13 @@ function Planos() {
         </p>
 
         {/* Destaque NÃO PRECISA CARTÃO DE CRÉDITO */}
-        <div className="mx-auto mt-6 max-w-2xl rounded-2xl border-2 border-primary/50 bg-primary/10 p-5 shadow-lg shadow-primary/20">
+        <div className="mx-auto mt-6 max-w-2xl rounded-2xl bg-primary/10 p-5 shadow-lg shadow-primary/20 card-gradient-border">
           <div className="flex items-center justify-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-primary" />
-            <p className="text-xl font-bold text-primary md:text-2xl">NÃO PRECISA CARTÃO DE CRÉDITO</p>
+            <p className="text-xl font-bold text-primary md:text-2xl font-display">NÃO PRECISA CARTÃO DE CRÉDITO</p>
           </div>
-          <p className="mt-2 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            Pague com Pix, boleto ou cartão — comece a estudar agora mesmo sem complicação.
-          </p>
         </div>
+
 
         {promo.active && (
           <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-center">

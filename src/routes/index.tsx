@@ -236,41 +236,44 @@ function Index() {
         </div>
 
 
-        {/* Faixa de áreas + AULA NOVA — abaixo do hero para evitar bagunça */}
-        <div className="mx-auto max-w-7xl px-4 pb-16">
-          <div className="rounded-2xl border border-primary/20 bg-card/40 p-6 backdrop-blur">
-            <div className="mx-auto flex max-w-md flex-col gap-2">
-              {[
-                "Matemática e suas Tecnologias",
-                "Linguagens, Códigos e suas Tecnologias",
-                "Ciências Humanas e suas Tecnologias",
-                "Ciências da Natureza e suas Tecnologias",
-                "Redação",
-                "+ 1.000 questões em VÍDEO",
-              ].map((t) => (
-                <Badge
-                  key={t}
-                  variant="outline"
-                  className="w-full justify-center rounded-full border-primary/40 bg-primary/5 px-4 py-2 text-center text-sm font-medium text-primary"
-                >
+        {/* Faixa de áreas + AULA NOVA — agora em linhas gradiente, mais tech */}
+        <div className="mx-auto max-w-5xl px-4 pb-16">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
+            Trilhas do ENEM
+          </p>
+          <ul className="mt-6 mx-auto max-w-2xl divide-y divide-transparent">
+            {[
+              "Matemática e suas Tecnologias",
+              "Linguagens, Códigos e suas Tecnologias",
+              "Ciências Humanas e suas Tecnologias",
+              "Ciências da Natureza e suas Tecnologias",
+              "Redação",
+              "+ 1.000 questões em VÍDEO",
+            ].map((t, i, arr) => (
+              <li key={t} data-reveal>
+                <div className="py-4 text-center text-base font-medium text-foreground md:text-lg">
                   {t}
-                </Badge>
-              ))}
-            </div>
-            <p className="mx-auto mt-4 max-w-4xl text-center text-sm text-muted-foreground">
-              <span className="font-semibold text-primary">AULA NOVA TODA SEMANA</span> — Estude
-              todas as áreas do ENEM com correções inteligentes, trilhas personalizadas e foco na
-              nota 1000. Tudo em um só lugar. Tenha acesso a tudo{" "}
-              <span className="font-semibold text-foreground">AQUI e AGORA</span>. O sonho da{" "}
-              <span className="gradient-text font-semibold">NOTA 1.000</span> e da Universidade está
-              mais próximo.
+                </div>
+                {i < arr.length - 1 && <div className="divider-gradient" />}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 text-center" data-reveal>
+            <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary ring-1 ring-primary/30">
+              ✦ Aula nova toda semana
+            </span>
+            <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground md:text-base">
+              Estude todas as áreas do ENEM com correções inteligentes, trilhas
+              personalizadas e foco na <span className="gradient-text font-semibold">nota 1.000</span>.
+              Tudo em um só lugar — <span className="font-semibold text-foreground">AQUI e AGORA</span>.
             </p>
           </div>
         </div>
       </section>
 
+
       {/* COMO FUNCIONA */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
@@ -315,7 +318,7 @@ function Index() {
       </section>
 
       {/* APROVADOS / CHECKLIST DE BENEFÍCIOS */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Resultados
@@ -358,7 +361,7 @@ function Index() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">
@@ -391,7 +394,7 @@ function Index() {
       </section>
 
       {/* TOP NOTAS DA SEMANA */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
@@ -471,7 +474,7 @@ function Index() {
       </section>
 
       {/* DEPOIMENTOS (antes dos planos) */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Provas sociais</Badge>
@@ -627,7 +630,7 @@ function Index() {
       </section>
 
       {/* PLANOS */}
-      <section id="planos" className="border-t border-border/40 py-20">
+      <section id="planos" className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
@@ -654,6 +657,8 @@ function Index() {
                 cta: "Começar Agora",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "15 redações por mês",
                   "Linguagens, Códigos e suas Tecnologias",
                   "Ciências da Natureza e suas Tecnologias",
@@ -675,6 +680,8 @@ function Index() {
                 cta: "Quero o Pro",
                 popular: true,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "30 redações por mês",
                   "Tudo do Light",
                   "Ciências Humanas e suas Tecnologias",
@@ -700,6 +707,8 @@ function Index() {
                 cta: "Quero Acesso Total",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "60 redações por mês",
                   "Tudo do Pro",
                   "Redação completa",
@@ -727,6 +736,8 @@ function Index() {
                 cta: "Quero Vitalício",
                 popular: false,
                 items: [
+                  "10 redações nota 1000 prontas",
+                  "+ 50 BÔNUS incluso",
                   "Acesso ETERNO — sem mensalidade",
                   "70 redações por mês",
                   "Tudo do Full Acess",
@@ -743,14 +754,14 @@ function Index() {
             const renderCard = (p: typeof planosArr[number]) => (
               <Card
                 key={p.name}
-                className={`relative h-full p-6 ${p.popular ? "card-glass border-primary/50 glow-blue pt-9" : "card-glass"}`}
+                className={`relative flex h-full flex-col p-6 card-glass ${p.popular ? "card-gradient-border pt-9 glow-blue" : ""}`}
               >
                 {p.popular && (
-                  <Badge className="absolute top-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
+                  <Badge className="absolute top-2 left-1/2 -translate-x-1/2 btn-gradient-hot text-white shadow-md">
                     MAIS VENDIDO
                   </Badge>
                 )}
-                <h3 className="text-xl font-bold">{p.name}</h3>
+                <h3 className="text-xl font-bold font-display">{p.name}</h3>
                 {p.oldPrice && promo.active && (
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-sm text-muted-foreground line-through">R$ {p.oldPrice}</span>
@@ -759,10 +770,10 @@ function Index() {
                 )}
                 <div className="mt-1 flex items-baseline gap-1">
                   <span className="text-sm text-muted-foreground">R$</span>
-                  <span className="text-4xl font-bold">{p.price}</span>
+                  <span className="text-4xl font-bold font-display">{p.price}</span>
                   <span className="text-sm text-muted-foreground">{p.periodo}</span>
                 </div>
-                <ul className="mt-6 space-y-2 text-sm">
+                <ul className="mt-6 flex-1 space-y-2 text-sm">
                   {p.items.map((it) => (
                     <li key={it} className="flex items-start gap-2">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {it}
@@ -775,8 +786,8 @@ function Index() {
                   size="lg"
                   className={
                     p.popular
-                      ? "mt-6 w-full animate-pulse bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 font-extrabold uppercase tracking-wide text-white shadow-xl shadow-orange-500/50 ring-2 ring-amber-300 hover:scale-[1.03] hover:from-amber-300 hover:to-rose-400 transition-all"
-                      : "mt-6 w-full bg-gradient-to-r from-primary to-primary/80 font-bold text-primary-foreground shadow-lg shadow-primary/40 ring-1 ring-primary/60 hover:from-primary hover:to-primary hover:shadow-primary/60 hover:scale-[1.02] transition-all"
+                      ? "mt-6 w-full btn-gradient-hot font-extrabold uppercase tracking-wide"
+                      : "mt-6 w-full btn-gradient-primary font-bold"
                   }
                 >
                   {loadingPlan === p.planType ? (
@@ -818,7 +829,7 @@ function Index() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="border-t border-border/40 py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
