@@ -282,7 +282,7 @@ function Aulas() {
                         <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                           <Card
                             onClick={() => handleClick(a.t, tr.area)}
-                            className="card-glass h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1 hover:glow-blue"
+                            className="card-glass card-gradient-border h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1"
                           >
                             <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${tr.cor}`}>
                               <img
@@ -299,8 +299,8 @@ function Aulas() {
                               </div>
                               {!liberada && (
                                 <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
-                                  <div className="grid h-14 w-14 place-content-center rounded-full bg-background/80 ring-2 ring-primary/40">
-                                    <Lock className="h-7 w-7 text-primary" />
+                                  <div className="relative grid h-16 w-16 place-content-center rounded-full btn-gradient-primary shadow-xl">
+                                    <Lock className="h-7 w-7 text-white" />
                                   </div>
                                 </div>
                               )}
@@ -312,11 +312,12 @@ function Aulas() {
                               </span>
                             </div>
                             <div className="p-4">
-                              <h3 className="line-clamp-2 text-sm font-medium">{a.t}</h3>
+                              <h3 className="line-clamp-2 text-sm font-medium font-display">{a.t}</h3>
                               <p className="mt-1 text-xs text-muted-foreground">{formatDuration(a.min)}</p>
                             </div>
                           </Card>
                         </CarouselItem>
+
                       );
                     })}
                   </CarouselContent>
