@@ -68,9 +68,9 @@ function RankingPage() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/redacao"><Button className="glow-blue"><Trophy className="mr-1 h-4 w-4" /> Entrar no Ranking</Button></Link>
-          <Link to="/perfil"><Button variant="outline">Adicionar foto/estado/idade</Button></Link>
+          <Link to="/redacao"><Button className="btn-gradient-primary"><Trophy className="mr-1 h-4 w-4" /> Entrar no Ranking</Button></Link>
         </div>
+
 
         {loading ? (
           <p className="mt-10 text-sm text-muted-foreground">Carregando ranking...</p>
