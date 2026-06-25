@@ -492,16 +492,13 @@ function Planos() {
         </p>
 
         {/* Destaque NÃO PRECISA CARTÃO DE CRÉDITO */}
-        <div className="mx-auto mt-6 max-w-2xl rounded-2xl border-2 border-primary/50 bg-primary/10 p-5 shadow-lg shadow-primary/20">
+        <div className="mx-auto mt-6 max-w-2xl rounded-2xl bg-primary/10 p-5 shadow-lg shadow-primary/20 card-gradient-border">
           <div className="flex items-center justify-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-primary" />
-            <p className="text-xl font-bold text-primary md:text-2xl">NÃO PRECISA CARTÃO DE CRÉDITO</p>
+            <p className="text-xl font-bold text-primary md:text-2xl font-display">NÃO PRECISA CARTÃO DE CRÉDITO</p>
           </div>
-          <p className="mt-2 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            Pague com Pix, boleto ou cartão — comece a estudar agora mesmo sem complicação.
-          </p>
         </div>
+
 
         {promo.active && (
           <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-center">
