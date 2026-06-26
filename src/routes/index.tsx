@@ -706,7 +706,7 @@ function Index() {
                 ],
               },
               {
-                name: "Full Acess ENEM",
+                name: "Full Access ENEM",
                 planType: "FULL" as PlanType,
                 price: "44,90",
                 oldPrice: "99,90",
@@ -735,7 +735,7 @@ function Index() {
                 ],
               },
               {
-                name: "Full Acess ENEM Vitalício",
+                name: "Full Access ENEM Vitalício",
                 planType: "VITALICIO" as PlanType,
                 price: "499",
                 oldPrice: null,
@@ -747,7 +747,7 @@ function Index() {
                   "+ 50 BÔNUS incluso",
                   "Acesso ETERNO — sem mensalidade",
                   "70 redações por mês",
-                  "Tudo do Full Acess",
+                  "Tudo do Full Access",
                   "Redação completa",
                   "BÔNUS — 9 segredos para aprovação no vestibular",
                   "IA Professor Rígido vitalício",
