@@ -208,8 +208,8 @@ function RootComponent() {
     return () => unsub();
   }, [router]);
 
-  // Scroll reveal global: aplica fade-in-up em qualquer .card-glass e [data-reveal]
-  // ao entrar no viewport. Roda em cada navegação SPA também.
+  // Scroll reveal global — fade-up forte (estilo Cakto). Reanima ao voltar pra
+  // cima e descer de novo. Aplica em .card-glass e qualquer [data-reveal].
   useEffect(() => {
     if (typeof window === "undefined") return;
     const apply = () => {
@@ -222,11 +222,13 @@ function RootComponent() {
           entries.forEach((e) => {
             if (e.isIntersecting) {
               e.target.classList.add("is-revealed");
-              io.unobserve(e.target);
+            } else if (e.boundingClientRect.top > 0) {
+              // só re-esconde quando sair pelo BOTTOM (usuário rolando pra cima)
+              e.target.classList.remove("is-revealed");
             }
           });
         },
-        { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+        { rootMargin: "0px 0px -10% 0px", threshold: [0, 0.15] },
       );
       els.forEach((el) => io.observe(el));
       return io;
@@ -234,8 +236,7 @@ function RootComponent() {
     let io = apply();
     const unsub = router.subscribe("onResolved", () => {
       io.disconnect();
-      // pequeno delay para o DOM atualizar
-      setTimeout(() => { io = apply(); }, 50);
+      setTimeout(() => { io = apply(); }, 80);
     });
     return () => { io.disconnect(); unsub(); };
   }, [router]);

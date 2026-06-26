@@ -134,9 +134,15 @@ function Index() {
       } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida");
-      window.location.href = res.init_point;
+      // Abre o checkout em NOVA ABA e mantém o usuário no site principal.
+      const w = window.open(res.init_point, "_blank", "noopener,noreferrer");
+      if (!w) {
+        // Popup bloqueado — fallback para navegação na mesma aba.
+        window.location.href = res.init_point;
+      }
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "Não foi possível abrir o checkout.");
+    } finally {
       setLoadingPlan(null);
       checkoutInFlightRef.current = null;
     }
@@ -167,16 +173,16 @@ function Index() {
               <Sparkles className="mr-1 h-3 w-3" /> IA treinada nas competências do ENEM
             </Badge>
             <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Descubra sua nota do ENEM em segundos com{" "}
-              <span className="gradient-text text-glow">NOTA 1000 ENEM 2026</span>
+              Seja aprovado no ENEM, estudando menos de 30 dias com{" "}
+              <span className="gradient-text text-glow">NOTA 1000 ENEM</span>
             </h1>
             <p className="text-lg leading-relaxed text-muted-foreground">
               <span className="block text-xl font-semibold text-foreground">
                 Corrija sua redação com IA e descubra onde melhorar.
               </span>
               <span className="mt-3 block">
-                Vídeo aulas, corretor de redação por competência e plano de estudos personalizado —
-                tudo focado na sua aprovação.
+                Palavras-chave, redações prontas, vídeo aulas, corretor de redação por competência
+                e plano de estudos personalizado — tudo focado na sua aprovação.
               </span>
               <span className="mt-3 block">
                 <span className="font-semibold text-primary">TESTE GRÁTIS AGORA.</span>{" "}
@@ -539,7 +545,8 @@ function Index() {
               plugins={[autoplay.current]}
               className="mx-auto max-w-6xl px-12 md:px-16"
             >
-              <CarouselContent>
+              {/* py-4 evita o corte da sombra inferior dos cards de depoimento */}
+              <CarouselContent className="py-4">
                 {[
                   {
                     name: "Isadora Bernardes, 18",
