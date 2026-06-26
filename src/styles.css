@@ -222,7 +222,7 @@
   background-size: 48px 48px;
 }
 
-/* Card glass — SEM borda branca marcada (sutilíssima) */
+/* Card glass — agora com BORDA GRADIENTE permanente (em todos os cards do site) */
 .card-glass {
   position: relative;
   background:
@@ -237,11 +237,10 @@
 }
 .card-glass:hover {
   transform: translateY(-2px);
-  border-color: oklch(0.72 0.22 235 / 0.45);
   box-shadow:
     0 1px 0 0 oklch(1 0 0 / 0.08) inset,
-    0 0 0 1px oklch(0.72 0.22 235 / 0.18),
-    0 30px 70px -25px oklch(0.72 0.22 235 / 0.35);
+    0 0 0 1px oklch(0.72 0.22 235 / 0.22),
+    0 30px 70px -25px oklch(0.72 0.22 235 / 0.45);
 }
 .card-glass::after {
   content: "";
@@ -251,12 +250,12 @@
   pointer-events: none;
   background: radial-gradient(120% 80% at 50% 0%, oklch(0.72 0.22 235 / 0.10), transparent 60%);
   opacity: 0.8;
+  z-index: 0;
 }
 
-/* Borda gradiente "vivo" em volta de cards — usar com classe extra */
-.card-gradient-border {
-  position: relative;
-}
+/* Borda gradiente "viva" agora aplicada em TODOS os .card-glass por padrão.
+   Use .no-card-border para optar por sair (ex.: card do plano Pro). */
+.card-glass::before,
 .card-gradient-border::before {
   content: "";
   position: absolute;
@@ -276,7 +275,14 @@
           mask-composite: exclude;
   pointer-events: none;
   animation: gradient-shift 10s ease infinite;
+  opacity: 0.85;
+  z-index: 1;
 }
+.card-glass:hover::before { opacity: 1; }
+.card-glass.no-card-border::before { display: none; }
+
+/* Garante que o conteúdo do card fique acima das camadas decorativas */
+.card-glass > * { position: relative; z-index: 2; }
 
 /* Linha gradiente divisória (ponta a ponta) */
 .divider-gradient {
@@ -368,21 +374,21 @@
 }
 .glow-blue:hover::after { transform: translateX(120%); }
 
-/* ===== Scroll reveal global ===== */
+/* ===== Scroll reveal global — animação forte (estilo Cakto) =====
+   Estado oculto começa mais baixo e levemente escalado, anima para visível
+   quando .is-revealed é adicionada. Quando rolar pra cima, .is-revealed é
+   removida e o card volta a esconder (reanima na próxima descida). */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
+  transform: translateY(40px) scale(0.97);
+  transition:
+    opacity 0.9s cubic-bezier(.2,.8,.2,1),
+    transform 0.9s cubic-bezier(.2,.8,.2,1);
   will-change: opacity, transform;
 }
 [data-reveal].is-revealed {
   opacity: 1;
-  transform: none;
-}
-
-/* Aplica reveal automaticamente em cards (sem precisar editar JSX) */
-.card-glass {
-  opacity: var(--reveal-op, 1);
+  transform: translateY(0) scale(1);
 }
 
 /* ===== Animações ===== */

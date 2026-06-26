@@ -96,7 +96,7 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
     beneficios: [
       "Acesso ETERNO — sem mensalidade",
       "70 redações por mês (renova a cada 30 dias)",
-      "Tudo do Full Acess",
+      "Tudo do Full Access",
       "Redação completa",
       "BÔNUS — 9 segredos para aprovação no vestibular",
       "Correção IA ilimitada",
