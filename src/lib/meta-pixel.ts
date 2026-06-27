@@ -23,14 +23,23 @@ type StandardEvent =
   | "StartTrial"
   | "Contact";
 
-export function pixelTrack(event: StandardEvent, params?: Record<string, unknown>) {
+export function pixelTrack(
+  event: StandardEvent,
+  params?: Record<string, unknown>,
+  eventID?: string,
+) {
   if (typeof window === "undefined") return;
   try {
-    window.fbq?.("track", event, params ?? {});
+    if (eventID) {
+      window.fbq?.("track", event, params ?? {}, { eventID });
+    } else {
+      window.fbq?.("track", event, params ?? {});
+    }
   } catch {
     // silencioso — pixel é melhor-esforço, nunca quebra a UI
   }
 }
+
 
 export function pixelTrackCustom(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;

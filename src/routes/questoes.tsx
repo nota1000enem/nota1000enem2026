@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, AlertTriangle, BookOpen, Play, Lock, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/questoes")({
   head: () => ({
@@ -34,8 +36,10 @@ type Sim = {
 function QuestoesPage() {
   const navigate = useNavigate();
   const [sims, setSims] = useState<Sim[]>([]);
-  const { isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const { isPaid: planoPago, loading: planLoading, tier } = usePlanAccess();
   const carregado = !planLoading;
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [provaSelecionada, setProvaSelecionada] = useState<string | undefined>();
 
   useEffect(() => {
     (async () => {
@@ -50,11 +54,14 @@ function QuestoesPage() {
 
   function handleProva(id: string) {
     if (!planoPago) {
-      navigate({ to: "/planos" });
+      const sim = sims.find((s) => s.id === id);
+      setProvaSelecionada(sim ? `O simulado "${sim.nome}"` : undefined);
+      setShowUpgrade(true);
       return;
     }
     navigate({ to: "/simulado/$id", params: { id } });
   }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -129,7 +136,14 @@ function QuestoesPage() {
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={provaSelecionada}
+      />
       <Footer />
     </div>
   );
 }
+

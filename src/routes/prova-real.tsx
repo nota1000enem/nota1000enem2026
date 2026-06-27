@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -10,6 +10,8 @@ import { usePlanAccess } from "@/hooks/use-plan-access";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/prova-real")({
   head: () => ({
@@ -62,14 +64,16 @@ const ANOS: Ano[] = [
 ];
 
 function ProvaRealPage() {
-  const { isPaid, loading } = usePlanAccess();
-  const navigate = useNavigate();
+  const { isPaid, loading, tier } = usePlanAccess();
   const fetchUrl = useServerFn(getPremiumPdfUrl);
   const [baixando, setBaixando] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [featureName, setFeatureName] = useState<string | undefined>();
 
   async function baixar(arquivo: string) {
     if (!isPaid) {
-      navigate({ to: "/planos" });
+      setFeatureName(`A prova "${arquivo}"`);
+      setShowUpgrade(true);
       return;
     }
     try {
@@ -82,6 +86,7 @@ function ProvaRealPage() {
       setBaixando(null);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -188,7 +193,14 @@ function ProvaRealPage() {
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={featureName}
+      />
       <Footer />
     </div>
   );
+
 }

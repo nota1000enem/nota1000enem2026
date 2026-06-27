@@ -10,6 +10,8 @@ import { usePlanAccess } from "@/hooks/use-plan-access";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/pdfs")({
   head: () => ({
@@ -39,12 +41,20 @@ const PDFS: Pdf[] = [
 ];
 
 function PdfsPage() {
-  const { isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const { isPaid: planoPago, loading: planLoading, tier } = usePlanAccess();
   const carregado = !planLoading;
   const fetchUrl = useServerFn(getPremiumPdfUrl);
   const [baixando, setBaixando] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [featureName, setFeatureName] = useState<string | undefined>();
 
   async function baixar(arquivo: string) {
+    if (!planoPago) {
+      const pdf = PDFS.find((p) => p.arquivo === arquivo);
+      setFeatureName(pdf ? `O "${pdf.nome}"` : "Este PDF");
+      setShowUpgrade(true);
+      return;
+    }
     try {
       setBaixando(arquivo);
       const { url } = await fetchUrl({ data: { file: arquivo } });
@@ -55,6 +65,7 @@ function PdfsPage() {
       setBaixando(null);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -130,17 +141,22 @@ function PdfsPage() {
                   )}
                 </Button>
               ) : (
-                <Link to="/planos">
-                  <Button className="mt-4 w-full" variant="outline">
-                    <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
-                  </Button>
-                </Link>
+                <Button onClick={() => baixar(p.arquivo)} className="mt-4 w-full" variant="outline">
+                  <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
+                </Button>
               )}
             </Card>
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={featureName}
+      />
       <Footer />
     </div>
   );
+
 }

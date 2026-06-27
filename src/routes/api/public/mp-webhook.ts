@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { createHmac, timingSafeEqual } from "crypto";
+import { sendMetaCapiPurchase } from "@/lib/meta-capi.server";
+
 
 /**
  * Valida o header x-signature do Mercado Pago.
@@ -55,7 +57,7 @@ const PLAN_VALOR_CENTAVOS: Record<string, number> = {
 
 const VITALICIO_END = "2099-12-31T23:59:59.000Z";
 
-async function processPayment(paymentId: string) {
+async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: string }) {
   const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
   if (!token) {
     console.error("MERCADO_PAGO_ACCESS_TOKEN ausente");
@@ -169,8 +171,61 @@ async function processPayment(paymentId: string) {
     })
     .eq("id", userId);
 
+  // 6) Buscar email do usuário e disparar Meta CAPI Purchase + email "Acesso Liberado"
+  let buyerEmail: string | undefined;
+  let buyerName: string | undefined;
+  try {
+    const { data: profileRow } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", userId)
+      .maybeSingle();
+    buyerEmail = (profileRow as any)?.email as string | undefined;
+    buyerName = (profileRow as any)?.full_name as string | undefined;
+    const valor = (pay.transaction_amount ?? PLAN_VALOR_CENTAVOS[planType] / 100) as number;
+    await sendMetaCapiPurchase({
+      email: buyerEmail,
+      externalId: userId,
+      value: valor,
+      currency: "BRL",
+      eventId: `purchase-${pay.id}`, // dedup com pixel client-side (mesmo ID)
+      ip: reqMeta.ip,
+      userAgent: reqMeta.ua,
+      contentName: planType,
+    });
+  } catch (e) {
+    console.error("Falha ao enviar CAPI Purchase:", e);
+  }
+
+  // 7) Disparar email "Acesso Liberado"
+  if (buyerEmail) {
+    try {
+      const baseUrl = process.env.APP_URL || "https://nota1000enem.online";
+      await fetch(`${baseUrl}/lovable/email/transactional/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.LOVABLE_API_KEY ?? ""}`,
+        },
+        body: JSON.stringify({
+          templateName: "acesso-liberado",
+          recipientEmail: buyerEmail,
+          templateData: {
+            nome: buyerName?.split(" ")[0] || "Aluno(a)",
+            plano: planType.charAt(0) + planType.slice(1).toLowerCase(),
+            loginUrl: `${baseUrl}/dashboard`,
+          },
+        }),
+      });
+    } catch (e) {
+      console.error("Falha ao enviar email 'Acesso Liberado':", e);
+    }
+  }
+
+
   console.log(`✅ Pagamento ${pay.id} processado: user=${userId} plano=${planType} até=${newPeriodEnd}`);
 }
+
 
 export const Route = createFileRoute("/api/public/mp-webhook")({
   server: {
@@ -223,7 +278,10 @@ export const Route = createFileRoute("/api/public/mp-webhook")({
           // Precisamos aguardar o processamento antes de responder, senão
           // a transação nunca é salva (bug que deixou pagamentos reais sem ativar plano).
           try {
-            await processPayment(String(paymentId));
+            await processPayment(String(paymentId), {
+              ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || undefined,
+              ua: request.headers.get("user-agent") || undefined,
+            });
           } catch (e) {
             console.error("Webhook MP erro processamento:", e);
           }
