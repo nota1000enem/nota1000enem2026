@@ -57,7 +57,7 @@ const PLAN_VALOR_CENTAVOS: Record<string, number> = {
 
 const VITALICIO_END = "2099-12-31T23:59:59.000Z";
 
-async function processPayment(paymentId: string) {
+async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: string }) {
   const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
   if (!token) {
     console.error("MERCADO_PAGO_ACCESS_TOKEN ausente");
