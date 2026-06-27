@@ -141,17 +141,22 @@ function PdfsPage() {
                   )}
                 </Button>
               ) : (
-                <Link to="/planos">
-                  <Button className="mt-4 w-full" variant="outline">
-                    <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
-                  </Button>
-                </Link>
+                <Button onClick={() => baixar(p.arquivo)} className="mt-4 w-full" variant="outline">
+                  <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
+                </Button>
               )}
             </Card>
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={featureName}
+      />
       <Footer />
     </div>
   );
+
 }
