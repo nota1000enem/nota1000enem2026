@@ -171,8 +171,32 @@ async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: st
     })
     .eq("id", userId);
 
+  // 6) Buscar email do usuário e disparar Meta CAPI Purchase server-side
+  try {
+    const { data: profileRow } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", userId)
+      .maybeSingle();
+    const email = (profileRow as any)?.email as string | undefined;
+    const valor = (pay.transaction_amount ?? PLAN_VALOR_CENTAVOS[planType] / 100) as number;
+    await sendMetaCapiPurchase({
+      email,
+      externalId: userId,
+      value: valor,
+      currency: "BRL",
+      eventId: `purchase-${pay.id}`, // dedup com pixel client-side (mesmo ID)
+      ip: reqMeta.ip,
+      userAgent: reqMeta.ua,
+      contentName: planType,
+    });
+  } catch (e) {
+    console.error("Falha ao enviar CAPI Purchase:", e);
+  }
+
   console.log(`✅ Pagamento ${pay.id} processado: user=${userId} plano=${planType} até=${newPeriodEnd}`);
 }
+
 
 export const Route = createFileRoute("/api/public/mp-webhook")({
   server: {
