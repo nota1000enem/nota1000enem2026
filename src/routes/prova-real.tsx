@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -10,6 +10,8 @@ import { usePlanAccess } from "@/hooks/use-plan-access";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/prova-real")({
   head: () => ({
