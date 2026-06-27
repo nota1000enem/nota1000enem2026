@@ -171,17 +171,20 @@ async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: st
     })
     .eq("id", userId);
 
-  // 6) Buscar email do usuário e disparar Meta CAPI Purchase server-side
+  // 6) Buscar email do usuário e disparar Meta CAPI Purchase + email "Acesso Liberado"
+  let buyerEmail: string | undefined;
+  let buyerName: string | undefined;
   try {
     const { data: profileRow } = await supabaseAdmin
       .from("profiles")
       .select("email, full_name")
       .eq("id", userId)
       .maybeSingle();
-    const email = (profileRow as any)?.email as string | undefined;
+    buyerEmail = (profileRow as any)?.email as string | undefined;
+    buyerName = (profileRow as any)?.full_name as string | undefined;
     const valor = (pay.transaction_amount ?? PLAN_VALOR_CENTAVOS[planType] / 100) as number;
     await sendMetaCapiPurchase({
-      email,
+      email: buyerEmail,
       externalId: userId,
       value: valor,
       currency: "BRL",
@@ -193,6 +196,32 @@ async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: st
   } catch (e) {
     console.error("Falha ao enviar CAPI Purchase:", e);
   }
+
+  // 7) Disparar email "Acesso Liberado"
+  if (buyerEmail) {
+    try {
+      const baseUrl = process.env.APP_URL || "https://nota1000enem.online";
+      await fetch(`${baseUrl}/lovable/email/transactional/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.LOVABLE_API_KEY ?? ""}`,
+        },
+        body: JSON.stringify({
+          templateName: "acesso-liberado",
+          recipientEmail: buyerEmail,
+          templateData: {
+            nome: buyerName?.split(" ")[0] || "Aluno(a)",
+            plano: planType.charAt(0) + planType.slice(1).toLowerCase(),
+            loginUrl: `${baseUrl}/dashboard`,
+          },
+        }),
+      });
+    } catch (e) {
+      console.error("Falha ao enviar email 'Acesso Liberado':", e);
+    }
+  }
+
 
   console.log(`✅ Pagamento ${pay.id} processado: user=${userId} plano=${planType} até=${newPeriodEnd}`);
 }
