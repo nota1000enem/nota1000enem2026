@@ -249,7 +249,10 @@ export const Route = createFileRoute("/api/public/mp-webhook")({
           // Precisamos aguardar o processamento antes de responder, senão
           // a transação nunca é salva (bug que deixou pagamentos reais sem ativar plano).
           try {
-            await processPayment(String(paymentId));
+            await processPayment(String(paymentId), {
+              ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || undefined,
+              ua: request.headers.get("user-agent") || undefined,
+            });
           } catch (e) {
             console.error("Webhook MP erro processamento:", e);
           }
