@@ -72,18 +72,24 @@ function Dashboard() {
     if (status === "success" && plan in PLAN_VALUES && !localStorage.getItem(purchaseKey)) {
       localStorage.setItem(purchaseKey, String(Date.now()));
       const value = PLAN_VALUES[plan];
-      // Meta Pixel — Purchase
+      // Meta Pixel — Purchase (eventID dedup com CAPI server-side disparado pelo webhook)
+      const eventID = `purchase-${paymentId}`;
       import("@/lib/meta-pixel")
         .then(({ pixelTrack }) => {
-          pixelTrack("Purchase", {
-            content_name: `Plano ${plan}`,
-            content_category: "subscription",
-            content_ids: [plan],
-            currency: "BRL",
-            value,
-          });
+          pixelTrack(
+            "Purchase",
+            {
+              content_name: `Plano ${plan}`,
+              content_category: "subscription",
+              content_ids: [plan],
+              currency: "BRL",
+              value,
+            },
+            eventID,
+          );
         })
         .catch(() => {});
+
       // Google Tag Manager / Google Ads — purchase
       try {
         // @ts-ignore
