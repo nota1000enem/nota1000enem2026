@@ -64,14 +64,16 @@ const ANOS: Ano[] = [
 ];
 
 function ProvaRealPage() {
-  const { isPaid, loading } = usePlanAccess();
-  const navigate = useNavigate();
+  const { isPaid, loading, tier } = usePlanAccess();
   const fetchUrl = useServerFn(getPremiumPdfUrl);
   const [baixando, setBaixando] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [featureName, setFeatureName] = useState<string | undefined>();
 
   async function baixar(arquivo: string) {
     if (!isPaid) {
-      navigate({ to: "/planos" });
+      setFeatureName(`A prova "${arquivo}"`);
+      setShowUpgrade(true);
       return;
     }
     try {
@@ -84,6 +86,7 @@ function ProvaRealPage() {
       setBaixando(null);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
