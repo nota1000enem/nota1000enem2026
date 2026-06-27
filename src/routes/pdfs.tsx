@@ -10,6 +10,8 @@ import { usePlanAccess } from "@/hooks/use-plan-access";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getPremiumPdfUrl } from "@/lib/pdfs.functions";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/pdfs")({
   head: () => ({
