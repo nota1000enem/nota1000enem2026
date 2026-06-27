@@ -41,12 +41,20 @@ const PDFS: Pdf[] = [
 ];
 
 function PdfsPage() {
-  const { isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const { isPaid: planoPago, loading: planLoading, tier } = usePlanAccess();
   const carregado = !planLoading;
   const fetchUrl = useServerFn(getPremiumPdfUrl);
   const [baixando, setBaixando] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [featureName, setFeatureName] = useState<string | undefined>();
 
   async function baixar(arquivo: string) {
+    if (!planoPago) {
+      const pdf = PDFS.find((p) => p.arquivo === arquivo);
+      setFeatureName(pdf ? `O "${pdf.nome}"` : "Este PDF");
+      setShowUpgrade(true);
+      return;
+    }
     try {
       setBaixando(arquivo);
       const { url } = await fetchUrl({ data: { file: arquivo } });
@@ -57,6 +65,7 @@ function PdfsPage() {
       setBaixando(null);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background">
