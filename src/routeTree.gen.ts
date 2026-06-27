@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RepertorioEnemRouteImport } from './routes/repertorio-enem'
@@ -36,6 +37,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/repertorio-enem': typeof RepertorioEnemRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/repertorio-enem'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
     | '/api/public/mp-webhook'
@@ -360,6 +372,7 @@ export interface RootRouteChildren {
   RepertorioEnemRoute: typeof RepertorioEnemRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   SimuladoIdRoute: typeof SimuladoIdRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
@@ -373,6 +386,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   RepertorioEnemRoute: RepertorioEnemRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   SimuladoIdRoute: SimuladoIdRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
