@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, AlertTriangle, BookOpen, Play, Lock, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
+
 
 export const Route = createFileRoute("/questoes")({
   head: () => ({
