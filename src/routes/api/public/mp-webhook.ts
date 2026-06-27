@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { createHmac, timingSafeEqual } from "crypto";
+import { sendMetaCapiPurchase } from "@/lib/meta-capi.server";
+
 
 /**
  * Valida o header x-signature do Mercado Pago.
