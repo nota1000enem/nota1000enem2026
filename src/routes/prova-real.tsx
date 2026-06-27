@@ -193,7 +193,14 @@ function ProvaRealPage() {
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={featureName}
+      />
       <Footer />
     </div>
   );
+
 }
