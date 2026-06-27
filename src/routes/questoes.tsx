@@ -136,7 +136,14 @@ function QuestoesPage() {
           ))}
         </div>
       </section>
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        currentTier={tier}
+        featureName={provaSelecionada}
+      />
       <Footer />
     </div>
   );
 }
+
