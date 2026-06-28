@@ -75,21 +75,18 @@ function saveCache(v: PlanAccess) {
 }
 
 export function usePlanAccess(): PlanAccess {
-  const [state, setState] = useState<PlanAccess>(() => {
-    const cached = loadCache();
-    return {
-      loading: !cached, // se temos cache, já mostra imediatamente
-      loggedIn: cached?.loggedIn ?? false,
-      tier: cached?.tier ?? "free",
-      vitalicio: cached?.vitalicio ?? false,
-      expiresAt: cached?.expiresAt ?? null,
-      daysLeft: cached?.daysLeft ?? null,
-      isPaid: cached?.isPaid ?? false,
-      isPremium: cached?.isPremium ?? false,
-      credits: cached?.credits ?? null,
-      refetch: async () => {},
-    };
-  });
+  const [state, setState] = useState<PlanAccess>(() => ({
+    loading: true,
+    loggedIn: false,
+    tier: "free",
+    vitalicio: false,
+    expiresAt: null,
+    daysLeft: null,
+    isPaid: false,
+    isPremium: false,
+    credits: null,
+    refetch: async () => {},
+  }));
 
   async function load() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -128,6 +125,13 @@ export function usePlanAccess(): PlanAccess {
     saveCache(next);
   }
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    const cached = loadCache();
+    if (cached) {
+      setState((prev) => ({ ...prev, ...cached, loading: false, refetch: load }));
+    }
+    load();
+    /* eslint-disable-next-line */
+  }, []);
   return state;
 }
