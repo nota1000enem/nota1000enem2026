@@ -103,17 +103,17 @@ function QuestoesPage() {
           {sims.map((s) => (
             <Card
               key={s.id}
-              className={`card-glass p-6 relative ${!planoPago ? "overflow-hidden" : ""}`}
+              className="card-glass p-6 relative"
             >
-              {!planoPago && (
-                <div className="absolute top-3 right-3">
-                  <Badge variant="outline" className="border-primary/40 text-primary">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
+                </div>
+                {!planoPago && (
+                  <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
                     <Lock className="mr-1 h-3 w-3" /> Premium
                   </Badge>
-                </div>
-              )}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
+                )}
               </div>
               <h2 className="mt-2 text-xl font-bold text-primary">{s.nome}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{s.descricao}</p>

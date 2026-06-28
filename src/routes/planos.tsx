@@ -376,7 +376,7 @@ function Planos() {
   const renderCard = (p: typeof planos[number]) => (
     <Card
       key={p.name}
-      className={`relative flex h-full flex-col p-6 card-glass ${p.popular ? "no-card-border card-gradient-border pt-9 glow-blue" : ""}`}
+      className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "pt-9 glow-blue" : ""}`}
     >
       {p.popular && (
         <Badge className="absolute top-2 left-1/2 -translate-x-1/2 btn-gradient-hot text-white shadow-md">

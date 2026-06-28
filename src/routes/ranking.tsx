@@ -91,7 +91,7 @@ function RankingPage() {
                   { ring: "ring-orange-400/70", color: "text-orange-400", label: "3º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(251,146,60,0.45)]" },
                 ][i];
                 return (
-                  <Card key={r.user_id} className={`card-glass card-gradient-border p-3 md:p-6 text-center ${cores.shadow}`}>
+                  <Card key={r.user_id} className={`card-glass card-gradient-border glow-blue p-3 md:p-6 text-center ${cores.shadow}`}>
                     <div className="relative mx-auto h-14 w-14 md:h-24 md:w-24">
                       <div className="absolute inset-0 rounded-full p-[2px] btn-gradient-primary">
                         <div className="h-full w-full overflow-hidden rounded-full bg-muted">
