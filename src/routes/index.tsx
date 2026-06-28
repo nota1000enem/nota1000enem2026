@@ -174,7 +174,7 @@ function Index() {
             </Badge>
             <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
               Seja aprovado no ENEM, estudando menos de 30 dias com{" "}
-              <span className="gradient-text text-glow">NOTA 1000 ENEM</span>
+              <span className="gradient-text text-glow">Inteligência Artificial</span>
             </h1>
             <p className="text-lg leading-relaxed text-muted-foreground">
               <span className="block text-xl font-semibold text-foreground">

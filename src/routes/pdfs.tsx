@@ -115,16 +115,16 @@ function PdfsPage() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {PDFS.map((p) => (
-            <Card key={p.arquivo} className={`card-glass p-6 relative ${!planoPago ? "overflow-hidden" : ""}`}>
-              {!planoPago && (
-                <div className="absolute top-3 right-3">
-                  <Badge variant="outline" className="border-primary/40 text-primary">
+            <Card key={p.arquivo} className="card-glass p-6 relative">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <FileText className="h-3 w-3" /> Arquivo PDF
+                </div>
+                {!planoPago && (
+                  <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
                     <Lock className="mr-1 h-3 w-3" /> Premium
                   </Badge>
-                </div>
-              )}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FileText className="h-3 w-3" /> Arquivo PDF
+                )}
               </div>
               <h3 className="mt-2 text-xl font-bold text-primary">{p.nome}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{p.descricao}</p>
