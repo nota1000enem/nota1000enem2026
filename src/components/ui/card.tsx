@@ -3,13 +3,17 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+  ({ className, ...props }, ref) => {
+    const reveal = typeof className === "string" && className.includes("card-glass");
+    return (
     <div
       ref={ref}
+      data-reveal={reveal ? "" : undefined}
       className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
       {...props}
     />
-  ),
+  );
+  },
 );
 Card.displayName = "Card";
 
