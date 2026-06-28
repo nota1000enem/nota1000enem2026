@@ -276,7 +276,7 @@
   pointer-events: none;
   animation: gradient-shift 10s ease infinite;
   opacity: 0.85;
-  z-index: 1;
+  z-index: 3;
 }
 .card-glass:hover::before { opacity: 1; }
 .card-glass.no-card-border::before { display: none; }

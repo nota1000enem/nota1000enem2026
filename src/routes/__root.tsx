@@ -209,14 +209,11 @@ function RootComponent() {
   }, [router]);
 
   // Scroll reveal global — fade-up forte (estilo Cakto). Reanima ao voltar pra
-  // cima e descer de novo. Aplica em .card-glass e qualquer [data-reveal].
+  // cima e descer de novo. Observa cards e elementos já marcados no SSR.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const apply = () => {
       const els = document.querySelectorAll<HTMLElement>(".card-glass, [data-reveal]");
-      els.forEach((el) => {
-        if (!el.hasAttribute("data-reveal")) el.setAttribute("data-reveal", "");
-      });
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {

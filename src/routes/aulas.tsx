@@ -1,17 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlayCircle, Lock, Sparkles, Crown } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { PlayCircle, Lock } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
 import thumbMatematica from "@/assets/thumb-matematica.png";
 import thumbLinguagens from "@/assets/thumb-linguagens-codigos.png";
 import thumbHumanas from "@/assets/thumb-ciencias-humanas.png";
@@ -246,7 +246,11 @@ function Aulas() {
       toast.success("Aula liberada no seu plano. O vídeo será adicionado em breve.");
       return;
     }
-    if (!planLoading) setOpenLock(true);
+    if (planLoading) {
+      toast.info("Carregando seu acesso...");
+      return;
+    }
+    setOpenLock(true);
   }
 
   return (
@@ -346,42 +350,12 @@ function Aulas() {
         </Card>
       </section>
 
-      <Dialog open={openLock} onOpenChange={setOpenLock}>
-        <DialogContent className="card-glass border-primary/30 sm:max-w-md">
-          <DialogHeader>
-            <div className="mx-auto mb-3 grid h-14 w-14 place-content-center rounded-full bg-primary/10 ring-2 ring-primary/40">
-              <Crown className="h-7 w-7 text-primary" />
-            </div>
-            <DialogTitle className="text-center text-2xl">
-              {planoPago ? "Faça upgrade para liberar" : "Escolha um plano para começar!"}
-            </DialogTitle>
-            <DialogDescription className="text-center">
-              A aula <span className="font-medium text-foreground">"{aulaSelecionada}"</span> faz parte do conteúdo premium.
-              {planoPago && " Faça upgrade para um plano superior para acessar."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-2 grid gap-2">
-            {(() => {
-              const upgrades = [
-                { tier: "light" as PlanTier, label: "Ver Plano Light — R$ 19,90", variant: "outline" as const },
-                { tier: "pro" as PlanTier, label: "Ver Plano Pro — R$ 29,90", variant: "default" as const, glow: true },
-                { tier: "full" as PlanTier, label: "Ver Plano Full — R$ 44,90", variant: "outline" as const },
-                { tier: "vitalicio" as PlanTier, label: "Ver Vitalício — R$ 499", variant: "outline" as const },
-              ];
-              const order: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];
-              const currentIdx = order.indexOf(tier);
-              const opcoes = upgrades.filter((u) => order.indexOf(u.tier) > currentIdx);
-              return opcoes.map((u) => (
-                <Link key={u.tier} to="/planos">
-                  <Button className={`w-full ${u.glow ? "glow-blue" : ""}`} variant={u.variant}>
-                    {u.label}
-                  </Button>
-                </Link>
-              ));
-            })()}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <UpgradeDialog
+        open={openLock}
+        onOpenChange={setOpenLock}
+        currentTier={tier}
+        featureName={aulaSelecionada ? `A aula "${aulaSelecionada}"` : "Esta aula"}
+      />
 
       <VideoPlayer
         open={videoOpen}

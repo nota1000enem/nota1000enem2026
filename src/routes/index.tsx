@@ -60,7 +60,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://nota1000enem.online/" },
-      { rel: "preload", as: "image", href: printNota1000, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: printNota1000, fetchPriority: "high" },
     ],
   }),
   component: Index,
