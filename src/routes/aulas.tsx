@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -11,7 +11,6 @@ import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
 import thumbMatematica from "@/assets/thumb-matematica.png";
 import thumbLinguagens from "@/assets/thumb-linguagens-codigos.png";
 import thumbHumanas from "@/assets/thumb-ciencias-humanas.png";
@@ -218,7 +217,7 @@ const trilhas: Trilha[] = [
 ];
 
 function Aulas() {
-  const [openLock, setOpenLock] = useState(false);
+  const navigate = useNavigate();
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
@@ -250,7 +249,7 @@ function Aulas() {
       toast.info("Carregando seu acesso...");
       return;
     }
-    setOpenLock(true);
+    navigate({ to: "/planos", hash: "pro" });
   }
 
   return (
@@ -350,12 +349,6 @@ function Aulas() {
         </Card>
       </section>
 
-      <UpgradeDialog
-        open={openLock}
-        onOpenChange={setOpenLock}
-        currentTier={tier}
-        featureName={aulaSelecionada ? `A aula "${aulaSelecionada}"` : "Esta aula"}
-      />
 
       <VideoPlayer
         open={videoOpen}
