@@ -349,12 +349,6 @@ function Aulas() {
         </Card>
       </section>
 
-      <UpgradeDialog
-        open={openLock}
-        onOpenChange={setOpenLock}
-        currentTier={tier}
-        featureName={aulaSelecionada ? `A aula "${aulaSelecionada}"` : "Esta aula"}
-      />
 
       <VideoPlayer
         open={videoOpen}
