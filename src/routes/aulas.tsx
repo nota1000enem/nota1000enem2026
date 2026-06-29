@@ -217,7 +217,7 @@ const trilhas: Trilha[] = [
 ];
 
 function Aulas() {
-  const [openLock, setOpenLock] = useState(false);
+  const navigate = useNavigate();
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
@@ -249,7 +249,7 @@ function Aulas() {
       toast.info("Carregando seu acesso...");
       return;
     }
-    setOpenLock(true);
+    navigate({ to: "/planos", hash: "pro" });
   }
 
   return (
