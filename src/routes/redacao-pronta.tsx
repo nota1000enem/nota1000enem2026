@@ -94,32 +94,21 @@ function RedacaoProntaPage() {
           )}
         </Card>
 
-        {!loading && user && (
-          <div className="mt-8 space-y-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold md:text-3xl">
-                Mais <span className="gradient-text">5 Modelos</span> de Redação
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                Estruturas variadas para você se inspirar e adaptar ao tema da sua prova.
-              </p>
-            </div>
-            {MODELOS_EXTRAS.map((m, i) => (
-              <Card key={i} className="card-glass card-gradient-border overflow-hidden p-[3px]">
-                <img src={m.src} alt={m.alt} className="h-auto w-full" loading="lazy" />
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {!loading && !user && (
-          <div className="mt-8 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
-            <Lock className="mx-auto h-8 w-8 text-primary" />
-            <p className="mt-3 text-sm text-muted-foreground">
-              Faça login para desbloquear <strong>+5 modelos extras</strong> de redação ENEM.
+        <div className="mt-8 space-y-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold md:text-3xl">
+              Mais <span className="gradient-text">5 Modelos</span> de Redação
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Estruturas variadas para você se inspirar e adaptar ao tema da sua prova.
             </p>
           </div>
-        )}
+          {MODELOS_EXTRAS.map((m, i) => (
+            <Card key={i} className="card-glass card-gradient-border overflow-hidden p-[3px]">
+              <img src={m.src} alt={m.alt} className="h-auto w-full" loading="lazy" />
+            </Card>
+          ))}
+        </div>
       </section>
 
       <Footer />
