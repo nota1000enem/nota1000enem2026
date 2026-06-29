@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -11,7 +11,6 @@ import { VideoPlayer } from "@/components/video-player";
 import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, usePlanAccess } from "@/hooks/use-plan-access";
 import { toast } from "sonner";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
 import thumbMatematica from "@/assets/thumb-matematica.png";
 import thumbLinguagens from "@/assets/thumb-linguagens-codigos.png";
 import thumbHumanas from "@/assets/thumb-ciencias-humanas.png";
