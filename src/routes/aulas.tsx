@@ -289,11 +289,12 @@ function Aulas() {
                 <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
                   <CarouselContent>
                     {tr.aulas.map((a, idx) => {
-                      const liberada = planoPago && canAccessArea(tier, tr.area);
+                      const liberada = isLiberada(a.t, tr.area, idx);
+                      const free = idx < 2;
                       return (
                         <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                           <Card
-                            onClick={() => handleClick(a.t, tr.area)}
+                            onClick={() => handleClick(a.t, tr.area, idx)}
                             className="card-glass card-gradient-border h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1"
                           >
                             <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${tr.cor}`}>
@@ -317,7 +318,13 @@ function Aulas() {
                                 </div>
                               )}
                               <Badge className="absolute right-3 top-3" variant="outline">
-                                {liberada ? <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</> : <><Lock className="mr-1 h-3 w-3" /> Premium</>}
+                                {liberada ? (
+                                  <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>
+                                ) : free ? (
+                                  <>Grátis com login</>
+                                ) : (
+                                  <><Lock className="mr-1 h-3 w-3" /> Premium</>
+                                )}
                               </Badge>
                               <span className="absolute left-3 top-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
                                 Aula {String(idx + 1).padStart(2, "0")}
