@@ -211,33 +211,19 @@ function Index() {
           </div>
           <div className="relative animate-float">
             <div className="mockup-frame">
-              <Carousel
-                opts={{ loop: true, align: "center" }}
-                plugins={[heroAutoplay.current]}
-                className="relative"
-              >
-                <CarouselContent>
-                  {heroImgs.map((img, i) => (
-                    <CarouselItem key={i} className="basis-full">
-                      <div className="relative overflow-hidden rounded-2xl">
-                        <img
-                          src={img.src}
-                          alt={img.alt}
-                          width={1024}
-                          height={1024}
-                          className="aspect-square w-full rounded-2xl object-cover transition-transform duration-700 hover:scale-[1.02]"
-                          loading={i === 0 ? "eager" : "lazy"}
-                          fetchPriority={i === 0 ? "high" : "auto"}
-                          decoding={i === 0 ? "sync" : "async"}
-                        />
-                        <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="-left-2 border-primary/30 bg-background/70 backdrop-blur md:-left-4" />
-                <CarouselNext className="-right-2 border-primary/30 bg-background/70 backdrop-blur md:-right-4" />
-              </Carousel>
+              <div className="relative overflow-hidden rounded-2xl">
+                <img
+                  src={heroAsset.url}
+                  alt="Nota 1000 ENEM — Redação corrigida por IA com plano de estudos personalizado"
+                  width={1536}
+                  height={1024}
+                  className="aspect-[3/2] w-full rounded-2xl object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="sync"
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+              </div>
             </div>
           </div>
         </div>
