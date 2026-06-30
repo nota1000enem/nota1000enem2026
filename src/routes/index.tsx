@@ -94,9 +94,6 @@ function Index() {
   const autoplay = useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
-  const heroAutoplay = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }),
-  );
   const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number; avatar_url: string | null; estado: string | null; idade: number | null }>>([]);
   const checkoutFn = useServerFn(createCheckout);
   const checkoutInFlightRef = useRef<PlanType | null>(null);
