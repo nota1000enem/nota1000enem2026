@@ -3,6 +3,11 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+const FREE_FOR_LOGGED_IN = new Set<string>([
+  "50-questoes-1.pdf",
+  "50-questoes-2.pdf",
+]);
+
 const ALLOWED = new Set<string>([
   "50-questoes-1.pdf",
   "50-questoes-2.pdf",
