@@ -126,39 +126,53 @@ function PdfsPage() {
         )}
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {PDFS.map((p) => (
-            <Card key={p.arquivo} className="card-glass p-6 relative">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <FileText className="h-3 w-3" /> Arquivo PDF
-                </div>
-                {!planoPago && (
-                  <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
-                    <Lock className="mr-1 h-3 w-3" /> Premium
-                  </Badge>
-                )}
-              </div>
-              <h3 className="mt-2 text-xl font-bold text-primary">{p.nome}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{p.descricao}</p>
-              {planoPago ? (
-                <Button
-                  onClick={() => baixar(p.arquivo)}
-                  disabled={baixando === p.arquivo}
-                  className="mt-4 w-full glow-blue"
-                >
-                  {baixando === p.arquivo ? (
-                    <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Gerando link…</>
+          {PDFS.map((p, idx) => {
+            const free = idx < 2;
+            const access = canAccess(p.arquivo);
+            return (
+              <Card key={p.arquivo} className="card-glass p-6 relative">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <FileText className="h-3 w-3" /> Arquivo PDF
+                  </div>
+                  {free ? (
+                    <Badge variant="outline" className="shrink-0 border-emerald-500/40 text-emerald-400">
+                      Grátis com login
+                    </Badge>
                   ) : (
-                    <><Download className="mr-1 h-4 w-4" /> Baixar PDF</>
+                    !planoPago && (
+                      <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
+                        <Lock className="mr-1 h-3 w-3" /> Premium
+                      </Badge>
+                    )
                   )}
-                </Button>
-              ) : (
-                <Button onClick={() => baixar(p.arquivo)} className="mt-4 w-full" variant="outline">
-                  <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
-                </Button>
-              )}
-            </Card>
-          ))}
+                </div>
+                <h3 className="mt-2 text-xl font-bold text-primary">{p.nome}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{p.descricao}</p>
+                {access ? (
+                  <Button
+                    onClick={() => baixar(p.arquivo)}
+                    disabled={baixando === p.arquivo}
+                    className="mt-4 w-full glow-blue"
+                  >
+                    {baixando === p.arquivo ? (
+                      <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Gerando link…</>
+                    ) : (
+                      <><Download className="mr-1 h-4 w-4" /> Baixar PDF</>
+                    )}
+                  </Button>
+                ) : free && !loggedIn ? (
+                  <Button onClick={() => baixar(p.arquivo)} className="mt-4 w-full" variant="outline">
+                    <Lock className="mr-1 h-4 w-4" /> Entrar para baixar grátis
+                  </Button>
+                ) : (
+                  <Button onClick={() => baixar(p.arquivo)} className="mt-4 w-full" variant="outline">
+                    <Lock className="mr-1 h-4 w-4" /> Desbloquear PDFs
+                  </Button>
+                )}
+              </Card>
+            );
+          })}
         </div>
       </section>
       <UpgradeDialog
