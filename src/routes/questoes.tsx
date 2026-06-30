@@ -110,40 +110,45 @@ function QuestoesPage() {
         )}
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {sims.map((s) => (
-            <Card
-              key={s.id}
-              className="card-glass p-6 relative"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
+          {sims.map((s, idx) => {
+            const free = idx < 4;
+            const liberado = planoPago || (loggedIn && free);
+            return (
+              <Card key={s.id} className="card-glass p-6 relative">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
+                  </div>
+                  {free ? (
+                    <Badge variant="outline" className="shrink-0 border-emerald-500/40 text-emerald-400">
+                      Grátis com login
+                    </Badge>
+                  ) : (
+                    !planoPago && (
+                      <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
+                        <Lock className="mr-1 h-3 w-3" /> Premium
+                      </Badge>
+                    )
+                  )}
                 </div>
-                {!planoPago && (
-                  <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
-                    <Lock className="mr-1 h-3 w-3" /> Premium
-                  </Badge>
-                )}
-              </div>
-              <h2 className="mt-2 text-xl font-bold text-primary">{s.nome}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{s.descricao}</p>
-              <Button
-                onClick={() => handleProva(s.id)}
-                className={`mt-4 w-full ${planoPago ? "glow-blue" : ""}`}
-                variant={planoPago ? "default" : "outline"}
-              >
-                {planoPago ? (
-                  <>
-                    <Play className="mr-1 h-4 w-4" /> Iniciar prova
-                  </>
-                ) : (
-                  <>
-                    <Lock className="mr-1 h-4 w-4" /> Desbloquear aulas premium
-                  </>
-                )}
-              </Button>
-            </Card>
-          ))}
+                <h2 className="mt-2 text-xl font-bold text-primary">{s.nome}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{s.descricao}</p>
+                <Button
+                  onClick={() => handleProva(s.id)}
+                  className={`mt-4 w-full ${liberado ? "glow-blue" : ""}`}
+                  variant={liberado ? "default" : "outline"}
+                >
+                  {liberado ? (
+                    <><Play className="mr-1 h-4 w-4" /> Iniciar prova</>
+                  ) : free && !loggedIn ? (
+                    <><Lock className="mr-1 h-4 w-4" /> Entrar para acessar grátis</>
+                  ) : (
+                    <><Lock className="mr-1 h-4 w-4" /> Desbloquear simulados</>
+                  )}
+                </Button>
+              </Card>
+            );
+          })}
         </div>
       </section>
       <UpgradeDialog
