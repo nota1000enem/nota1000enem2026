@@ -79,7 +79,7 @@ export const getPremiumPdfUrl = createServerFn({ method: "POST" })
       (sub.status ?? "").toUpperCase() === "ACTIVE" &&
       (sub.current_period_end ? new Date(sub.current_period_end).getTime() > now : false);
 
-    if (!profPaid && !subPaid) {
+    if (!profPaid && !subPaid && !FREE_FOR_LOGGED_IN.has(data.file)) {
       throw new Error("Disponível apenas para alunos com plano pago.");
     }
 
