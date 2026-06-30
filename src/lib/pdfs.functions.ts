@@ -3,6 +3,11 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+const FREE_FOR_LOGGED_IN = new Set<string>([
+  "50-questoes-1.pdf",
+  "50-questoes-2.pdf",
+]);
+
 const ALLOWED = new Set<string>([
   "50-questoes-1.pdf",
   "50-questoes-2.pdf",
@@ -74,7 +79,7 @@ export const getPremiumPdfUrl = createServerFn({ method: "POST" })
       (sub.status ?? "").toUpperCase() === "ACTIVE" &&
       (sub.current_period_end ? new Date(sub.current_period_end).getTime() > now : false);
 
-    if (!profPaid && !subPaid) {
+    if (!profPaid && !subPaid && !FREE_FOR_LOGGED_IN.has(data.file)) {
       throw new Error("Disponível apenas para alunos com plano pago.");
     }
 

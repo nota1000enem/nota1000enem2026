@@ -56,59 +56,65 @@ function RedacaoProntaPage() {
           </p>
         </div>
 
-        <Card className="card-glass card-gradient-border mt-10 overflow-hidden p-[3px]">
-          {loading ? (
-            <div className="flex h-96 items-center justify-center text-muted-foreground">
-              Carregando…
-            </div>
-          ) : user ? (
-            <img
-              src={redacaoPronta.url}
-              alt="Modelo de redação pronta para o ENEM"
-              className="h-auto w-full"
-              loading="lazy"
-            />
-          ) : (
-            <div className="relative">
-              <img
-                src={redacaoPronta.url}
-                alt="Modelo de redação pronta para o ENEM (bloqueado)"
-                className="h-auto w-full blur-md select-none pointer-events-none"
-                aria-hidden
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-background/70 backdrop-blur-sm p-6 text-center">
-                <Lock className="h-12 w-12 text-primary" />
-                <h2 className="text-2xl font-bold md:text-3xl">
-                  Faça Login para acessar Grátis
-                </h2>
-                <p className="max-w-md text-muted-foreground">
-                  Acesso 100% gratuito. Entre com sua conta para ver as redações prontas completas.
-                </p>
-                <Link to="/auth">
-                  <Button size="lg" className="glow-blue">
-                    Fazer Login Grátis
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          )}
-        </Card>
+        {(() => {
+          const TODOS = [
+            { src: redacaoPronta.url, alt: "Modelo de redação pronta para o ENEM" },
+            ...MODELOS_EXTRAS,
+          ];
 
-        <div className="mt-8 space-y-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold md:text-3xl">
-              Mais <span className="gradient-text">5 Modelos</span> de Redação
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Estruturas variadas para você se inspirar e adaptar ao tema da sua prova.
-            </p>
-          </div>
-          {MODELOS_EXTRAS.map((m, i) => (
-            <Card key={i} className="card-glass card-gradient-border overflow-hidden p-[3px]">
-              <img src={m.src} alt={m.alt} className="h-auto w-full" loading="lazy" />
-            </Card>
-          ))}
-        </div>
+          if (loading) {
+            return (
+              <Card className="card-glass card-gradient-border mt-10 overflow-hidden p-[3px]">
+                <div className="flex h-96 items-center justify-center text-muted-foreground">
+                  Carregando…
+                </div>
+              </Card>
+            );
+          }
+
+          if (user) {
+            return (
+              <div className="mt-10 space-y-8">
+                {TODOS.map((m, i) => (
+                  <Card key={i} className="card-glass card-gradient-border overflow-hidden p-[3px]">
+                    <img src={m.src} alt={m.alt} className="h-auto w-full" loading={i === 0 ? "eager" : "lazy"} />
+                  </Card>
+                ))}
+              </div>
+            );
+          }
+
+          return (
+            <div className="mt-10 space-y-8">
+              {TODOS.map((m, i) => (
+                <Card key={i} className="card-glass card-gradient-border overflow-hidden p-[3px]">
+                  <div className="relative">
+                    <img
+                      src={m.src}
+                      alt={`${m.alt} (bloqueado)`}
+                      className="h-auto w-full blur-md select-none pointer-events-none"
+                      aria-hidden
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-background/70 backdrop-blur-sm p-6 text-center">
+                      <Lock className="h-12 w-12 text-primary" />
+                      <h2 className="text-2xl font-bold md:text-3xl">
+                        Faça Login para acessar Grátis
+                      </h2>
+                      <p className="max-w-md text-muted-foreground">
+                        Acesso 100% gratuito. Entre com sua conta para ver as redações prontas completas.
+                      </p>
+                      <Link to="/auth">
+                        <Button size="lg" className="glow-blue">
+                          Fazer Login Grátis
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          );
+        })()}
       </section>
 
       <Footer />
