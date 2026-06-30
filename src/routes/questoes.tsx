@@ -36,7 +36,7 @@ type Sim = {
 function QuestoesPage() {
   const navigate = useNavigate();
   const [sims, setSims] = useState<Sim[]>([]);
-  const { isPaid: planoPago, loading: planLoading, tier } = usePlanAccess();
+  const { isPaid: planoPago, loading: planLoading, tier, loggedIn } = usePlanAccess();
   const carregado = !planLoading;
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [provaSelecionada, setProvaSelecionada] = useState<string | undefined>();
@@ -52,14 +52,24 @@ function QuestoesPage() {
     })();
   }, []);
 
+  const isFreeSim = (id: string) => {
+    const idx = sims.findIndex((s) => s.id === id);
+    return idx >= 0 && idx < 4;
+  };
+
   function handleProva(id: string) {
-    if (!planoPago) {
-      const sim = sims.find((s) => s.id === id);
-      setProvaSelecionada(sim ? `O simulado "${sim.nome}"` : undefined);
-      setShowUpgrade(true);
+    const free = isFreeSim(id);
+    if (planoPago || (loggedIn && free)) {
+      navigate({ to: "/simulado/$id", params: { id } });
       return;
     }
-    navigate({ to: "/simulado/$id", params: { id } });
+    if (free && !loggedIn) {
+      navigate({ to: "/auth" });
+      return;
+    }
+    const sim = sims.find((s) => s.id === id);
+    setProvaSelecionada(sim ? `O simulado "${sim.nome}"` : undefined);
+    setShowUpgrade(true);
   }
 
 
