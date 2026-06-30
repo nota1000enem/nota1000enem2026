@@ -41,15 +41,27 @@ const PDFS: Pdf[] = [
 ];
 
 function PdfsPage() {
-  const { isPaid: planoPago, loading: planLoading, tier } = usePlanAccess();
+  const { isPaid: planoPago, loading: planLoading, tier, loggedIn } = usePlanAccess();
   const carregado = !planLoading;
   const fetchUrl = useServerFn(getPremiumPdfUrl);
   const [baixando, setBaixando] = useState<string | null>(null);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [featureName, setFeatureName] = useState<string | undefined>();
 
+  const isFreePdf = (arquivo: string) => {
+    const idx = PDFS.findIndex((p) => p.arquivo === arquivo);
+    return idx >= 0 && idx < 2;
+  };
+  const canAccess = (arquivo: string) =>
+    planoPago || (loggedIn && isFreePdf(arquivo));
+
   async function baixar(arquivo: string) {
-    if (!planoPago) {
+    const free = isFreePdf(arquivo);
+    if (!planoPago && free && !loggedIn) {
+      window.location.href = "/auth";
+      return;
+    }
+    if (!canAccess(arquivo)) {
       const pdf = PDFS.find((p) => p.arquivo === arquivo);
       setFeatureName(pdf ? `O "${pdf.nome}"` : "Este PDF");
       setShowUpgrade(true);
