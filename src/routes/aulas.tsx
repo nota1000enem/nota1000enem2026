@@ -221,7 +221,7 @@ function Aulas() {
   const [aulaSelecionada, setAulaSelecionada] = useState<string>("");
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const { tier, isPaid: planoPago, loading: planLoading } = usePlanAccess();
+  const { tier, isPaid: planoPago, loading: planLoading, loggedIn } = usePlanAccess();
   const [videos, setVideos] = useState<Record<string, VideoLesson>>({});
 
   useEffect(() => {
@@ -231,8 +231,13 @@ function Aulas() {
     });
   }, []);
 
-  function handleClick(titulo: string, area: string) {
-    const liberada = planoPago && canAccessArea(tier, area);
+  function isLiberada(titulo: string, area: string, idx: number) {
+    if (idx < 2 && loggedIn) return true;
+    return planoPago && canAccessArea(tier, area);
+  }
+
+  function handleClick(titulo: string, area: string, idx: number) {
+    const liberada = isLiberada(titulo, area, idx);
     const url = videos[titulo]?.video_url || VIDEO_LINKS[titulo];
     if (url && liberada) {
       setAulaSelecionada(titulo);
@@ -247,6 +252,10 @@ function Aulas() {
     }
     if (planLoading) {
       toast.info("Carregando seu acesso...");
+      return;
+    }
+    if (idx < 2 && !loggedIn) {
+      navigate({ to: "/auth" });
       return;
     }
     navigate({ to: "/planos", hash: "pro" });
