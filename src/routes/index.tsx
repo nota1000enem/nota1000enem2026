@@ -34,6 +34,7 @@ import printNota840 from "@/assets/print-nota-840.png";
 import printNota1000 from "@/assets/print-nota-1000.png";
 import printRanking from "@/assets/ranking-enem.png";
 import printVideoAulas from "@/assets/videoaulas-enem.png";
+import heroAsset from "@/assets/hero-1000enem.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
 import { toast } from "sonner";
