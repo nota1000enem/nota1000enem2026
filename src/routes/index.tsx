@@ -145,17 +145,6 @@ function Index() {
       checkoutInFlightRef.current = null;
     }
   }
-  // Intercala: print, aluno, print, aluno...
-  const heroImgs = [
-    { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
-    { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
-    { src: printRanking, alt: "Ranking dos melhores alunos do Nota 1000 ENEM" },
-    { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
-    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
-    { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
-    { src: printVideoAulas, alt: "Catálogo de vídeo aulas Nota 1000 ENEM" },
-    { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
-  ];
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
