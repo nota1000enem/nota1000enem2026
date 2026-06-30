@@ -26,14 +26,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import aprovado1 from "@/assets/enem-aprovado-1.jpg";
-import aprovado2 from "@/assets/enem-aprovado-2.jpg";
-import aprovado3 from "@/assets/enem-aprovado-3.jpg";
-import aprovado4 from "@/assets/enem-aprovado-4.jpg";
-import printNota840 from "@/assets/print-nota-840.png";
-import printNota1000 from "@/assets/print-nota-1000.png";
-import printRanking from "@/assets/ranking-enem.png";
-import printVideoAulas from "@/assets/videoaulas-enem.png";
+import heroAsset from "@/assets/hero-1000enem.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { createCheckout, type PlanType } from "@/lib/mercadopago.functions";
 import { toast } from "sonner";
@@ -60,7 +53,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://nota1000enem.online/" },
-      { rel: "preload", as: "image", href: printNota1000, fetchPriority: "high" },
+      { rel: "preload", as: "image", href: "/__l5e/assets-v1/7eb64ae9-b057-4f66-ac2b-9a5994658a39/hero-1000enem.png", fetchPriority: "high" },
     ],
   }),
   component: Index,
@@ -92,9 +85,6 @@ function useFakePromoTimer() {
 function Index() {
   const autoplay = useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
-  );
-  const heroAutoplay = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
   const [topSemana, setTopSemana] = useState<Array<{ nome: string; melhor_nota: number; avatar_url: string | null; estado: string | null; idade: number | null }>>([]);
   const checkoutFn = useServerFn(createCheckout);
@@ -147,17 +137,6 @@ function Index() {
       checkoutInFlightRef.current = null;
     }
   }
-  // Intercala: print, aluno, print, aluno...
-  const heroImgs = [
-    { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
-    { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
-    { src: printRanking, alt: "Ranking dos melhores alunos do Nota 1000 ENEM" },
-    { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
-    { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
-    { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
-    { src: printVideoAulas, alt: "Catálogo de vídeo aulas Nota 1000 ENEM" },
-    { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
-  ];
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -210,33 +189,19 @@ function Index() {
           </div>
           <div className="relative animate-float">
             <div className="mockup-frame">
-              <Carousel
-                opts={{ loop: true, align: "center" }}
-                plugins={[heroAutoplay.current]}
-                className="relative"
-              >
-                <CarouselContent>
-                  {heroImgs.map((img, i) => (
-                    <CarouselItem key={i} className="basis-full">
-                      <div className="relative overflow-hidden rounded-2xl">
-                        <img
-                          src={img.src}
-                          alt={img.alt}
-                          width={1024}
-                          height={1024}
-                          className="aspect-square w-full rounded-2xl object-cover transition-transform duration-700 hover:scale-[1.02]"
-                          loading={i === 0 ? "eager" : "lazy"}
-                          fetchPriority={i === 0 ? "high" : "auto"}
-                          decoding={i === 0 ? "sync" : "async"}
-                        />
-                        <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="-left-2 border-primary/30 bg-background/70 backdrop-blur md:-left-4" />
-                <CarouselNext className="-right-2 border-primary/30 bg-background/70 backdrop-blur md:-right-4" />
-              </Carousel>
+              <div className="relative overflow-hidden rounded-2xl">
+                <img
+                  src={heroAsset.url}
+                  alt="Nota 1000 ENEM — Redação corrigida por IA com plano de estudos personalizado"
+                  width={1536}
+                  height={1024}
+                  className="aspect-[3/2] w-full rounded-2xl object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="sync"
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+              </div>
             </div>
           </div>
         </div>
