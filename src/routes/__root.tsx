@@ -181,17 +181,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
 
-  // Dispara PageView do Meta Pixel a cada navegação SPA (o primeiro PageView
-  // já é enviado pelo snippet no <head>).
-  useEffect(() => {
-    const unsub = router.subscribe("onResolved", () => {
-      try {
-        // @ts-ignore — fbq é injetado pelo snippet do Pixel
-        window.fbq?.("track", "PageView");
-      } catch {}
-    });
-    return () => unsub();
-  }, [router]);
+  // Meta Pixel removido — nenhum PageView enviado ao Facebook.
+
+
 
   // Scroll reveal global — fade-up forte (estilo Cakto). Reanima ao voltar pra
   // cima e descer de novo. Observa cards e elementos já marcados no SSR.
