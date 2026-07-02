@@ -227,9 +227,6 @@
   background-size: 48px 48px;
 }
 
-/* Card glass — agora com BORDA GRADIENTE permanente (em todos os cards do site) */
-.card-glass {
-  position: relative;
 /* Card glass — borda vermelha permanente */
 .card-glass {
   position: relative;
