@@ -543,32 +543,6 @@ function Planos() {
           {planos.map(renderCard)}
         </div>
 
-        {/* Galeria abaixo dos planos */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Veja o <span className="gradient-text">Nota 1000 ENEM</span> em ação
-          </h2>
-          <Carousel
-            opts={{ loop: true, align: "center" }}
-            plugins={[galeriaAutoplay.current]}
-            className="mx-auto mt-6 max-w-5xl px-10"
-          >
-            <CarouselContent>
-              {galeria.map((img, i) => (
-                <CarouselItem key={i} className="basis-[85%] md:basis-1/2 lg:basis-1/3">
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    className="aspect-square w-full rounded-2xl object-cover"
-                    loading="lazy"
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-0" />
-            <CarouselNext className="right-0" />
-          </Carousel>
-        </div>
 
         <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
