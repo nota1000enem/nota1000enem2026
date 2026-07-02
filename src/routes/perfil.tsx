@@ -47,8 +47,8 @@ const ESTADOS_BR = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS",
 
 const PLAN_LABELS: Record<string, { label: string; cls: string }> = {
   free: { label: "Free", cls: "bg-muted text-foreground" },
-  light: { label: "Light", cls: "bg-blue-500/20 text-blue-300 border-blue-500/40" },
-  pro: { label: "Pro", cls: "bg-purple-500/20 text-purple-300 border-purple-500/40" },
+  light: { label: "Light", cls: "bg-red-500/20 text-red-300 border-red-500/40" },
+  pro: { label: "Pro", cls: "bg-orange-500/20 text-orange-300 border-orange-500/40" },
   full: { label: "Full", cls: "bg-pink-500/20 text-pink-300 border-pink-500/40" },
   vitalicio: { label: "Vitalício", cls: "bg-gradient-to-r from-yellow-500/30 to-amber-500/30 text-yellow-200 border-yellow-500/40" },
 };

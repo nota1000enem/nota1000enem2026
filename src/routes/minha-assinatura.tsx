@@ -34,7 +34,7 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
   light: {
     nome: "Light",
     preco: "R$ 19,90 / mês",
-    cor: "text-blue-400",
+    cor: "text-red-400",
     beneficios: [
       "15 redações por mês",
       "Linguagens, Códigos e suas Tecnologias",
@@ -50,7 +50,7 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
   pro: {
     nome: "Pro",
     preco: "R$ 29,90 / mês",
-    cor: "text-purple-400",
+    cor: "text-orange-400",
     beneficios: [
       "30 redações por mês",
       "Tudo do Light",
