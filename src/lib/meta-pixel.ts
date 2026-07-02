@@ -1,54 +1,17 @@
 /**
- * Wrapper tipado em torno do Meta Pixel (fbq) carregado no <head> via __root.tsx.
- * Use em handlers do cliente para enviar eventos padrão do Facebook Ads.
- * Documentação dos eventos: https://developers.facebook.com/docs/meta-pixel/reference
+ * Meta Pixel REMOVIDO a pedido do usuário.
+ * Todos os helpers viraram no-ops — nenhum evento é enviado ao Facebook.
+ * Mantido apenas para preservar imports existentes sem quebrar o build.
  */
 
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-  }
+export function pixelTrack(_event: string, _params?: Record<string, unknown>, _eventID?: string) {
+  // no-op
 }
 
-type StandardEvent =
-  | "PageView"
-  | "ViewContent"
-  | "Lead"
-  | "CompleteRegistration"
-  | "AddToCart"
-  | "InitiateCheckout"
-  | "AddPaymentInfo"
-  | "Purchase"
-  | "Subscribe"
-  | "StartTrial"
-  | "Contact";
-
-export function pixelTrack(
-  event: StandardEvent,
-  params?: Record<string, unknown>,
-  eventID?: string,
-) {
-  if (typeof window === "undefined") return;
-  try {
-    if (eventID) {
-      window.fbq?.("track", event, params ?? {}, { eventID });
-    } else {
-      window.fbq?.("track", event, params ?? {});
-    }
-  } catch {
-    // silencioso — pixel é melhor-esforço, nunca quebra a UI
-  }
+export function pixelTrackCustom(_name: string, _params?: Record<string, unknown>) {
+  // no-op
 }
 
-
-export function pixelTrackCustom(name: string, params?: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  try {
-    window.fbq?.("trackCustom", name, params ?? {});
-  } catch {}
-}
-
-/** Dispara PageView em mudanças de rota SPA (PageView inicial já é enviado no <head>). */
 export function pixelPageView() {
-  pixelTrack("PageView");
+  // no-op
 }
