@@ -227,11 +227,10 @@
   background-size: 48px 48px;
 }
 
-/* Card glass — borda vermelha permanente */
+/* Card glass — fundo 100% preto, sem brilho no topo */
 .card-glass {
   position: relative;
-  background:
-    linear-gradient(180deg, oklch(0.16 0.02 25 / 0.7), oklch(0.1 0.015 25 / 0.6));
+  background: oklch(0 0 0 / 0.92);
   backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid transparent;
   border-radius: var(--radius-xl);
@@ -247,18 +246,8 @@
     0 0 0 1px oklch(0.58 0.32 25 / 0.35),
     0 30px 70px -25px oklch(0.58 0.32 25 / 0.45);
 }
-.card-glass::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(120% 80% at 50% 0%, oklch(0.58 0.32 25 / 0.12), transparent 60%);
-  opacity: 0.8;
-  z-index: 0;
-}
 
-/* Borda gradiente vermelha em todos os .card-glass */
+/* Borda gradiente vermelha — visível apenas no hover/focus/clique */
 .card-glass::before,
 .card-gradient-border::before {
   content: "";
@@ -279,10 +268,13 @@
           mask-composite: exclude;
   pointer-events: none;
   animation: gradient-shift 10s ease infinite;
-  opacity: 0.85;
+  opacity: 0;
   z-index: 3;
+  transition: opacity 0.35s ease;
 }
-.card-glass:hover::before { opacity: 1; }
+.card-glass:hover::before,
+.card-glass:active::before,
+.card-glass:focus-within::before { opacity: 1; }
 .card-glass.no-card-border::before { display: none; }
 
 /* Garante que o conteúdo do card fique acima das camadas decorativas */

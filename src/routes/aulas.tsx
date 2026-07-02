@@ -297,7 +297,7 @@ function Aulas() {
                             onClick={() => handleClick(a.t, tr.area, idx)}
                             className="card-glass card-gradient-border h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1"
                           >
-                            <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${tr.cor}`}>
+                            <div className="relative aspect-video overflow-hidden bg-black">
                               <img
                                 src={tr.thumb}
                                 alt={`Thumb da trilha ${tr.area}`}

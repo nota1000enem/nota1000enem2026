@@ -10,15 +10,6 @@ import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2, Crown } from "luci
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, forcarConfirmacaoMP, type PlanType } from "@/lib/mercadopago.functions";
-import planosImg from "@/assets/planos-img.png";
-import aprovado1 from "@/assets/enem-aprovado-1.jpg";
-import aprovado2 from "@/assets/enem-aprovado-2.jpg";
-import aprovado3 from "@/assets/enem-aprovado-3.jpg";
-import aprovado4 from "@/assets/enem-aprovado-4.jpg";
-import printNota840 from "@/assets/print-nota-840.png";
-import printNota1000 from "@/assets/print-nota-1000.png";
-import printRanking from "@/assets/ranking-enem.png";
-import printVideoAulas from "@/assets/videoaulas-enem.png";
 import {
   Carousel,
   CarouselContent,
@@ -26,7 +17,6 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -231,17 +221,6 @@ const PLAN_VALUES: Record<PlanType, number> = {
   VITALICIO: 499,
 };
 
-const galeria = [
-  { src: planosImg, alt: "Correção de redações ENEM com inteligência artificial Nota 1000 ENEM" },
-  { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
-  { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
-  { src: printRanking, alt: "Ranking dos melhores alunos do Nota 1000 ENEM" },
-  { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
-  { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
-  { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
-  { src: printVideoAulas, alt: "Catálogo de vídeo aulas Nota 1000 ENEM" },
-  { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
-];
 
 function Planos() {
   const checkoutFn = useServerFn(createCheckout);
@@ -257,9 +236,6 @@ function Planos() {
   });
   const [confirmando, setConfirmando] = useState(false);
   const promo = useFakePromoTimer();
-  const galeriaAutoplay = useRef(
-    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
-  );
 
   // Persiste/limpa o estado de "aguardando pagamento" entre reloads
   useEffect(() => {
@@ -543,32 +519,6 @@ function Planos() {
           {planos.map(renderCard)}
         </div>
 
-        {/* Galeria abaixo dos planos */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Veja o <span className="gradient-text">Nota 1000 ENEM</span> em ação
-          </h2>
-          <Carousel
-            opts={{ loop: true, align: "center" }}
-            plugins={[galeriaAutoplay.current]}
-            className="mx-auto mt-6 max-w-5xl px-10"
-          >
-            <CarouselContent>
-              {galeria.map((img, i) => (
-                <CarouselItem key={i} className="basis-[85%] md:basis-1/2 lg:basis-1/3">
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    className="aspect-square w-full rounded-2xl object-cover"
-                    loading="lazy"
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-0" />
-            <CarouselNext className="right-0" />
-          </Carousel>
-        </div>
 
         <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
