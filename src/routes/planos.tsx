@@ -236,9 +236,6 @@ function Planos() {
   });
   const [confirmando, setConfirmando] = useState(false);
   const promo = useFakePromoTimer();
-  const galeriaAutoplay = useRef(
-    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
-  );
 
   // Persiste/limpa o estado de "aguardando pagamento" entre reloads
   useEffect(() => {
