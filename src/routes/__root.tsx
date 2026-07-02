@@ -136,12 +136,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           inLanguage: "pt-BR",
         }),
       },
-      // Meta Pixel — ID 1547784333801355. Dispara PageView automaticamente em toda
-      // navegação SPA via src/lib/meta-pixel.ts (eventos adicionais: Lead, CompleteRegistration,
-      // InitiateCheckout, Purchase). Mantém a tag <noscript> abaixo para usuários sem JS.
-      {
-        children: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1547784333801355');fbq('track','PageView');`,
-      },
+      // Meta Pixel removido a pedido do usuário — nenhum evento é enviado ao Facebook.
       // Google Tag Manager
       {
         children: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M35ZCDHC');`,
@@ -176,16 +171,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
           />
         </noscript>
         {children}
-        {/* Meta Pixel — fallback noscript */}
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1547784333801355&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
         <Scripts />
       </body>
     </html>
@@ -196,17 +181,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
 
-  // Dispara PageView do Meta Pixel a cada navegação SPA (o primeiro PageView
-  // já é enviado pelo snippet no <head>).
-  useEffect(() => {
-    const unsub = router.subscribe("onResolved", () => {
-      try {
-        // @ts-ignore — fbq é injetado pelo snippet do Pixel
-        window.fbq?.("track", "PageView");
-      } catch {}
-    });
-    return () => unsub();
-  }, [router]);
+  // Meta Pixel removido — nenhum PageView enviado ao Facebook.
+
+
 
   // Scroll reveal global — fade-up forte (estilo Cakto). Reanima ao voltar pra
   // cima e descer de novo. Observa cards e elementos já marcados no SSR.
