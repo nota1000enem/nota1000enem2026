@@ -10,15 +10,6 @@ import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2, Crown } from "luci
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, forcarConfirmacaoMP, type PlanType } from "@/lib/mercadopago.functions";
-import planosImg from "@/assets/planos-img.png";
-import aprovado1 from "@/assets/enem-aprovado-1.jpg";
-import aprovado2 from "@/assets/enem-aprovado-2.jpg";
-import aprovado3 from "@/assets/enem-aprovado-3.jpg";
-import aprovado4 from "@/assets/enem-aprovado-4.jpg";
-import printNota840 from "@/assets/print-nota-840.png";
-import printNota1000 from "@/assets/print-nota-1000.png";
-import printRanking from "@/assets/ranking-enem.png";
-import printVideoAulas from "@/assets/videoaulas-enem.png";
 import {
   Carousel,
   CarouselContent,
@@ -26,7 +17,6 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
