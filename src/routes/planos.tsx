@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2 } from "lucide-react";
+import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, forcarConfirmacaoMP, type PlanType } from "@/lib/mercadopago.functions";
