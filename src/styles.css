@@ -182,22 +182,24 @@
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 0 0 1px oklch(0.72 0.22 235 / 0.35) inset,
-    0 8px 24px -8px oklch(0.72 0.22 235 / 0.55),
-    0 0 48px -12px oklch(0.65 0.25 295 / 0.35);
+    0 0 0 1px oklch(0.62 0.24 25 / 0.4) inset,
+    0 8px 24px -8px oklch(0.62 0.24 25 / 0.55),
+    0 0 48px -12px oklch(0.55 0.24 22 / 0.4);
 }
 .glow-cyan {
   box-shadow:
-    0 0 0 1px oklch(0.78 0.18 210 / 0.35) inset,
-    0 8px 30px -10px oklch(0.78 0.18 210 / 0.45);
+    0 0 0 1px oklch(0.6 0.24 22 / 0.35) inset,
+    0 8px 30px -10px oklch(0.6 0.24 22 / 0.45);
 }
 .glow-purple {
   box-shadow:
-    0 0 0 1px oklch(0.65 0.25 295 / 0.35) inset,
-    0 8px 30px -10px oklch(0.65 0.25 295 / 0.5);
+    0 0 0 1px oklch(0.5 0.22 20 / 0.35) inset,
+    0 8px 30px -10px oklch(0.5 0.22 20 / 0.5);
 }
 .text-glow {
-  text-shadow: 0 0 24px oklch(0.72 0.22 235 / 0.55);
+  text-shadow:
+    0 0 18px oklch(0.62 0.24 25 / 0.75),
+    0 0 40px oklch(0.55 0.24 22 / 0.5);
 }
 
 .gradient-hero {
@@ -206,16 +208,17 @@
 
 .gradient-text {
   background: linear-gradient(90deg,
-    oklch(0.82 0.18 215),
-    oklch(0.74 0.22 240),
-    oklch(0.68 0.26 290),
-    oklch(0.7 0.26 330));
+    oklch(0.72 0.22 28),
+    oklch(0.62 0.24 25),
+    oklch(0.55 0.24 22),
+    oklch(0.7 0.22 30));
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: gradient-shift 8s ease infinite;
 }
+
 
 .tech-grid {
   background-image:
