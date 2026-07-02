@@ -221,17 +221,6 @@ const PLAN_VALUES: Record<PlanType, number> = {
   VITALICIO: 499,
 };
 
-const galeria = [
-  { src: planosImg, alt: "Correção de redações ENEM com inteligência artificial Nota 1000 ENEM" },
-  { src: printNota1000, alt: "Print de redação nota 1000 corrigida pela IA" },
-  { src: aprovado1, alt: "Estudante brasileiro aprovado no ENEM" },
-  { src: printRanking, alt: "Ranking dos melhores alunos do Nota 1000 ENEM" },
-  { src: aprovado2, alt: "Aluno estudando para o ENEM com IA" },
-  { src: printNota840, alt: "Print de redação nota 840 corrigida pela IA" },
-  { src: aprovado3, alt: "Alunos comemorando aprovação no ENEM" },
-  { src: printVideoAulas, alt: "Catálogo de vídeo aulas Nota 1000 ENEM" },
-  { src: aprovado4, alt: "Estudante aprovado em medicina pelo ENEM" },
-];
 
 function Planos() {
   const checkoutFn = useServerFn(createCheckout);
