@@ -12,10 +12,10 @@ export function TelegramFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="GRUPO VIP ENEM ! CLIQUE AQUI"
-      className="group fixed bottom-5 right-5 z-[60] flex max-w-[260px] items-center gap-2 overflow-hidden rounded-full bg-[length:200%_200%] bg-gradient-to-r from-[#2ab4ee] via-[#8b5cf6] to-[#ec4899] px-4 py-3 font-bold text-white shadow-2xl shadow-purple-500/60 ring-2 ring-white/40 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 animate-[gradient-shift_3s_ease_infinite]"
+      className="group fixed bottom-5 right-5 z-[60] flex max-w-[260px] items-center gap-2 overflow-hidden rounded-full bg-[length:200%_200%] bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] px-4 py-3 font-bold text-white shadow-2xl shadow-red-500/60 ring-2 ring-white/40 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 animate-[gradient-shift_3s_ease_infinite]"
     >
       <span
-        className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#2ab4ee] via-[#8b5cf6] to-[#ec4899] opacity-70 blur-lg animate-pulse"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] opacity-70 blur-lg animate-pulse"
         aria-hidden="true"
       />
       <span

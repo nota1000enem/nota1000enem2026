@@ -139,7 +139,7 @@ function formatDuration(totalMinutes: number) {
 const trilhas: Trilha[] = [
   {
     area: "Matemática e suas Tecnologias",
-    cor: "from-blue-500/30 to-blue-500/5",
+    cor: "from-red-500/30 to-red-500/5",
     thumb: thumbMatematica,
     aulas: [
       { t: "🧠 SEMANA DA MATEMÁTICA BÁSICA!! Aulão Completo", min: 151 },
@@ -154,7 +154,7 @@ const trilhas: Trilha[] = [
   },
   {
     area: "Linguagens, Códigos e suas Tecnologias",
-    cor: "from-fuchsia-500/30 to-fuchsia-500/5",
+    cor: "from-orange-500/30 to-orange-500/5",
     thumb: thumbLinguagens,
     aulas: [
       { t: "Revisão Completa ENEM: Códigos, Linguagens e Redação!", min: 149 },
