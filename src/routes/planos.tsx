@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2 } from "lucide-react";
+import { Check, Sparkles, ShieldCheck, Loader2, CheckCircle2, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckout, forcarConfirmacaoMP, type PlanType } from "@/lib/mercadopago.functions";
@@ -376,14 +376,19 @@ function Planos() {
   const renderCard = (p: typeof planos[number]) => (
     <Card
       key={p.name}
-      className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "pt-9 glow-blue" : ""}`}
+      className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-2 ring-primary/60" : ""}`}
     >
       {p.popular && (
-        <Badge className="absolute top-2 left-1/2 -translate-x-1/2 btn-gradient-hot text-white shadow-md">
-          MAIS VENDIDO
-        </Badge>
+        <div className="mb-3 flex justify-center">
+          <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background">
+            <Crown className="mr-1 h-3 w-3" /> MAIS VENDIDO
+          </Badge>
+        </div>
       )}
-      <h3 className="text-xl font-bold font-display">{p.name}</h3>
+      <h3 className={`font-bold font-display ${p.popular ? "text-2xl text-primary" : "text-xl"}`}>
+        {p.popular && <Crown className="inline h-5 w-5 mr-1 -mt-1" />}
+        {p.name}
+      </h3>
       <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
       {p.oldPrice && promo.active && (
         <div className="mt-3 flex items-center gap-2">
