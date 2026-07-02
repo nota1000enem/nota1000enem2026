@@ -428,8 +428,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.22 235 / 0.45); }
-  50% { box-shadow: 0 0 0 14px oklch(0.72 0.22 235 / 0); }
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.62 0.24 25 / 0.55); }
+  50% { box-shadow: 0 0 0 14px oklch(0.62 0.24 25 / 0); }
 }
 .animate-pulse-glow { animation: pulse-glow 2.4s ease-in-out infinite; }
 
