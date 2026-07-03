@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://nota1000enem.online/" },
-      { rel: "preload", as: "image", href: "/__l5e/assets-v1/7eb64ae9-b057-4f66-ac2b-9a5994658a39/hero-1000enem.png", fetchPriority: "high" },
+      { rel: "preload", as: "image", href: "/__l5e/assets-v1/b53a904c-0cfd-4dfe-b23f-d5e9a1bf9f5c/hero-vecel.webp", fetchPriority: "high" },
     ],
   }),
   component: Index,
