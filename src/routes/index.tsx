@@ -45,6 +45,7 @@ function Index() {
       <Navbar />
       {/* HERO */}
       <section className="relative gradient-hero overflow-hidden">
+        <HeroFX />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
           <div className="space-y-6">
             <Badge
