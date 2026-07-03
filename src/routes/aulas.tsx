@@ -290,7 +290,7 @@ function Aulas() {
                   <CarouselContent>
                     {tr.aulas.map((a, idx) => {
                       const liberada = isLiberada(a.t, tr.area, idx);
-                      const free = idx < 2;
+                      const free = idx < 4;
                       return (
                         <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                           <Card
