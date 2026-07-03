@@ -13,6 +13,7 @@ import {
   ArrowRight,
   GraduationCap,
   Loader2,
+  Crown,
 } from "lucide-react";
 import {
   Carousel,
