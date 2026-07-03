@@ -232,7 +232,7 @@ function Aulas() {
   }, []);
 
   function isLiberada(titulo: string, area: string, idx: number) {
-    if (idx < 2 && loggedIn) return true;
+    if (idx < 4 && loggedIn) return true;
     return planoPago && canAccessArea(tier, area);
   }
 
@@ -254,7 +254,7 @@ function Aulas() {
       toast.info("Carregando seu acesso...");
       return;
     }
-    if (idx < 2 && !loggedIn) {
+    if (idx < 4 && !loggedIn) {
       navigate({ to: "/auth" });
       return;
     }
