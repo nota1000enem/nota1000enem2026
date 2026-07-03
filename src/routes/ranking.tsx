@@ -125,7 +125,7 @@ function RankingPage() {
             {resto.length > 0 && (
               <div className="mt-6 md:mt-8 space-y-1.5 md:space-y-2">
                 {resto.map((r, i) => (
-                  <Card key={r.user_id} className="card-glass flex items-center justify-between p-2.5 md:p-4">
+                  <Card key={r.user_id} className={`card-glass flex items-center justify-between p-2.5 md:p-4 ${r.user_id === myUserId ? "ranking-self" : ""}`}>
                     <div className="flex items-center gap-2 md:gap-4 min-w-0">
                       <div className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-content-center rounded-full border border-primary/30 bg-primary/5 text-xs md:text-base font-bold text-primary">
                         {i + 4}º
