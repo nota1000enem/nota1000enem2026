@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Sparkles, Star, ArrowRight } from "lucide-react";
-import heroAsset from "@/assets/hero-1000enem.png.asset.json";
+import heroAsset from "@/assets/hero-vecel.webp.asset.json";
 import { LazyOnVisible } from "@/components/lazy-on-visible";
+import { HeroFX } from "@/components/hero-fx";
 
 const HomeBelowFold = lazy(() => import("@/components/home/below-fold"));
 
