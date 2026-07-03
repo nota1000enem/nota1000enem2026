@@ -46,8 +46,8 @@ function Index() {
       {/* HERO */}
       <section className="relative gradient-hero overflow-hidden">
         <HeroFX />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
-          <div className="space-y-6">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 py-24 md:grid-cols-2 md:py-36">
+          <div className="space-y-8">
             <Badge
               variant="outline"
               className="border-primary/40 bg-primary/10 text-primary backdrop-blur"
@@ -72,7 +72,7 @@ function Index() {
                 <span className="font-semibold text-foreground">Sem cartão de crédito.</span>
               </span>
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4 pt-2">
               <Link to="/redacao">
                 <Button size="lg" className="glow-blue animate-pulse-glow">
                   Corrigir minha redação grátis <ArrowRight className="ml-1 h-4 w-4" />
@@ -84,14 +84,14 @@ function Index() {
                 </Button>
               </Link>
             </div>
-            <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-6 pt-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-primary text-primary" /> 4.9/5 alunos
               </div>
               <div>+ de 78 mil redações corrigidas</div>
             </div>
           </div>
-          <div className="relative animate-float">
+          <div className="relative animate-float md:mt-8">
             <div className="mockup-frame">
               <div className="relative overflow-hidden rounded-2xl">
                 <img
@@ -111,11 +111,11 @@ function Index() {
         </div>
 
         {/* Faixa de áreas */}
-        <div className="mx-auto max-w-5xl px-4 pb-16">
+        <div className="mx-auto max-w-5xl px-4 pb-24 pt-8">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
             Trilhas do ENEM
           </p>
-          <ul className="mt-6 mx-auto max-w-2xl divide-y divide-transparent">
+          <ul className="mt-10 mx-auto max-w-2xl divide-y divide-transparent">
             {[
               "Matemática e suas Tecnologias",
               "Linguagens, Códigos e suas Tecnologias",
