@@ -352,11 +352,11 @@ function Planos() {
   const renderCard = (p: typeof planos[number]) => (
     <Card
       key={p.name}
-      className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-2 ring-primary/60" : ""}`}
+      className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-4 ring-primary/70 md:scale-[1.04] podio-active" : ""}`}
     >
       {p.popular && (
         <div className="mb-3 flex justify-center">
-          <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background">
+          <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background px-3 py-1 text-[11px] uppercase tracking-wider">
             <Crown className="mr-1 h-3 w-3" /> MAIS VENDIDO
           </Badge>
         </div>
@@ -397,7 +397,7 @@ function Planos() {
         size="lg"
         className={
           p.popular
-            ? "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base btn-gradient-hot font-extrabold uppercase tracking-wide"
+            ? "mt-6 w-full whitespace-normal break-words leading-tight text-base sm:text-lg btn-gradient-hot font-extrabold uppercase tracking-wide py-7 ring-2 ring-primary/60 animate-pulse-glow shadow-lg shadow-primary/40"
             : "mt-6 w-full whitespace-normal break-words leading-tight text-sm sm:text-base btn-gradient-primary font-bold"
         }
       >

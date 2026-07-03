@@ -232,7 +232,7 @@ function Aulas() {
   }, []);
 
   function isLiberada(titulo: string, area: string, idx: number) {
-    if (idx < 2 && loggedIn) return true;
+    if (idx < 4 && loggedIn) return true;
     return planoPago && canAccessArea(tier, area);
   }
 
@@ -254,7 +254,7 @@ function Aulas() {
       toast.info("Carregando seu acesso...");
       return;
     }
-    if (idx < 2 && !loggedIn) {
+    if (idx < 4 && !loggedIn) {
       navigate({ to: "/auth" });
       return;
     }
@@ -290,7 +290,7 @@ function Aulas() {
                   <CarouselContent>
                     {tr.aulas.map((a, idx) => {
                       const liberada = isLiberada(a.t, tr.area, idx);
-                      const free = idx < 2;
+                      const free = idx < 4;
                       return (
                         <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                           <Card

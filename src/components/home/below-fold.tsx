@@ -237,7 +237,7 @@ export default function HomeBelowFold() {
                   glow: i === 0 ? "glow-blue" : "",
                 }))
             ).map((p) => (
-              <Card key={p.pos} className={`card-glass p-3 md:p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
+              <Card key={p.pos} className={`card-glass card-gradient-border podio-active p-3 md:p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
                 <div className={`mx-auto h-14 w-14 md:h-20 md:w-20 overflow-hidden rounded-full border-2 border-background ring-2 ${p.ring} bg-muted`}>
                   {p.avatar_url ? (
                     <img src={p.avatar_url} alt={p.nome} className="h-full w-full object-cover" loading="lazy" />
@@ -381,10 +381,10 @@ export default function HomeBelowFold() {
                 items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Acesso ETERNO — sem mensalidade","70 redações por mês","Tudo do Full Access","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","IA Professor Rígido vitalício","Plano de Estudo com IA vitalício","Atualizações futuras incluídas","Sem renovação, sem cobrança recorrente","Grupo VIP + Network"] },
             ];
             const renderCard = (p: typeof planosArr[number]) => (
-              <Card key={p.name} className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-2 ring-primary/60" : ""}`}>
+              <Card key={p.name} className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-4 ring-primary/70 md:scale-[1.04] podio-active" : ""}`}>
                 {p.popular && (
                   <div className="mb-3 flex justify-center">
-                    <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background">
+                    <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background px-3 py-1 text-[11px] uppercase tracking-wider">
                       <Crown className="mr-1 h-3 w-3" /> MAIS VENDIDO
                     </Badge>
                   </div>
@@ -412,7 +412,9 @@ export default function HomeBelowFold() {
                   ))}
                 </ul>
                 <Button onClick={() => handleBuy(p.planType)} disabled={loadingPlan !== null} size="lg"
-                  className={p.popular ? "mt-6 w-full btn-gradient-hot font-extrabold uppercase tracking-wide" : "mt-6 w-full btn-gradient-primary font-bold"}>
+                  className={p.popular
+                    ? "mt-6 w-full btn-gradient-hot font-extrabold uppercase tracking-wide text-base py-6 ring-2 ring-primary/60 animate-pulse-glow shadow-lg shadow-primary/40"
+                    : "mt-6 w-full btn-gradient-primary font-bold"}>
                   {loadingPlan === p.planType ? (
                     <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo checkout…</>
                   ) : p.popular ? (

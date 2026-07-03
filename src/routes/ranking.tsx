@@ -36,6 +36,7 @@ function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLogged, setIsLogged] = useState(false);
+  const [myUserId, setMyUserId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +46,7 @@ function RankingPage() {
       ]);
       setRows((rk as unknown as Row[]) ?? []);
       setIsLogged(!!auth.user);
+      setMyUserId(auth.user?.id ?? null);
       setLoading(false);
     })();
   }, []);
@@ -91,7 +93,7 @@ function RankingPage() {
                   { ring: "ring-orange-400/70", color: "text-orange-400", label: "3º Lugar", shadow: "shadow-[0_0_30px_-5px_rgba(251,146,60,0.45)]" },
                 ][i];
                 return (
-                  <Card key={r.user_id} className={`card-glass card-gradient-border glow-blue p-3 md:p-6 text-center ${cores.shadow}`}>
+                  <Card key={r.user_id} className={`card-glass card-gradient-border podio-active glow-blue p-3 md:p-6 text-center ${cores.shadow}`}>
                     <div className="relative mx-auto h-14 w-14 md:h-24 md:w-24">
                       <div className="absolute inset-0 rounded-full p-[2px] btn-gradient-primary">
                         <div className="h-full w-full overflow-hidden rounded-full bg-muted">
@@ -123,7 +125,7 @@ function RankingPage() {
             {resto.length > 0 && (
               <div className="mt-6 md:mt-8 space-y-1.5 md:space-y-2">
                 {resto.map((r, i) => (
-                  <Card key={r.user_id} className="card-glass flex items-center justify-between p-2.5 md:p-4">
+                  <Card key={r.user_id} className={`card-glass flex items-center justify-between p-2.5 md:p-4 ${r.user_id === myUserId ? "ranking-self" : ""}`}>
                     <div className="flex items-center gap-2 md:gap-4 min-w-0">
                       <div className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-content-center rounded-full border border-primary/30 bg-primary/5 text-xs md:text-base font-bold text-primary">
                         {i + 4}º
