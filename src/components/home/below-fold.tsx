@@ -237,7 +237,7 @@ export default function HomeBelowFold() {
                   glow: i === 0 ? "glow-blue" : "",
                 }))
             ).map((p) => (
-              <Card key={p.pos} className={`card-glass p-3 md:p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
+              <Card key={p.pos} className={`card-glass card-gradient-border podio-active p-3 md:p-6 text-center ring-2 ${p.ring} ${p.glow}`}>
                 <div className={`mx-auto h-14 w-14 md:h-20 md:w-20 overflow-hidden rounded-full border-2 border-background ring-2 ${p.ring} bg-muted`}>
                   {p.avatar_url ? (
                     <img src={p.avatar_url} alt={p.nome} className="h-full w-full object-cover" loading="lazy" />
