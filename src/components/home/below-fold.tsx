@@ -13,6 +13,7 @@ import {
   ArrowRight,
   GraduationCap,
   Loader2,
+  Crown,
 } from "lucide-react";
 import {
   Carousel,
@@ -380,11 +381,18 @@ export default function HomeBelowFold() {
                 items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Acesso ETERNO — sem mensalidade","70 redações por mês","Tudo do Full Access","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","IA Professor Rígido vitalício","Plano de Estudo com IA vitalício","Atualizações futuras incluídas","Sem renovação, sem cobrança recorrente","Grupo VIP + Network"] },
             ];
             const renderCard = (p: typeof planosArr[number]) => (
-              <Card key={p.name} className={`relative flex h-full flex-col p-6 card-glass ${p.popular ? "card-gradient-border pt-9 glow-blue" : ""}`}>
+              <Card key={p.name} className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-2 ring-primary/60" : ""}`}>
                 {p.popular && (
-                  <Badge className="absolute top-2 left-1/2 -translate-x-1/2 btn-gradient-hot text-white shadow-md">MAIS VENDIDO</Badge>
+                  <div className="mb-3 flex justify-center">
+                    <Badge className="btn-gradient-hot text-white shadow-md border-2 border-background">
+                      <Crown className="mr-1 h-3 w-3" /> MAIS VENDIDO
+                    </Badge>
+                  </div>
                 )}
-                <h3 className="text-xl font-bold font-display">{p.name}</h3>
+                <h3 className={`font-bold font-display ${p.popular ? "text-2xl text-primary" : "text-xl"}`}>
+                  {p.popular && <Crown className="inline h-5 w-5 mr-1 -mt-1" />}
+                  {p.name}
+                </h3>
                 {p.oldPrice && promo.active && (
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-sm text-muted-foreground line-through">R$ {p.oldPrice}</span>

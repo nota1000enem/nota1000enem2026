@@ -428,7 +428,87 @@
 }
 .animate-pulse-glow { animation: pulse-glow 2.4s ease-in-out infinite; }
 
+/* ============ HERO FX ============ */
+.hero-dots {
+  position: absolute;
+  inset: -20%;
+  background-image: radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 55% 55% at 55% 45%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 55% 55% at 55% 45%, #000 30%, transparent 75%);
+  opacity: 0.5;
+  will-change: transform;
+}
+.hero-dots-a { animation: dots-drift-a 26s linear infinite; }
+.hero-dots-b {
+  background-size: 34px 34px;
+  opacity: 0.28;
+  animation: dots-drift-b 40s linear infinite;
+}
+@keyframes dots-drift-a {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-44px,-22px,0); }
+}
+@keyframes dots-drift-b {
+  0%   { transform: translate3d(0,0,0) rotate(0deg); }
+  100% { transform: translate3d(34px,20px,0) rotate(2deg); }
+}
+
+.hero-blob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(90vw, 780px);
+  height: min(90vw, 780px);
+  transform: translate(-50%, -50%);
+  animation: blob-spin 60s linear infinite;
+  filter: drop-shadow(0 0 60px oklch(0.58 0.32 25 / 0.45));
+  opacity: 0.9;
+}
+@keyframes blob-spin {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.hero-laser {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 2px;
+  top: 30%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    oklch(0.65 0.30 25 / 0) 15%,
+    oklch(0.65 0.30 25 / 0.9) 50%,
+    oklch(0.65 0.30 25 / 0) 85%,
+    transparent 100%);
+  box-shadow: 0 0 24px oklch(0.65 0.30 25 / 0.9),
+              0 0 60px oklch(0.65 0.30 25 / 0.6);
+  animation: laser-sweep 4.5s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes laser-sweep {
+  0%   { top: 12%;  opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { top: 78%;  opacity: 1; }
+  60%  { opacity: 0; }
+  100% { top: 12%;  opacity: 0; }
+}
+
+.hero-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(oklch(0.65 0.30 25 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.65 0.30 25 / 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   body::before, body::after { animation: none !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .hero-dots, .hero-blob, .hero-laser { animation: none !important; }
 }
+
