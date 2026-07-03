@@ -36,6 +36,7 @@ function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLogged, setIsLogged] = useState(false);
+  const [myUserId, setMyUserId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +46,7 @@ function RankingPage() {
       ]);
       setRows((rk as unknown as Row[]) ?? []);
       setIsLogged(!!auth.user);
+      setMyUserId(auth.user?.id ?? null);
       setLoading(false);
     })();
   }, []);
