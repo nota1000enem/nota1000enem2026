@@ -191,30 +191,37 @@ function RootComponent() {
   // cima e descer de novo. Observa cards e elementos já marcados no SSR.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const apply = () => {
+    let io: IntersectionObserver | null = null;
+    const observed = new WeakSet<Element>();
+    const observeAll = () => {
+      if (!io) return;
       const els = document.querySelectorAll<HTMLElement>(".card-glass, [data-reveal]");
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              e.target.classList.add("is-revealed");
-            } else if (e.boundingClientRect.top > 0) {
-              // só re-esconde quando sair pelo BOTTOM (usuário rolando pra cima)
-              e.target.classList.remove("is-revealed");
-            }
-          });
-        },
-        { rootMargin: "0px 0px -10% 0px", threshold: [0, 0.15] },
-      );
-      els.forEach((el) => io.observe(el));
-      return io;
+      els.forEach((el) => {
+        if (!observed.has(el)) {
+          observed.add(el);
+          io!.observe(el);
+        }
+      });
     };
-    let io = apply();
+    io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-revealed");
+          } else if (e.boundingClientRect.top > 0) {
+            e.target.classList.remove("is-revealed");
+          }
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.12] },
+    );
+    observeAll();
+    const mo = new MutationObserver(() => observeAll());
+    mo.observe(document.body, { childList: true, subtree: true });
     const unsub = router.subscribe("onResolved", () => {
-      io.disconnect();
-      setTimeout(() => { io = apply(); }, 80);
+      setTimeout(observeAll, 80);
     });
-    return () => { io.disconnect(); unsub(); };
+    return () => { io?.disconnect(); mo.disconnect(); unsub(); };
   }, [router]);
 
   return (
