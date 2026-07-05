@@ -98,7 +98,7 @@ export const Route = createFileRoute("/api/public/cron-plano-vencendo")({
               });
               await supabaseAdmin
                 .from("profiles")
-                .update({ plan_expiration_reminder_sent_at: p.plan_expires_at })
+                .update({ plan_expiration_reminder_sent_at: p.plan_expires_at } as any)
                 .eq("id", p.id);
               enviados++;
             } catch (e) {

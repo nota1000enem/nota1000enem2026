@@ -31,6 +31,7 @@ import { Route as SimuladoIdRouteImport } from './routes/simulado.$id'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
+import { Route as ApiPublicCronPlanoVencendoRouteImport } from './routes/api/public/cron-plano-vencendo'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -147,6 +148,12 @@ const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
   path: '/api/public/mp-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronPlanoVencendoRoute =
+  ApiPublicCronPlanoVencendoRouteImport.update({
+    id: '/api/public/cron-plano-vencendo',
+    path: '/api/public/cron-plano-vencendo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
+  '/api/public/cron-plano-vencendo': typeof ApiPublicCronPlanoVencendoRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -226,6 +234,7 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
+  '/api/public/cron-plano-vencendo': typeof ApiPublicCronPlanoVencendoRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -256,6 +265,7 @@ export interface FileRoutesById {
   '/unsubscribe': typeof UnsubscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/simulado/$id': typeof SimuladoIdRoute
+  '/api/public/cron-plano-vencendo': typeof ApiPublicCronPlanoVencendoRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
+    | '/api/public/cron-plano-vencendo'
     | '/api/public/mp-webhook'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
+    | '/api/public/cron-plano-vencendo'
     | '/api/public/mp-webhook'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/email/unsubscribe'
     | '/simulado/$id'
+    | '/api/public/cron-plano-vencendo'
     | '/api/public/mp-webhook'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -375,6 +388,7 @@ export interface RootRouteChildren {
   UnsubscribeRoute: typeof UnsubscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   SimuladoIdRoute: typeof SimuladoIdRoute
+  ApiPublicCronPlanoVencendoRoute: typeof ApiPublicCronPlanoVencendoRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -540,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMpWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron-plano-vencendo': {
+      id: '/api/public/cron-plano-vencendo'
+      path: '/api/public/cron-plano-vencendo'
+      fullPath: '/api/public/cron-plano-vencendo'
+      preLoaderRoute: typeof ApiPublicCronPlanoVencendoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -599,6 +620,7 @@ const rootRouteChildren: RootRouteChildren = {
   UnsubscribeRoute: UnsubscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   SimuladoIdRoute: SimuladoIdRoute,
+  ApiPublicCronPlanoVencendoRoute: ApiPublicCronPlanoVencendoRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

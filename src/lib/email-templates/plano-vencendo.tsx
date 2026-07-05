@@ -28,10 +28,7 @@ export function PlanoVencendoEmail({
   return (
     <Html>
       <Head />
-      <Preview>
-        Seu plano {planoLabel} vence em {diasRestantes} dia
-        {diasRestantes === 1 ? "" : "s"} — renove agora
-      </Preview>
+      <Preview>{`Seu plano ${planoLabel} vence em ${diasRestantes} dia${diasRestantes === 1 ? "" : "s"} — renove agora`}</Preview>
       <Body
         style={{
           backgroundColor: "#0b1020",
