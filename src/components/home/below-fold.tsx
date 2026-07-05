@@ -83,7 +83,7 @@ export default function HomeBelowFold() {
     checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
     const PLAN_VALUES_HOME: Record<PlanType, number> = {
-      LIGHT: 19.9, PRO: 29.9, FULL: 49.9, VITALICIO: 499,
+      LIGHT: 19.9, PRO: 29.9, FULL: 49.9, VITALICIO: 349.9,
     };
     try {
       try {
