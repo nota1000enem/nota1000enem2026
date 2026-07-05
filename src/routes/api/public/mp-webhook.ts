@@ -127,7 +127,8 @@ async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: st
 
   let newPeriodEnd: string;
   if (planType === "VITALICIO") {
-    newPeriodEnd = VITALICIO_END;
+    // Plano Anual: renova por 365 dias (não é mais vitalício eterno)
+    newPeriodEnd = computeAnnualEnd();
   } else if (
     existing &&
     existing.status === "ACTIVE" &&
@@ -170,8 +171,9 @@ async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: st
     .from("profiles")
     .update({
       plan: planLower,
-      plan_expires_at: planType === "VITALICIO" ? null : newPeriodEnd,
-      plan_vitalicio: planType === "VITALICIO",
+      // Plano "vitalicio" agora é Anual → sempre tem data de expiração
+      plan_expires_at: newPeriodEnd,
+      plan_vitalicio: false,
       ...(pay.payer?.id ? { mp_customer_id: String(pay.payer.id) } : {}),
     })
     .eq("id", userId);
