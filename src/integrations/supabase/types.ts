@@ -307,6 +307,7 @@ export type Database = {
           idade: number | null
           mp_customer_id: string | null
           plan: string
+          plan_expiration_reminder_sent_at: string | null
           plan_expires_at: string | null
           plan_vitalicio: boolean
         }
@@ -321,6 +322,7 @@ export type Database = {
           idade?: number | null
           mp_customer_id?: string | null
           plan?: string
+          plan_expiration_reminder_sent_at?: string | null
           plan_expires_at?: string | null
           plan_vitalicio?: boolean
         }
@@ -335,6 +337,7 @@ export type Database = {
           idade?: number | null
           mp_customer_id?: string | null
           plan?: string
+          plan_expiration_reminder_sent_at?: string | null
           plan_expires_at?: string | null
           plan_vitalicio?: boolean
         }
