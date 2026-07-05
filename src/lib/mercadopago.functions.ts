@@ -4,10 +4,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const PLAN_CONFIG = {
-  LIGHT: { price: 19.9, credits: 15, tier: "PRO_BASIC", label: "ENEM Light" },
-  PRO: { price: 29.9, credits: 30, tier: "FULL_PREMIUM", label: "ENEM Pro" },
-  FULL: { price: 49.9, credits: 60, tier: "FULL_ACESS", label: "Full Acess ENEM" },
-  VITALICIO: { price: 499, credits: 70, tier: "FULL_ACESS", label: "Full Acess Vitalício" },
+  LIGHT: { price: 19.9, credits: 10, tier: "PRO_BASIC", label: "ENEM Light" },
+  PRO: { price: 29.9, credits: 20, tier: "FULL_PREMIUM", label: "ENEM Pro" },
+  FULL: { price: 49.9, credits: 30, tier: "FULL_ACESS", label: "Full Acess ENEM" },
+  VITALICIO: { price: 349.9, credits: 40, tier: "FULL_ACESS", label: "Full Acess Anual" },
 } as const;
 
 export type PlanType = keyof typeof PLAN_CONFIG;
@@ -113,12 +113,16 @@ export const createCheckout = createServerFn({ method: "POST" })
 // ============================================================
 
 const PLAN_CREDITS_FN: Record<string, number> = {
-  LIGHT: 15, PRO: 30, FULL: 60, VITALICIO: 70,
+  LIGHT: 10, PRO: 20, FULL: 30, VITALICIO: 40,
 };
 const PLAN_VALOR_CENTAVOS_FN: Record<string, number> = {
-  LIGHT: 1990, PRO: 2990, FULL: 4990, VITALICIO: 49900,
+  LIGHT: 1990, PRO: 2990, FULL: 4990, VITALICIO: 34990,
 };
-const VITALICIO_END_FN = "2099-12-31T23:59:59.000Z";
+function computeAnnualEndFn(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 365);
+  return d.toISOString();
+}
 
 export const forcarConfirmacaoMP = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -195,7 +199,7 @@ export const forcarConfirmacaoMP = createServerFn({ method: "POST" })
 
     let newPeriodEnd: string;
     if (planType === "VITALICIO") {
-      newPeriodEnd = VITALICIO_END_FN;
+      newPeriodEnd = computeAnnualEndFn();
     } else if (existing?.status === "ACTIVE" && existing.current_period_end && new Date(existing.current_period_end) > new Date()) {
       const base = new Date(existing.current_period_end);
       base.setDate(base.getDate() + 30);
@@ -220,8 +224,8 @@ export const forcarConfirmacaoMP = createServerFn({ method: "POST" })
       const planLower = planType.toLowerCase();
       await supabaseAdmin.from("profiles").update({
         plan: planLower,
-        plan_expires_at: planType === "VITALICIO" ? null : newPeriodEnd,
-        plan_vitalicio: planType === "VITALICIO",
+        plan_expires_at: newPeriodEnd,
+        plan_vitalicio: false,
         ...(aprovado.payer?.id ? { mp_customer_id: String(aprovado.payer.id) } : {}),
       }).eq("id", userId);
     }
