@@ -42,20 +42,25 @@ function verifyMpSignature(opts: {
 }
 
 const PLAN_CREDITS: Record<string, number> = {
-  LIGHT: 15,
-  PRO: 30,
-  FULL: 60,
-  VITALICIO: 70,
+  LIGHT: 10,
+  PRO: 20,
+  FULL: 30,
+  VITALICIO: 40, // agora plano Anual (renova a cada 30 dias durante o ano)
 };
 
 const PLAN_VALOR_CENTAVOS: Record<string, number> = {
   LIGHT: 1990,
   PRO: 2990,
   FULL: 4990,
-  VITALICIO: 49900,
+  VITALICIO: 34990, // Plano Anual - R$ 349,90
 };
 
-const VITALICIO_END = "2099-12-31T23:59:59.000Z";
+// Plano "Anual" (mantém o enum VITALICIO por compat): 365 dias em vez de eterno
+function computeAnnualEnd(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 365);
+  return d.toISOString();
+}
 
 async function processPayment(paymentId: string, reqMeta: { ip?: string; ua?: string }) {
   const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
