@@ -18,8 +18,10 @@ export interface TemplateEntry {
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
 import { template as acessoLiberadoTemplate } from "./acesso-liberado";
+import { template as planoVencendoTemplate } from "./plano-vencendo";
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   "acesso-liberado": acessoLiberadoTemplate,
+  "plano-vencendo": planoVencendoTemplate,
 };
 
