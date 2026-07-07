@@ -149,7 +149,7 @@ export default function HomeBelowFold() {
               Modo <span className="gradient-text">Professor Rígido</span>
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Ative e receba comentários brutalmente honestos (e engraçados) que vão te fazer escrever melhor por orgulho.
+              Ative e receba comentários brutalmente honestos (e rígidos) que vão fazer a sua redação melhorar por ódio 😂.
             </p>
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-border/60 bg-background/60 p-4 text-sm italic text-muted-foreground">
@@ -222,6 +222,42 @@ export default function HomeBelowFold() {
                 Entrar no Ranking <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* TRILHAS DO ENEM */}
+      <section className="py-20">
+        <div className="mx-auto max-w-5xl px-4">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
+            Trilhas do ENEM
+          </p>
+          <ul className="mt-10 mx-auto max-w-2xl divide-y divide-transparent">
+            {[
+              "Matemática e suas Tecnologias",
+              "Linguagens, Códigos e suas Tecnologias",
+              "Ciências Humanas e suas Tecnologias",
+              "Ciências da Natureza e suas Tecnologias",
+              "Redação",
+              "+ 1.000 questões em VÍDEO",
+            ].map((t, i, arr) => (
+              <li key={t} data-reveal>
+                <div className="py-4 text-center text-base font-medium text-foreground md:text-lg">
+                  {t}
+                </div>
+                {i < arr.length - 1 && <div className="divider-gradient" />}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 text-center" data-reveal>
+            <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary ring-1 ring-primary/30">
+              ✦ Aula nova toda semana
+            </span>
+            <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground md:text-base">
+              Estude todas as áreas do ENEM com correções inteligentes, trilhas
+              personalizadas e foco na <span className="gradient-text font-semibold">nota 1.000</span>.
+              Tudo em um só lugar — <span className="font-semibold text-foreground">AQUI e AGORA</span>.
+            </p>
           </div>
         </div>
       </section>
