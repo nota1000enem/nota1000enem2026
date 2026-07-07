@@ -171,7 +171,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TOP NOTAS */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
