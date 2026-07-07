@@ -394,6 +394,9 @@
 
 /* ===== Pódio (top 3) — brilho e shimmer permanentes ===== */
 .podio-active {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   transform: translateY(-2px);
   box-shadow:
     0 1px 0 0 oklch(1 0 0 / 0.08) inset,
