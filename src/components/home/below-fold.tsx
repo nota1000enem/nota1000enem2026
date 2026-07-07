@@ -149,7 +149,7 @@ export default function HomeBelowFold() {
               Modo <span className="gradient-text">Professor Rígido</span>
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Ative e receba comentários brutalmente honestos (e engraçados) que vão te fazer escrever melhor por orgulho.
+              Ative e receba comentários brutalmente honestos (e rígidos) que vão fazer a sua redação melhorar por ódio 😂.
             </p>
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-border/60 bg-background/60 p-4 text-sm italic text-muted-foreground">
