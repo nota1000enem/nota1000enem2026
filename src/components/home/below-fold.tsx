@@ -227,7 +227,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TRILHAS DO ENEM */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
             Trilhas do ENEM
