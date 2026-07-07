@@ -56,7 +56,7 @@ function Index() {
               <Sparkles className="mr-1 h-3 w-3" /> IA treinada nas competências do ENEM
             </Badge>
             <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Seja aprovado no ENEM, estudando menos de 30 dias com{" "}
+              Seja aprovado no ENEM, estudando menos de 67 dias com{" "}
               <span className="gradient-text text-glow">Inteligência Artificial</span>
             </h1>
             <p className="text-lg leading-relaxed text-muted-foreground">
@@ -64,8 +64,7 @@ function Index() {
                 Corrija sua redação com IA e descubra onde melhorar.
               </span>
               <span className="mt-3 block">
-                Palavras-chave, redações prontas, vídeo aulas, corretor de redação por competência
-                e plano de estudos personalizado — tudo focado na sua aprovação.
+                Corrija sua redação com <span className="font-semibold text-foreground">99% de assertividade na nota</span>, baseada no ENEM 2026. De brinde você recebe uma plataforma completa com redações prontas para aprender, vídeo aulas, plano de estudos personalizado e mais de <span className="font-semibold text-foreground">500 PDFs para o ENEM 2026</span> — tudo focado na sua aprovação.
               </span>
               <span className="mt-3 block">
                 <span className="font-semibold text-primary">TESTE GRÁTIS AGORA.</span>{" "}
