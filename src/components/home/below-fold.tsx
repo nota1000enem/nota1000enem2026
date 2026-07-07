@@ -111,7 +111,7 @@ export default function HomeBelowFold() {
   return (
     <>
       {/* COMO FUNCIONA */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
@@ -141,7 +141,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">🔥 Novo</Badge>
@@ -171,7 +171,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TOP NOTAS */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
@@ -227,7 +227,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TRILHAS DO ENEM */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
             Trilhas do ENEM
@@ -263,7 +263,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* DEPOIMENTOS */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Provas sociais</Badge>
@@ -295,61 +295,55 @@ export default function HomeBelowFold() {
             ))}
           </div>
 
-          <div className="mt-12">
+          <div className="mt-10">
             <div className="mb-6 text-center">
               <Badge variant="outline" className="border-primary/40 text-primary">
-                <Star className="mr-1 h-3 w-3 fill-primary" /> Mais histórias reais
+                <Star className="mr-1 h-3 w-3 fill-primary" /> Números de 2025
               </Badge>
               <h3 className="mt-3 text-2xl font-bold md:text-3xl">
-                + de 78 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
+                + de 8 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
               </h3>
             </div>
-            <Carousel opts={{ align: "start", loop: true }} plugins={[autoplay.current]} className="mx-auto max-w-6xl px-12 md:px-16">
-              <CarouselContent className="py-4">
-                {[
-                  { name: "Isadora Bernardes, 18", curso: "Psicologia – UFRGS", nota: "740 → 940", text: "Antes eu chutava conectivos. Hoje sei contar inter e intraparágrafos e nunca mais tomei menos de 180 na C4." },
-                  { name: "Caio Henrique Sampaio, 17", curso: "Medicina – UNIFESP", nota: "820 → 980", text: "A IA mostrou erro de regência que 3 professores meus deixaram passar. Subi 160 pontos só na C1." },
-                  { name: "Letícia Marques, 19", curso: "Arquitetura – UFMG", nota: "660 → 900", text: "Sem repertório eu nunca passava de 700. Os repertórios sugeridos pelo Nota 1000 ENEM viraram parte do meu vocabulário." },
-                  { name: "Felipe Tavares, 18", curso: "Ciência da Computação – UFRJ", nota: "700 → 960", text: "O Modo Professor Rígido me humilhou na primeira correção. Na quinta eu agradeci. Passei na UFRJ." },
-                  { name: "Amanda Sousa, 16", curso: "2º EM – preparando medicina", nota: "540 → 860", text: "Em 5 meses comecei a entender O QUE é uma proposta de intervenção completa. A IA é didática como cursinho caro." },
-                  { name: "Rodrigo Pacheco, 19", curso: "Direito – PUC-RS", nota: "820 → 960", text: "Usei o ranking pra me motivar. Brigar pelo top 10 me fez treinar todo dia. Passei com folga." },
-                  { name: "Helena Quintanilha, 18", curso: "Veterinária – UFV", nota: "680 → 940", text: "A IA não inventa erro. Quando tira ponto, ela CITA a frase e a regra. Confio 100% no feedback." },
-                  { name: "Murilo Andrade, 17", curso: "Engenharia Civil – UFSC", nota: "600 → 880", text: "Plano de estudo com IA foi divisor de águas. Pomodoro real, com matérias que EU precisava, não plano genérico." },
-                  { name: "Sofia Vasconcelos, 18", curso: "Jornalismo – UFBA", nota: "740 → 960", text: "Tirei 200 na C2 pela primeira vez depois que entendi como fugir do tema. A IA me corrigiu sem dó até eu acertar." },
-                ].map((t, i) => (
-                  <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
-                    <Card className="card-glass h-full p-6">
-                      <div className="mb-3 flex items-center justify-between">
-                        <div className="flex gap-1">
-                          {Array.from({ length: 5 }).map((_, k) => (
-                            <Star key={k} className="h-3.5 w-3.5 fill-primary text-primary" />
-                          ))}
-                        </div>
-                        <Badge variant="outline" className="border-primary/40 text-xs text-primary">{t.nota}</Badge>
-                      </div>
-                      <p className="text-sm leading-relaxed">"{t.text}"</p>
-                      <div className="mt-4 flex items-center gap-3 border-t border-border/40 pt-3">
-                        <div className="grid h-10 w-10 place-content-center rounded-full bg-primary/10 text-sm font-bold text-primary ring-1 ring-primary/30">
-                          {t.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">{t.name}</p>
-                          <p className="text-xs text-muted-foreground">{t.curso}</p>
-                        </div>
-                      </div>
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-0" />
-              <CarouselNext className="right-0" />
-            </Carousel>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { name: "Isadora Bernardes, 18", curso: "Psicologia – UFRGS", nota: "740 → 940", text: "Antes eu chutava conectivos. Hoje sei contar inter e intraparágrafos e nunca mais tomei menos de 180 na C4." },
+                { name: "Caio Henrique Sampaio, 17", curso: "Medicina – UNIFESP", nota: "820 → 980", text: "A IA mostrou erro de regência que 3 professores meus deixaram passar. Subi 160 pontos só na C1." },
+                { name: "Letícia Marques, 19", curso: "Arquitetura – UFMG", nota: "660 → 900", text: "Sem repertório eu nunca passava de 700. Os repertórios sugeridos pelo Nota 1000 ENEM viraram parte do meu vocabulário." },
+                { name: "Felipe Tavares, 18", curso: "Ciência da Computação – UFRJ", nota: "700 → 960", text: "O Modo Professor Rígido me humilhou na primeira correção. Na quinta eu agradeci. Passei na UFRJ." },
+                { name: "Amanda Sousa, 16", curso: "2º EM – preparando medicina", nota: "540 → 860", text: "Em 5 meses comecei a entender O QUE é uma proposta de intervenção completa. A IA é didática como cursinho caro." },
+                { name: "Rodrigo Pacheco, 19", curso: "Direito – PUC-RS", nota: "820 → 960", text: "Usei o ranking pra me motivar. Brigar pelo top 10 me fez treinar todo dia. Passei com folga." },
+                { name: "Helena Quintanilha, 18", curso: "Veterinária – UFV", nota: "680 → 940", text: "A IA não inventa erro. Quando tira ponto, ela CITA a frase e a regra. Confio 100% no feedback." },
+                { name: "Murilo Andrade, 17", curso: "Engenharia Civil – UFSC", nota: "600 → 880", text: "Plano de estudo com IA foi divisor de águas. Pomodoro real, com matérias que EU precisava, não plano genérico." },
+                { name: "Sofia Vasconcelos, 18", curso: "Jornalismo – UFBA", nota: "740 → 960", text: "Tirei 200 na C2 pela primeira vez depois que entendi como fugir do tema. A IA me corrigiu sem dó até eu acertar." },
+              ].map((t, i) => (
+                <Card key={i} className="card-glass h-full p-6">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex gap-1">
+                      {Array.from({ length: 5 }).map((_, k) => (
+                        <Star key={k} className="h-3.5 w-3.5 fill-primary text-primary" />
+                      ))}
+                    </div>
+                    <Badge variant="outline" className="border-primary/40 text-xs text-primary">{t.nota}</Badge>
+                  </div>
+                  <p className="text-sm leading-relaxed">"{t.text}"</p>
+                  <div className="mt-4 flex items-center gap-3 border-t border-border/40 pt-3">
+                    <div className="grid h-10 w-10 place-content-center rounded-full bg-primary/10 text-sm font-bold text-primary ring-1 ring-primary/30">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.curso}</p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* PLANOS */}
-      <section id="planos" className="py-20">
+      <section id="planos" className="py-14">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
@@ -444,7 +438,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
@@ -461,7 +455,7 @@ export default function HomeBelowFold() {
         </div>
       </section>
       {/* APROVADOS */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Resultados
