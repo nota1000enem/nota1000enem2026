@@ -444,7 +444,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
