@@ -349,7 +349,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* PLANOS */}
-      <section id="planos" className="py-20">
+      <section id="planos" className="py-14">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
