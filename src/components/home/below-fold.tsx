@@ -226,6 +226,42 @@ export default function HomeBelowFold() {
         </div>
       </section>
 
+      {/* TRILHAS DO ENEM */}
+      <section className="py-20">
+        <div className="mx-auto max-w-5xl px-4">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
+            Trilhas do ENEM
+          </p>
+          <ul className="mt-10 mx-auto max-w-2xl divide-y divide-transparent">
+            {[
+              "Matemática e suas Tecnologias",
+              "Linguagens, Códigos e suas Tecnologias",
+              "Ciências Humanas e suas Tecnologias",
+              "Ciências da Natureza e suas Tecnologias",
+              "Redação",
+              "+ 1.000 questões em VÍDEO",
+            ].map((t, i, arr) => (
+              <li key={t} data-reveal>
+                <div className="py-4 text-center text-base font-medium text-foreground md:text-lg">
+                  {t}
+                </div>
+                {i < arr.length - 1 && <div className="divider-gradient" />}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 text-center" data-reveal>
+            <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary ring-1 ring-primary/30">
+              ✦ Aula nova toda semana
+            </span>
+            <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground md:text-base">
+              Estude todas as áreas do ENEM com correções inteligentes, trilhas
+              personalizadas e foco na <span className="gradient-text font-semibold">nota 1.000</span>.
+              Tudo em um só lugar — <span className="font-semibold text-foreground">AQUI e AGORA</span>.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* DEPOIMENTOS */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4">
