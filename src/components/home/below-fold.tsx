@@ -111,7 +111,7 @@ export default function HomeBelowFold() {
   return (
     <>
       {/* COMO FUNCIONA */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
