@@ -141,7 +141,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">🔥 Novo</Badge>
