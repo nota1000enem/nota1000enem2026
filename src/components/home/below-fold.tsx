@@ -140,46 +140,6 @@ export default function HomeBelowFold() {
         </div>
       </section>
 
-      {/* APROVADOS */}
-      <section className="py-20">
-        <div className="mx-auto max-w-5xl px-4 text-center">
-          <Badge variant="outline" className="border-primary/40 text-primary">
-            <Trophy className="mr-1 h-3 w-3" /> Resultados
-          </Badge>
-          <h2 className="mt-3 text-3xl font-bold md:text-5xl">
-            <span className="gradient-text">1.890 alunos aprovados</span> em 2025
-          </h2>
-          <p className="mt-3 text-muted-foreground">Seja você o próximo.</p>
-          <ul className="mx-auto mt-8 grid max-w-3xl gap-3 text-left text-sm md:text-base">
-            {[
-              "1.000 questões em VÍDEO. Te ensino a como resolver do Zero!",
-              "Correção inteligente de redações baseada nos critérios oficiais do ENEM",
-              "Plano de estudos personalizado com IA treinada 100% no ENEM",
-              "Questões comentadas de Matemática, Linguagens e Códigos, Ciências da Natureza e Humanas",
-              "Feedback instantâneo para identificar erros e acelerar sua evolução",
-              "Simulados completos com análise detalhada de desempenho",
-              "Trilhas de estudo focadas nas competências que mais caem no ENEM",
-              "Relatórios inteligentes para acompanhar sua evolução em tempo real",
-              "Estratégias e repertórios prontos para tirar nota alta na redação",
-              "Ranking de desempenho para acompanhar seu progresso e motivação",
-              "Videoaulas, exercícios e revisões organizadas em uma única plataforma",
-            ].map((b) => (
-              <li key={b} className="flex items-start gap-3 rounded-lg border border-border/40 bg-card/40 p-3">
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8">
-            <Link to="/planos">
-              <Button size="lg" className="glow-blue">
-                Quero ser o próximo aprovado <ArrowRight className="ml-1 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* MODO PROFESSOR RIGIDO */}
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-4">
@@ -459,6 +419,45 @@ export default function HomeBelowFold() {
             <Link to="/redacao">
               <Button size="lg" className="glow-blue">
                 Corrigir minha redação agora <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+      {/* APROVADOS */}
+      <section className="py-20">
+        <div className="mx-auto max-w-5xl px-4 text-center">
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            <Trophy className="mr-1 h-3 w-3" /> Resultados
+          </Badge>
+          <h2 className="mt-3 text-3xl font-bold md:text-5xl">
+            <span className="gradient-text">1.890 alunos aprovados</span> em 2025
+          </h2>
+          <p className="mt-3 text-muted-foreground">Seja você o próximo.</p>
+          <ul className="mx-auto mt-8 grid max-w-3xl gap-3 text-left text-sm md:text-base">
+            {[
+              "1.000 questões em VÍDEO. Te ensino a como resolver do Zero!",
+              "Correção inteligente de redações baseada nos critérios oficiais do ENEM",
+              "Plano de estudos personalizado com IA treinada 100% no ENEM",
+              "Questões comentadas de Matemática, Linguagens e Códigos, Ciências da Natureza e Humanas",
+              "Feedback instantâneo para identificar erros e acelerar sua evolução",
+              "Simulados completos com análise detalhada de desempenho",
+              "Trilhas de estudo focadas nas competências que mais caem no ENEM",
+              "Relatórios inteligentes para acompanhar sua evolução em tempo real",
+              "Estratégias e repertórios prontos para tirar nota alta na redação",
+              "Ranking de desempenho para acompanhar seu progresso e motivação",
+              "Videoaulas, exercícios e revisões organizadas em uma única plataforma",
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-3 rounded-lg border border-border/40 bg-card/40 p-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            <Link to="/planos">
+              <Button size="lg" className="glow-blue">
+                Quero ser o próximo aprovado <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </Link>
           </div>
