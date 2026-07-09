@@ -21,10 +21,10 @@ import {
 export const Route = createFileRoute("/planos")({
   head: () => ({
     meta: [
-      { title: "Planos Nota 1000 ENEM – A partir de R$ 19,90/mês" },
-      { name: "description", content: "Escolha o plano ideal para sua aprovação no ENEM: correção de redação por IA, simulados, vídeo aulas e plano de estudo. A partir de R$ 19,90/mês." },
+      { title: "Planos Nota 1000 ENEM – A partir de R$ 57/mês" },
+      { name: "description", content: "Escolha o plano ideal para sua aprovação no ENEM: correção de redação por IA, simulados, vídeo aulas e plano de estudo. A partir de R$ 57/mês." },
       { property: "og:title", content: "Planos Nota 1000 ENEM" },
-      { property: "og:description", content: "Correção de redação por IA, simulados e vídeo aulas. A partir de R$ 19,90/mês." },
+      { property: "og:description", content: "Correção de redação por IA, simulados e vídeo aulas. A partir de R$ 57/mês." },
       { property: "og:url", content: "https://nota1000enem.online/planos" },
     ],
     links: [{ rel: "canonical", href: "https://nota1000enem.online/planos" }],
@@ -35,10 +35,10 @@ export const Route = createFileRoute("/planos")({
           "@context": "https://schema.org",
           "@type": "ItemList",
           itemListElement: [
-            { name: "ENEM Light", price: "19.90", desc: "10 redações/mês, 1.000 questões e simulados, plano de estudo IA." },
-            { name: "ENEM Pro", price: "29.90", desc: "20 redações/mês, todas as áreas, simulados e plano de estudo IA." },
-            { name: "ENEM Full", price: "44.90", desc: "30 redações/mês, todas as áreas, vídeo aulas e plano de estudo IA." },
-            { name: "ENEM Anual", price: "349.90", desc: "40 redações/mês por 12 meses, todos os recursos: redações, simulados, vídeo aulas e plano de estudo IA." },
+            { name: "ENEM Light", price: "57", desc: "10 redações/mês, 1.000 questões e simulados, plano de estudo IA." },
+            { name: "ENEM Pro", price: "77", desc: "20 redações/mês, todas as áreas, simulados e plano de estudo IA." },
+            { name: "ENEM Full", price: "99", desc: "30 redações/mês, todas as áreas, vídeo aulas e plano de estudo IA." },
+            { name: "ENEM Anual", price: "599", desc: "40 redações/mês por 12 meses, todos os recursos: redações, simulados, vídeo aulas e plano de estudo IA." },
           ].map((p, i) => ({
             "@type": "ListItem",
             position: i + 1,
@@ -101,7 +101,7 @@ const planos: Array<{
   {
     name: "ENEM Light",
     planType: "LIGHT",
-    price: "19,90",
+    price: "57",
     oldPrice: null,
     periodo: "/mês",
     desc: "Para começar com o pé direito.",
@@ -125,8 +125,8 @@ const planos: Array<{
   {
     name: "ENEM Pro",
     planType: "PRO",
-    price: "29,90",
-    oldPrice: "49,90",
+    price: "77",
+    oldPrice: null,
     periodo: "/mês",
     desc: "O queridinho dos aprovados.",
     popular: true,
@@ -153,8 +153,8 @@ const planos: Array<{
   {
     name: "Full Acess ENEM",
     planType: "FULL",
-    price: "44,90",
-    oldPrice: "99,90",
+    price: "99",
+    oldPrice: null,
     periodo: "/mês",
     desc: "Tudo, sem limites.",
     popular: false,
@@ -183,8 +183,8 @@ const planos: Array<{
   {
     name: "Full Acess ENEM Anual",
     planType: "VITALICIO",
-    price: "349,90",
-    oldPrice: "499",
+    price: "599",
+    oldPrice: null,
     periodo: "/ano",
     desc: "1 ano inteiro com o maior desconto.",
     popular: false,
@@ -214,10 +214,10 @@ const planos: Array<{
 ];
 
 const PLAN_VALUES: Record<PlanType, number> = {
-  LIGHT: 19.9,
-  PRO: 29.9,
-  FULL: 49.9,
-  VITALICIO: 349.9,
+  LIGHT: 57,
+  PRO: 77,
+  FULL: 99,
+  VITALICIO: 599,
 };
 
 
