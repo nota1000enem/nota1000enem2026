@@ -181,7 +181,7 @@ function MinhaAssinaturaPage() {
                   {access.vitalicio ? <Inf className="h-4 w-4 text-emerald-400" /> : <Calendar className="h-4 w-4 text-primary" />}
                   <span>
                     {access.vitalicio ? (
-                      <>Acesso <b>vitalício</b> — nunca expira</>
+                      <>Acesso <b>anual</b> — renova a cada 12 meses</>
                     ) : access.expiresAt ? (
                       <>Vence em <b>{access.expiresAt.toLocaleDateString("pt-BR")}</b> ({access.daysLeft} dias)</>
                     ) : (
