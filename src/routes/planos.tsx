@@ -108,9 +108,9 @@ const planos: Array<{
     popular: false,
     upgrade: true,
     items: [
+      "10 redações por mês",
       "10 redações nota 1000 prontas",
       "+ 50 BÔNUS incluso",
-      "10 redações por mês",
       "Linguagens, Códigos e suas Tecnologias",
       "Ciências da Natureza e suas Tecnologias",
       "1.000 questões e simulados",
@@ -132,9 +132,9 @@ const planos: Array<{
     popular: true,
     upgrade: true,
     items: [
+      "20 redações por mês",
       "10 redações nota 1000 prontas",
       "+ 50 BÔNUS incluso",
-      "20 redações por mês",
       "Tudo do Light",
       "Ciências Humanas e suas Tecnologias",
       "Matemática e suas Tecnologias",
