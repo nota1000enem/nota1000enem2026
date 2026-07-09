@@ -33,10 +33,10 @@ type Pagamento = {
 const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; beneficios: string[] }> = {
   light: {
     nome: "Light",
-    preco: "R$ 19,90 / mês",
+    preco: "R$ 57 / mês",
     cor: "text-red-400",
     beneficios: [
-      "15 redações por mês",
+      "10 redações por mês",
       "Linguagens, Códigos e suas Tecnologias",
       "Ciências da Natureza e suas Tecnologias",
       "1.000 questões e simulados",
@@ -49,10 +49,10 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
   },
   pro: {
     nome: "Pro",
-    preco: "R$ 29,90 / mês",
+    preco: "R$ 77 / mês",
     cor: "text-orange-400",
     beneficios: [
-      "30 redações por mês",
+      "20 redações por mês",
       "Tudo do Light",
       "Ciências Humanas e suas Tecnologias",
       "Matemática e suas Tecnologias",
@@ -69,10 +69,10 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
   },
   full: {
     nome: "Full",
-    preco: "R$ 44,90 / mês",
+    preco: "R$ 99 / mês",
     cor: "text-yellow-400",
     beneficios: [
-      "60 redações por mês",
+      "30 redações por mês",
       "Tudo do Pro",
       "Redação completa",
       "BÔNUS — 9 segredos para aprovação no vestibular",
@@ -90,8 +90,8 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
     ],
   },
   vitalicio: {
-    nome: "Vitalício",
-    preco: "Acesso permanente",
+    nome: "Anual",
+    preco: "R$ 599 / ano",
     cor: "text-emerald-400",
     beneficios: [
       "Acesso ETERNO — sem mensalidade",

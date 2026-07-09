@@ -23,10 +23,10 @@ type Props = {
 };
 
 const UPGRADES: { tier: PlanTier; label: string; variant: "default" | "outline"; glow?: boolean }[] = [
-  { tier: "light", label: "Ver Plano Light — R$ 19,90", variant: "outline" },
-  { tier: "pro", label: "Ver Plano Pro — R$ 29,90", variant: "default", glow: true },
-  { tier: "full", label: "Ver Plano Full — R$ 44,90", variant: "outline" },
-  { tier: "vitalicio", label: "Ver Vitalício — R$ 499", variant: "outline" },
+  { tier: "light", label: "Ver Plano Light — R$ 57", variant: "outline" },
+  { tier: "pro", label: "Ver Plano Pro — R$ 77", variant: "default", glow: true },
+  { tier: "full", label: "Ver Plano Full — R$ 99", variant: "outline" },
+  { tier: "vitalicio", label: "Ver Anual — R$ 599", variant: "outline" },
 ];
 
 const ORDER: PlanTier[] = ["free", "light", "pro", "full", "vitalicio"];

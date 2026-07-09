@@ -7,7 +7,7 @@ export const PLAN_CONFIG = {
   LIGHT: { price: 19.9, credits: 10, tier: "PRO_BASIC", label: "ENEM Light" },
   PRO: { price: 29.9, credits: 20, tier: "FULL_PREMIUM", label: "ENEM Pro" },
   FULL: { price: 49.9, credits: 30, tier: "FULL_ACESS", label: "Full Acess ENEM" },
-  VITALICIO: { price: 349.9, credits: 40, tier: "FULL_ACESS", label: "Full Acess Anual" },
+  VITALICIO: { price: 599.0, credits: 40, tier: "FULL_ACESS", label: "Full Acess Anual" },
 } as const;
 
 export type PlanType = keyof typeof PLAN_CONFIG;
@@ -116,7 +116,7 @@ const PLAN_CREDITS_FN: Record<string, number> = {
   LIGHT: 10, PRO: 20, FULL: 30, VITALICIO: 40,
 };
 const PLAN_VALOR_CENTAVOS_FN: Record<string, number> = {
-  LIGHT: 1990, PRO: 2990, FULL: 4990, VITALICIO: 34990,
+  LIGHT: 5700, PRO: 7700, FULL: 9900, VITALICIO: 59900,
 };
 function computeAnnualEndFn(): string {
   const d = new Date();

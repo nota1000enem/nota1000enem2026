@@ -49,10 +49,10 @@ const PLAN_CREDITS: Record<string, number> = {
 };
 
 const PLAN_VALOR_CENTAVOS: Record<string, number> = {
-  LIGHT: 1990,
-  PRO: 2990,
-  FULL: 4990,
-  VITALICIO: 34990, // Plano Anual - R$ 349,90
+  LIGHT: 5700,
+  PRO: 7700,
+  FULL: 9900,
+  VITALICIO: 59900, // Plano Anual - R$ 599
 };
 
 // Plano "Anual" (mantém o enum VITALICIO por compat): 365 dias em vez de eterno
