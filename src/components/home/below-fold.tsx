@@ -83,7 +83,7 @@ export default function HomeBelowFold() {
     checkoutInFlightRef.current = planType;
     setLoadingPlan(planType);
     const PLAN_VALUES_HOME: Record<PlanType, number> = {
-      LIGHT: 19.9, PRO: 29.9, FULL: 49.9, VITALICIO: 349.9,
+      LIGHT: 57, PRO: 77, FULL: 99, VITALICIO: 599,
     };
     try {
       try {
@@ -262,85 +262,6 @@ export default function HomeBelowFold() {
         </div>
       </section>
 
-      {/* DEPOIMENTOS */}
-      <section className="py-14">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-12 text-center">
-            <Badge variant="outline">Provas sociais</Badge>
-            <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-              Resultados de quem usou a <span className="gradient-text">Nota 1000 ENEM</span>
-            </h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              { name: "Maria Eduarda Cavalcanti, 18", curso: "Medicina – UFPE", nota: 980, text: "Saí de 720 para 980 na redação em 4 meses. A IA do Nota 1000 ENEM aponta o erro EXATO e cita a regra — coisa que nenhum cursinho meu fazia." },
-              { name: "João Vitor Albuquerque, 19", curso: "Engenharia Aeroespacial – ITA", nota: 960, text: "Treinei 1 redação por dia. Em 60 dias dobrei minha nota de C5. O Modo Professor Rígido é cruel mas funciona." },
-              { name: "Beatriz Stelzer, 17", curso: "Direito – USP", nota: 970, text: "Os repertórios automáticos me deram repertório real de Bauman, Foucault, Constituição. Passei em primeira chamada." },
-            ].map((t) => (
-              <Card key={t.name} className="card-glass p-6">
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <Badge variant="outline" className="border-primary/40 text-primary">Nota {t.nota}</Badge>
-                </div>
-                <p className="text-sm">"{t.text}"</p>
-                <div className="mt-4 border-t border-border/40 pt-3">
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.curso}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <div className="mb-6 text-center">
-              <Badge variant="outline" className="border-primary/40 text-primary">
-                <Star className="mr-1 h-3 w-3 fill-primary" /> Números de 2025
-              </Badge>
-              <h3 className="mt-3 text-2xl font-bold md:text-3xl">
-                + de 8 mil alunos <span className="gradient-text">evoluíram</span> com a Nota 1000 ENEM
-              </h3>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                { name: "Isadora Bernardes, 18", curso: "Psicologia – UFRGS", nota: "740 → 940", text: "Antes eu chutava conectivos. Hoje sei contar inter e intraparágrafos e nunca mais tomei menos de 180 na C4." },
-                { name: "Caio Henrique Sampaio, 17", curso: "Medicina – UNIFESP", nota: "820 → 980", text: "A IA mostrou erro de regência que 3 professores meus deixaram passar. Subi 160 pontos só na C1." },
-                { name: "Letícia Marques, 19", curso: "Arquitetura – UFMG", nota: "660 → 900", text: "Sem repertório eu nunca passava de 700. Os repertórios sugeridos pelo Nota 1000 ENEM viraram parte do meu vocabulário." },
-                { name: "Felipe Tavares, 18", curso: "Ciência da Computação – UFRJ", nota: "700 → 960", text: "O Modo Professor Rígido me humilhou na primeira correção. Na quinta eu agradeci. Passei na UFRJ." },
-                { name: "Amanda Sousa, 16", curso: "2º EM – preparando medicina", nota: "540 → 860", text: "Em 5 meses comecei a entender O QUE é uma proposta de intervenção completa. A IA é didática como cursinho caro." },
-                { name: "Rodrigo Pacheco, 19", curso: "Direito – PUC-RS", nota: "820 → 960", text: "Usei o ranking pra me motivar. Brigar pelo top 10 me fez treinar todo dia. Passei com folga." },
-                { name: "Helena Quintanilha, 18", curso: "Veterinária – UFV", nota: "680 → 940", text: "A IA não inventa erro. Quando tira ponto, ela CITA a frase e a regra. Confio 100% no feedback." },
-                { name: "Murilo Andrade, 17", curso: "Engenharia Civil – UFSC", nota: "600 → 880", text: "Plano de estudo com IA foi divisor de águas. Pomodoro real, com matérias que EU precisava, não plano genérico." },
-                { name: "Sofia Vasconcelos, 18", curso: "Jornalismo – UFBA", nota: "740 → 960", text: "Tirei 200 na C2 pela primeira vez depois que entendi como fugir do tema. A IA me corrigiu sem dó até eu acertar." },
-              ].map((t, i) => (
-                <Card key={i} className="card-glass h-full p-6">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="flex gap-1">
-                      {Array.from({ length: 5 }).map((_, k) => (
-                        <Star key={k} className="h-3.5 w-3.5 fill-primary text-primary" />
-                      ))}
-                    </div>
-                    <Badge variant="outline" className="border-primary/40 text-xs text-primary">{t.nota}</Badge>
-                  </div>
-                  <p className="text-sm leading-relaxed">"{t.text}"</p>
-                  <div className="mt-4 flex items-center gap-3 border-t border-border/40 pt-3">
-                    <div className="grid h-10 w-10 place-content-center rounded-full bg-primary/10 text-sm font-bold text-primary ring-1 ring-primary/30">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.curso}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* PLANOS */}
       <section id="planos" className="py-14">
@@ -361,14 +282,14 @@ export default function HomeBelowFold() {
           )}
           {(() => {
             const planosArr = [
-              { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "19,90", oldPrice: null as string | null, periodo: "/mês", cta: "Começar Agora", popular: false,
+              { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "57", oldPrice: null as string | null, periodo: "/mês", cta: "Começar Agora", popular: false,
                 items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","10 redações por mês","Linguagens, Códigos e suas Tecnologias","Ciências da Natureza e suas Tecnologias","1.000 questões e simulados","Plano de Estudo com IA","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA","Grupo VIP + Network"] },
-              { name: "ENEM Pro", planType: "PRO" as PlanType, price: "29,90", oldPrice: "49,90" as string | null, periodo: "/mês", cta: "Quero o Pro", popular: true,
+              { name: "ENEM Pro", planType: "PRO" as PlanType, price: "77", oldPrice: null as string | null, periodo: "/mês", cta: "Quero o Pro", popular: true,
                 items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","20 redações por mês","Tudo do Light","Ciências Humanas e suas Tecnologias","Matemática e suas Tecnologias","As 4 áreas do ENEM liberadas","20 vídeo aulas","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente","Grupo VIP + Network"] },
-              { name: "Full Access ENEM", planType: "FULL" as PlanType, price: "44,90", oldPrice: "99,90", periodo: "/mês", cta: "Quero Acesso Total", popular: false,
+              { name: "Full Access ENEM", planType: "FULL" as PlanType, price: "99", oldPrice: null as string | null, periodo: "/mês", cta: "Quero Acesso Total", popular: false,
                 items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","30 redações por mês","Tudo do Pro","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras","Grupo VIP + Network"] },
-              { name: "Full Access ENEM Anual", planType: "VITALICIO" as PlanType, price: "349,90", oldPrice: "499", periodo: "/ano", cta: "Quero o Anual", popular: false,
-                items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Acesso por 12 meses completos","40 redações por mês","Tudo do Full Access","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","IA Professor Rígido","Plano de Estudo com IA","Atualizações futuras incluídas","Grupo VIP + Network"] },
+              { name: "Full Access ENEM Anual", planType: "VITALICIO" as PlanType, price: "599", oldPrice: null as string | null, periodo: "/ano", cta: "Quero o Anual", popular: false,
+                items: ["10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Acesso por 12 meses completos","40 redações por mês","Tudo do Full Access","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras incluídas","Grupo VIP + Network"] },
             ];
             const renderCard = (p: typeof planosArr[number]) => (
               <Card key={p.name} className={`relative flex h-full flex-col p-6 card-glass card-gradient-border ${p.popular ? "glow-blue ring-4 ring-primary/70 md:scale-[1.04] podio-active" : ""}`}>
@@ -394,6 +315,11 @@ export default function HomeBelowFold() {
                   <span className="text-4xl font-bold font-display">{p.price}</span>
                   <span className="text-sm text-muted-foreground">{p.periodo}</span>
                 </div>
+                {p.planType === "VITALICIO" && (
+                  <Badge className="mt-2 w-fit bg-green-500/20 text-green-400 border border-green-500/40">
+                    🔥 500 de desconto pagando anualmente
+                  </Badge>
+                )}
                 <ul className="mt-6 flex-1 space-y-2 text-sm">
                   {p.items.map((it) => (
                     <li key={it} className="flex items-start gap-2">

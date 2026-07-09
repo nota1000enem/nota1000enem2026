@@ -11,10 +11,10 @@ import { FileText, TrendingUp, Trophy, Sparkles, Plus, GraduationCap, Play, Brai
 import { WeeklyRetentionSummary } from "@/components/weekly-retention-summary";
 
 const PLAN_VALUES: Record<string, number> = {
-  LIGHT: 19.9,
-  PRO: 29.9,
-  FULL: 49.9,
-  VITALICIO: 499,
+  LIGHT: 57,
+  PRO: 77,
+  FULL: 99,
+  VITALICIO: 599,
 };
 
 export const Route = createFileRoute("/dashboard")({

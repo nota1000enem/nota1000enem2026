@@ -379,7 +379,7 @@ function RedacaoPage() {
                     <p className="text-xs text-muted-foreground">
                       {modoRigidoLiberado
                         ? "Comentários brutalmente honestos."
-                        : "Disponível nos planos R$ 29,90, R$ 44,90 e Vitalício."}
+                        : "Disponível nos planos R$ 77, R$ 99 e Anual."}
                     </p>
                   </div>
                 </div>
