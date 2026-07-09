@@ -160,9 +160,9 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "30 redações por mês",
       "10 redações nota 1000 prontas",
       "+ 50 BÔNUS incluso",
-      "30 redações por mês",
       "Tudo do Pro",
       "Redação completa",
       "BÔNUS — 9 segredos para aprovação no vestibular",
@@ -190,10 +190,10 @@ const planos: Array<{
     popular: false,
     upgrade: false,
     items: [
+      "40 redações por mês (renova a cada 30 dias)",
       "10 redações nota 1000 prontas",
       "+ 50 BÔNUS incluso",
       "Acesso por 12 meses completos",
-      "40 redações por mês (renova a cada 30 dias)",
       "Tudo do Full Acess",
       "Redação completa",
       "BÔNUS — 9 segredos para aprovação no vestibular",
