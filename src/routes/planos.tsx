@@ -378,6 +378,11 @@ function Planos() {
         <span className="text-5xl font-bold font-display">{p.price}</span>
         <span className="text-sm text-muted-foreground">{p.periodo}</span>
       </div>
+      {p.planType === "VITALICIO" && (
+        <Badge className="mt-2 w-fit bg-green-500/20 text-green-400 border border-green-500/40">
+          🔥 500 de desconto pagando anualmente
+        </Badge>
+      )}
       <ul className="mt-6 flex-1 space-y-2 text-sm">
         {p.items.map((it) => (
           <li key={it} className="flex items-start gap-2">
