@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Sparkles, Star, ArrowRight } from "lucide-react";
 import heroAsset from "@/assets/hero-vecel.webp.asset.json";
+import mecAsset from "@/assets/mec-certificado.png.asset.json";
 import { LazyOnVisible } from "@/components/lazy-on-visible";
 import { HeroFX } from "@/components/hero-fx";
 
@@ -94,6 +95,21 @@ function Index() {
                 <Star className="h-4 w-4 fill-primary text-primary" /> 4.9/5 alunos
               </div>
               <div>+ de 78 mil redações corrigidas</div>
+            </div>
+            <div className="flex items-center gap-3 pt-4">
+              <img
+                src={mecAsset.url}
+                alt="Certificado reconhecido pelo MEC"
+                width={96}
+                height={120}
+                loading="eager"
+                decoding="async"
+                className="h-20 w-auto md:h-24 drop-shadow-[0_0_18px_rgba(255,200,80,0.35)]"
+              />
+              <div className="text-xs md:text-sm">
+                <p className="font-semibold text-foreground">Certificado reconhecido pelo MEC</p>
+                <p className="text-muted-foreground">Validade nacional após conclusão</p>
+              </div>
             </div>
           </div>
           <div className="relative animate-float md:mt-8">
