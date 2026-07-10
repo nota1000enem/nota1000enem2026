@@ -111,7 +111,7 @@ export default function HomeBelowFold() {
   return (
     <>
       {/* COMO FUNCIONA */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
@@ -141,7 +141,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">🔥 Novo</Badge>
@@ -171,7 +171,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TOP NOTAS */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
@@ -227,7 +227,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TRILHAS DO ENEM */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
             Trilhas do ENEM
@@ -264,7 +264,7 @@ export default function HomeBelowFold() {
 
 
       {/* PLANOS */}
-      <section id="planos" className="py-14">
+      <section id="planos" className="py-8">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
@@ -364,7 +364,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
@@ -381,7 +381,7 @@ export default function HomeBelowFold() {
         </div>
       </section>
       {/* APROVADOS */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Resultados
