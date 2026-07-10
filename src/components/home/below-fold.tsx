@@ -111,7 +111,7 @@ export default function HomeBelowFold() {
   return (
     <>
       {/* COMO FUNCIONA */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Como funciona</Badge>
@@ -141,7 +141,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* MODO PROFESSOR RIGIDO */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4">
           <Card className="card-glass overflow-hidden p-8 md:p-12">
             <Badge className="bg-destructive/20 text-destructive border border-destructive/40">🔥 Novo</Badge>
@@ -171,7 +171,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TOP NOTAS */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Top Notas da Semana
@@ -227,7 +227,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* TRILHAS DO ENEM */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-primary/80">
             Trilhas do ENEM
@@ -264,7 +264,7 @@ export default function HomeBelowFold() {
 
 
       {/* PLANOS */}
-      <section id="planos" className="py-14">
+      <section id="planos" className="py-8">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
             <Badge variant="outline">Planos</Badge>
@@ -285,7 +285,7 @@ export default function HomeBelowFold() {
               { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "57", oldPrice: null as string | null, periodo: "/mês", cta: "Começar Agora", popular: false,
                 items: ["10 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Linguagens, Códigos e suas Tecnologias","Ciências da Natureza e suas Tecnologias","1.000 questões e simulados","Plano de Estudo com IA","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA","Grupo VIP + Network"] },
               { name: "ENEM Pro", planType: "PRO" as PlanType, price: "77", oldPrice: null as string | null, periodo: "/mês", cta: "Quero o Pro", popular: true,
-                items: ["20 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Tudo do Light","Ciências Humanas e suas Tecnologias","Matemática e suas Tecnologias","As 4 áreas do ENEM liberadas","20 vídeo aulas","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente","Grupo VIP + Network"] },
+                items: ["20 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Tudo do Light","Ciências Humanas e suas Tecnologias","Matemática e suas Tecnologias","As 4 áreas do ENEM liberadas","20 vídeo aulas ONLINE","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente","Grupo VIP + Network"] },
               { name: "Full Access ENEM", planType: "FULL" as PlanType, price: "99", oldPrice: null as string | null, periodo: "/mês", cta: "Quero Acesso Total", popular: false,
                 items: ["30 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Tudo do Pro","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras","Grupo VIP + Network"] },
               { name: "Full Access ENEM Anual", planType: "VITALICIO" as PlanType, price: "599", oldPrice: null as string | null, periodo: "/ano", cta: "Quero o Anual", popular: false,
@@ -364,7 +364,7 @@ export default function HomeBelowFold() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <GraduationCap className="mx-auto h-12 w-12 text-primary" />
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">
@@ -381,7 +381,7 @@ export default function HomeBelowFold() {
         </div>
       </section>
       {/* APROVADOS */}
-      <section className="py-14">
+      <section className="py-8">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <Badge variant="outline" className="border-primary/40 text-primary">
             <Trophy className="mr-1 h-3 w-3" /> Resultados

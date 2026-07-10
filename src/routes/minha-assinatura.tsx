@@ -57,7 +57,7 @@ const PLAN_INFO: Record<string, { nome: string; preco: string; cor: string; bene
       "Ciências Humanas e suas Tecnologias",
       "Matemática e suas Tecnologias",
       "As 4 áreas do ENEM liberadas",
-      "20 vídeo aulas",
+      "20 vídeo aulas ONLINE",
       "1.000 questões para passar",
       "Simulados",
       "Correção IA avançada",
