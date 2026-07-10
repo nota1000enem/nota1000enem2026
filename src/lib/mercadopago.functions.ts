@@ -4,9 +4,9 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const PLAN_CONFIG = {
-  LIGHT: { price: 19.9, credits: 10, tier: "PRO_BASIC", label: "ENEM Light" },
-  PRO: { price: 29.9, credits: 20, tier: "FULL_PREMIUM", label: "ENEM Pro" },
-  FULL: { price: 49.9, credits: 30, tier: "FULL_ACESS", label: "Full Acess ENEM" },
+  LIGHT: { price: 57.0, credits: 10, tier: "PRO_BASIC", label: "ENEM Light" },
+  PRO: { price: 77.0, credits: 20, tier: "FULL_PREMIUM", label: "ENEM Pro" },
+  FULL: { price: 99.0, credits: 30, tier: "FULL_ACESS", label: "Full Acess ENEM" },
   VITALICIO: { price: 599.0, credits: 40, tier: "FULL_ACESS", label: "Full Acess Anual" },
 } as const;
 

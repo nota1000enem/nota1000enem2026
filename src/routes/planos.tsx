@@ -329,14 +329,10 @@ function Planos() {
       } catch {}
       const res = await checkoutFn({ data: { planType } });
       if (!res?.init_point) throw new Error("Resposta inválida do servidor");
-      // Abre o checkout do MP em nova aba e mantém polling nesta tela
-      const w = window.open(res.init_point, "_blank", "noopener,noreferrer");
-      if (!w) {
-        // Pop-up bloqueado: redireciona como antes
-        window.location.href = res.init_point;
-        return;
-      }
+      // Abre o checkout do MP na mesma aba (evita abrir 2 abas)
       setAguardandoPgto({ plan: planType, checkoutUrl: res.init_point });
+      window.location.href = res.init_point;
+      return;
     } catch (e: unknown) {
       console.error(e);
       toast.error(
