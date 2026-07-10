@@ -46,8 +46,8 @@ function Index() {
       {/* HERO */}
       <section className="relative gradient-hero overflow-hidden">
         <HeroFX />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 py-24 md:grid-cols-2 md:py-36">
-          <div className="space-y-8">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-10 md:grid-cols-2 md:py-16">
+          <div className="space-y-6">
             <Badge
               variant="outline"
               className="border-primary/40 bg-primary/10 text-primary backdrop-blur"
@@ -59,12 +59,18 @@ function Index() {
               Seja aprovado no ENEM, estudando menos de 67 dias com{" "}
               <span className="gradient-text text-glow">Inteligência Artificial</span>
             </h1>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              <span className="block text-xl font-semibold text-foreground">
+            <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+              <span className="block text-base font-semibold text-foreground md:text-lg">
                 Corrija sua redação com IA e descubra onde melhorar.
               </span>
               <span className="mt-3 block">
-                Corrija sua redação com <span className="font-semibold text-foreground">99% de assertividade na nota</span>, baseada no ENEM 2026. De brinde você recebe uma plataforma completa com redações prontas para aprender, vídeo aulas, plano de estudos personalizado e mais de <span className="font-semibold text-foreground">500 PDFs para o ENEM 2026</span> — tudo focado na sua aprovação.
+                Sua redação pode evoluir muito mais rápido quando você sabe onde está errando.
+              </span>
+              <span className="mt-2 block">
+                Aqui, você corrige sua redação com IA no padrão ENEM 2026 e ainda recebe redações modelo, videoaulas com professores reais, plano de estudos com IA e + de <span className="font-semibold text-foreground">500 PDFs</span> para estudar melhor.
+              </span>
+              <span className="mt-2 block">
+                Prepare-se com estratégia e aumente suas chances de aprovação.
               </span>
               <span className="mt-3 block">
                 <span className="font-semibold text-primary">TESTE GRÁTIS AGORA.</span>{" "}
