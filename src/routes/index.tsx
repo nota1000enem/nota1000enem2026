@@ -96,6 +96,21 @@ function Index() {
               </div>
               <div>+ de 78 mil redações corrigidas</div>
             </div>
+            <div className="flex items-center gap-3 pt-4">
+              <img
+                src={mecAsset.url}
+                alt="Certificado reconhecido pelo MEC"
+                width={96}
+                height={120}
+                loading="eager"
+                decoding="async"
+                className="h-20 w-auto md:h-24 drop-shadow-[0_0_18px_rgba(255,200,80,0.35)]"
+              />
+              <div className="text-xs md:text-sm">
+                <p className="font-semibold text-foreground">Certificado reconhecido pelo MEC</p>
+                <p className="text-muted-foreground">Validade nacional após conclusão</p>
+              </div>
+            </div>
           </div>
           <div className="relative animate-float md:mt-8">
             <div className="mockup-frame">
