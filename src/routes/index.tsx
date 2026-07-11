@@ -90,6 +90,7 @@ function Index() {
                   MAPA da APROVAÇÃO 2026
                 </Button>
               </Link>
+              <InstallAppButton className="h-11 px-6 text-base" />
             </div>
             <div className="flex flex-wrap items-center gap-6 pt-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
