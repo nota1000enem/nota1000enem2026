@@ -1,0 +1,17 @@
+{
+  "name": "Nota 1000 ENEM",
+  "short_name": "Nota 1000",
+  "description": "Corrija sua redação com IA no padrão ENEM 2026, simulados, vídeo aulas e plano de estudos.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0b0f1a",
+  "background_color": "#0b0f1a",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/logo-nota1000.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logo-nota1000.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/logo-nota1000.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

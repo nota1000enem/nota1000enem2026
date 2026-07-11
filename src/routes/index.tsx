@@ -10,6 +10,7 @@ import heroAsset from "@/assets/hero-vecel.webp.asset.json";
 import mecAsset from "@/assets/mec-certificado.png.asset.json";
 import { LazyOnVisible } from "@/components/lazy-on-visible";
 import { HeroFX } from "@/components/hero-fx";
+import { InstallAppButton } from "@/components/install-app-button";
 
 const HomeBelowFold = lazy(() => import("@/components/home/below-fold"));
 
@@ -89,6 +90,7 @@ function Index() {
                   MAPA da APROVAÇÃO 2026
                 </Button>
               </Link>
+              <InstallAppButton className="h-11 px-6 text-base" />
             </div>
             <div className="flex flex-wrap items-center gap-6 pt-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
