@@ -282,13 +282,13 @@ export default function HomeBelowFold() {
           )}
           {(() => {
             const planosArr = [
-              { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "57", oldPrice: null as string | null, periodo: "/mês", cta: "Começar Agora", popular: false,
+              { name: "ENEM Light", planType: "LIGHT" as PlanType, price: "57", oldPrice: "147" as string | null, periodo: "/mês", cta: "Começar Agora", popular: false,
                 items: ["10 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Linguagens, Códigos e suas Tecnologias","Ciências da Natureza e suas Tecnologias","1.000 questões e simulados","Plano de Estudo com IA","PDF metodologia de estudos","Cronograma de 30 dias","Templates de redação nota 1000","Acesso básico IA","Grupo VIP + Network"] },
-              { name: "ENEM Pro", planType: "PRO" as PlanType, price: "77", oldPrice: null as string | null, periodo: "/mês", cta: "Quero o Pro", popular: true,
+              { name: "ENEM Pro", planType: "PRO" as PlanType, price: "77", oldPrice: "197" as string | null, periodo: "/mês", cta: "Quero o Pro", popular: true,
                 items: ["20 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Tudo do Light","Ciências Humanas e suas Tecnologias","Matemática e suas Tecnologias","As 4 áreas do ENEM liberadas","20 vídeo aulas ONLINE","1.000 questões para passar","Simulados","Correção IA avançada","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Cronograma inteligente","Grupo VIP + Network"] },
-              { name: "Full Access ENEM", planType: "FULL" as PlanType, price: "99", oldPrice: null as string | null, periodo: "/mês", cta: "Quero Acesso Total", popular: false,
+              { name: "Full Access ENEM", planType: "FULL" as PlanType, price: "99", oldPrice: "247" as string | null, periodo: "/mês", cta: "Quero Acesso Total", popular: false,
                 items: ["30 redações por mês","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Tudo do Pro","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras","Grupo VIP + Network"] },
-              { name: "Full Access ENEM Anual", planType: "VITALICIO" as PlanType, price: "599", oldPrice: null as string | null, periodo: "/ano", cta: "Quero o Anual", popular: false,
+              { name: "Full Access ENEM Anual", planType: "VITALICIO" as PlanType, price: "599", oldPrice: "1188" as string | null, periodo: "/ano", cta: "Quero o Anual", popular: false,
                 items: ["40 redações por mês (renova a cada 30 dias)","10 redações nota 1000 prontas","+ 50 BÔNUS incluso","Acesso por 12 meses completos","Tudo do Full Access","Redação completa","BÔNUS — 9 segredos para aprovação no vestibular","Correção IA ilimitada","1.000 questões avançadas","Vídeo aulas completas","Simulados ilimitados","Templates premium","Ranking de alunos","IA Professor Rígido","Plano de Estudo com IA","Repertórios automáticos","Estratégias de aprovação","Atualizações futuras incluídas","Grupo VIP + Network"] },
             ];
             const renderCard = (p: typeof planosArr[number]) => (
