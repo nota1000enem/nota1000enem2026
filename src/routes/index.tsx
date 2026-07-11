@@ -10,6 +10,7 @@ import heroAsset from "@/assets/hero-vecel.webp.asset.json";
 import mecAsset from "@/assets/mec-certificado.png.asset.json";
 import { LazyOnVisible } from "@/components/lazy-on-visible";
 import { HeroFX } from "@/components/hero-fx";
+import { InstallAppButton } from "@/components/install-app-button";
 
 const HomeBelowFold = lazy(() => import("@/components/home/below-fold"));
 
