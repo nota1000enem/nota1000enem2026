@@ -233,10 +233,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main id="main-content">
-        <Outlet />
-      </main>
-      <TelegramFab />
+      <div className="app-shell">
+        <main id="main-content">
+          <Outlet />
+        </main>
+        <TelegramFab />
+        <BottomNav />
+      </div>
     </QueryClientProvider>
   );
 }
+
