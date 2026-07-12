@@ -11,6 +11,8 @@ import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { TelegramFab } from "@/components/telegram-fab";
+import { BottomNav } from "@/components/bottom-nav";
+
 
 function NotFoundComponent() {
   return (
