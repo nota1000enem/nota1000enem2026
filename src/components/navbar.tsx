@@ -1,16 +1,27 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [shrunk, setShrunk] = useState(false);
   const { user } = useAuth();
   const { isPaid } = usePlanAccess();
   const router = useRouter();
+
+  useEffect(() => {
+    const onScroll = () => setShrunk(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+
 
   // "Início" some ao logar. "Planos" só some quando o aluno já tem plano pago
   // (free continua vendo Planos pra poder fazer upgrade).
@@ -29,7 +40,7 @@ export function Navbar() {
   const links = baseLinks.filter((l) => !l.hide);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">
+    <header className={`nav-shrink sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl ${shrunk ? "is-shrunk" : ""}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
           <div className="grid h-8 w-8 place-content-center rounded-lg bg-primary/20 ring-1 ring-primary/40">

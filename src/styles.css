@@ -432,6 +432,42 @@
 }
 
 
+/* ===== HOME "APP-LIKE" POLISH — escopado em .home-app ===== */
+.home-app section {
+  padding-top: 2.75rem;
+  padding-bottom: 2.75rem;
+}
+@media (min-width: 768px) {
+  .home-app section { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+}
+.home-app .card-glass { border-radius: 1.5rem; }
+@media (min-width: 768px) {
+  .home-app .card-glass { border-radius: 1.75rem; }
+}
+.home-app img { border-radius: 1.25rem; }
+.home-app .mockup-frame,
+.home-app .mockup-frame > div { border-radius: 1.75rem; }
+.home-app .mockup-frame img { border-radius: 1.5rem; }
+.home-app button,
+.home-app a > button {
+  transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+.home-app button:active { transform: scale(0.97); }
+@media (max-width: 767px) {
+  .home-app button[data-slot="button"] { border-radius: 1.15rem; }
+}
+
+/* Navbar compacto ao rolar */
+.nav-shrink { transition: padding 0.25s ease, background-color 0.25s ease; }
+.nav-shrink.is-shrunk > div {
+  padding-top: 0.4rem !important;
+  padding-bottom: 0.4rem !important;
+}
+.nav-shrink.is-shrunk { background: oklch(0 0 0 / 0.72); }
+
+
+
+
 /* ===== Animações ===== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
