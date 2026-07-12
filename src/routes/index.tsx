@@ -43,7 +43,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="home-app min-h-screen bg-background">
       <Navbar />
       {/* HERO */}
       <section className="relative gradient-hero overflow-hidden">
