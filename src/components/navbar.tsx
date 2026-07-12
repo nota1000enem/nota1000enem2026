@@ -40,7 +40,7 @@ export function Navbar() {
   const links = baseLinks.filter((l) => !l.hide);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">
+    <header className={`nav-shrink sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl ${shrunk ? "is-shrunk" : ""}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
           <div className="grid h-8 w-8 place-content-center rounded-lg bg-primary/20 ring-1 ring-primary/40">
