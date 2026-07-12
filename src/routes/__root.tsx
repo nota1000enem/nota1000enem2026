@@ -11,6 +11,8 @@ import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { TelegramFab } from "@/components/telegram-fab";
+import { BottomNav } from "@/components/bottom-nav";
+
 
 function NotFoundComponent() {
   return (
@@ -231,10 +233,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main id="main-content">
-        <Outlet />
-      </main>
-      <TelegramFab />
+      <div className="app-shell">
+        <main id="main-content">
+          <Outlet />
+        </main>
+        <TelegramFab />
+        <BottomNav />
+      </div>
     </QueryClientProvider>
   );
 }
+
