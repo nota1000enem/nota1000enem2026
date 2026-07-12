@@ -432,29 +432,65 @@
 }
 
 
-/* ===== HOME "APP-LIKE" POLISH — escopado em .home-app ===== */
+/* ===== "APP-LIKE" POLISH — global via .app-shell (também .home-app legado) ===== */
+.app-shell,
+.home-app {
+  -webkit-tap-highlight-color: transparent;
+}
+.app-shell section,
 .home-app section {
-  padding-top: 2.75rem;
-  padding-bottom: 2.75rem;
+  padding-top: 2.25rem;
+  padding-bottom: 2.25rem;
 }
 @media (min-width: 768px) {
-  .home-app section { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+  .app-shell section,
+  .home-app section { padding-top: 4rem; padding-bottom: 4rem; }
 }
+.app-shell .card-glass,
 .home-app .card-glass { border-radius: 1.5rem; }
 @media (min-width: 768px) {
+  .app-shell .card-glass,
   .home-app .card-glass { border-radius: 1.75rem; }
 }
 .home-app img { border-radius: 1.25rem; }
 .home-app .mockup-frame,
 .home-app .mockup-frame > div { border-radius: 1.75rem; }
 .home-app .mockup-frame img { border-radius: 1.5rem; }
+
+.app-shell button,
+.app-shell a > button,
 .home-app button,
 .home-app a > button {
   transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
 }
+.app-shell button:active,
 .home-app button:active { transform: scale(0.97); }
+
 @media (max-width: 767px) {
+  .app-shell button[data-slot="button"],
   .home-app button[data-slot="button"] { border-radius: 1.15rem; }
+}
+
+/* Bottom nav estilo aplicativo (mobile only) */
+.bottom-nav {
+  background: oklch(0.04 0.005 25 / 0.85);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-top: 1px solid oklch(1 0 0 / 0.06);
+  box-shadow: 0 -12px 30px -12px oklch(0 0 0 / 0.6);
+}
+.bottom-nav-item:active { transform: scale(0.92); }
+
+/* Espaço extra no fim do conteúdo no mobile pra não ficar embaixo da bottom nav */
+@media (max-width: 767px) {
+  #main-content { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* FAB do Telegram sobe acima da bottom nav no mobile */
+@media (max-width: 767px) {
+  a[aria-label="Entrar no grupo VIP do Telegram"] {
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 /* Navbar compacto ao rolar */
@@ -464,6 +500,8 @@
   padding-bottom: 0.4rem !important;
 }
 .nav-shrink.is-shrunk { background: oklch(0 0 0 / 0.72); }
+
+
 
 
 
