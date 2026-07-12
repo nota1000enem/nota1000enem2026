@@ -14,13 +14,13 @@ export function Navbar() {
   const { isPaid } = usePlanAccess();
   const router = useRouter();
 
-  useState(() => {
-    if (typeof window === "undefined") return 0;
-    return 0;
-  });
-  if (typeof window !== "undefined") {
-    // idempotent scroll listener via effect-less setup
-  }
+  useEffect(() => {
+    const onScroll = () => setShrunk(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
 
 
   // "Início" some ao logar. "Planos" só some quando o aluno já tem plano pago
