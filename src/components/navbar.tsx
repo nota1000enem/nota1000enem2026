@@ -1,8 +1,9 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { supabase } from "@/integrations/supabase/client";
 
