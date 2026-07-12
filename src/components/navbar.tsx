@@ -8,9 +8,19 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [shrunk, setShrunk] = useState(false);
   const { user } = useAuth();
   const { isPaid } = usePlanAccess();
   const router = useRouter();
+
+  useState(() => {
+    if (typeof window === "undefined") return 0;
+    return 0;
+  });
+  if (typeof window !== "undefined") {
+    // idempotent scroll listener via effect-less setup
+  }
+
 
   // "Início" some ao logar. "Planos" só some quando o aluno já tem plano pago
   // (free continua vendo Planos pra poder fazer upgrade).
