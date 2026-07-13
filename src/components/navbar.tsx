@@ -76,36 +76,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-      {open && (
-        <div className="border-t border-border/40 md:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">
-                {l.label}
-              </Link>
-            ))}
-            {user ? (
-              <>
-                <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Dashboard</Link>
-                <Link to="/perfil" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Meu Perfil</Link>
-                <Link to="/minha-assinatura" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Minha Assinatura</Link>
-                <button
-                  onClick={async () => {
-                    setOpen(false);
-                    await supabase.auth.signOut();
-                    router.navigate({ to: "/" });
-                  }}
-                  className="rounded-md px-3 py-2 text-left text-sm font-semibold text-destructive hover:bg-destructive/10"
-                >
-                  Sair
-                </button>
-              </>
-            ) : (
-              <Link to="/auth" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">Entrar / Cadastrar</Link>
-            )}
-          </div>
-        </div>
-      )}
     </header>
   );
 }
