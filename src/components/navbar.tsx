@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [shrunk, setShrunk] = useState(false);
-  const [shrunk, setShrunk] = useState(false);
   const { user } = useAuth();
   const { isPaid } = usePlanAccess();
   const router = useRouter();
