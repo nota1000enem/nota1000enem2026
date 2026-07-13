@@ -375,10 +375,18 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             <div ref={containerRef} className="h-full w-full" />
           </div>
 
-          {/* Capa de cliques: bloqueia menu/links do YT e captura play/pause */}
+          {/* Capa de cliques: no mobile toca = mostra/oculta controles; no desktop clique = play/pause */}
           <div
             className="absolute inset-0 z-10"
-            onClick={togglePlay}
+            onClick={() => {
+              const isTouch = typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;
+              if (isTouch) {
+                if (showControls) setShowControls(false);
+                else bumpControls();
+              } else {
+                togglePlay();
+              }
+            }}
             onDoubleClick={toggleFs}
             onContextMenu={(e) => e.preventDefault()}
             style={{ cursor: showControls ? "default" : "none" }}
