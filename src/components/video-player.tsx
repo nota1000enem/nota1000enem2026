@@ -301,8 +301,16 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     const el = wrapperRef.current;
     if (!el) return;
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await el.requestFullscreen();
+      if (document.fullscreenElement) {
+        try { (screen.orientation as any)?.unlock?.(); } catch {}
+        await document.exitFullscreen();
+      } else {
+        await el.requestFullscreen();
+        try {
+          const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches;
+          if (isMobile) await (screen.orientation as any)?.lock?.("landscape");
+        } catch {}
+      }
     } catch {}
     bumpControls();
   }, [bumpControls]);
@@ -353,7 +361,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="overflow-hidden border-red-600/40 bg-black p-0 sm:max-w-5xl [&>button]:hidden">
+      <DialogContent className="max-w-[100vw] overflow-hidden border-red-600/40 bg-black p-0 sm:max-w-5xl [&>button]:hidden">
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <div
           ref={wrapperRef}
@@ -367,10 +375,18 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
             <div ref={containerRef} className="h-full w-full" />
           </div>
 
-          {/* Capa de cliques: bloqueia menu/links do YT e captura play/pause */}
+          {/* Capa de cliques: no mobile toca = mostra/oculta controles; no desktop clique = play/pause */}
           <div
             className="absolute inset-0 z-10"
-            onClick={togglePlay}
+            onClick={() => {
+              const isTouch = typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;
+              if (isTouch) {
+                if (showControls) setShowControls(false);
+                else bumpControls();
+              } else {
+                togglePlay();
+              }
+            }}
             onDoubleClick={toggleFs}
             onContextMenu={(e) => e.preventDefault()}
             style={{ cursor: showControls ? "default" : "none" }}
