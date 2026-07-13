@@ -361,7 +361,7 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="overflow-hidden border-red-600/40 bg-black p-0 sm:max-w-5xl [&>button]:hidden">
+      <DialogContent className="max-w-[100vw] overflow-hidden border-red-600/40 bg-black p-0 sm:max-w-5xl [&>button]:hidden">
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <div
           ref={wrapperRef}
