@@ -132,19 +132,20 @@ export function BottomNav() {
 
       {openMore && (
         <div
-          className="fixed inset-0 z-[60] md:hidden"
+          className="fixed inset-0 z-[200] md:hidden isolate"
           role="dialog"
           aria-modal="true"
           aria-label="Mais opções"
+          style={{ contain: "layout paint" }}
         >
           <button
             type="button"
             aria-label="Fechar"
             onClick={() => setOpenMore(false)}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in"
+            className="absolute inset-0 bg-black/70 backdrop-blur-md animate-in fade-in"
           />
-          <div className="more-sheet absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_-20px_60px_-20px_oklch(0_0_0/0.8)]">
-            <div className="mx-auto flex max-w-md flex-col gap-4 px-5 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3">
+          <div className="more-sheet absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border/50 bg-background shadow-[0_-20px_60px_-20px_oklch(0_0_0/0.8)]">
+            <div className="relative mx-auto flex max-w-md flex-col gap-4 px-5 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3">
               <div className="mx-auto h-1.5 w-12 rounded-full bg-muted-foreground/30" />
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-bold tracking-tight">Explorar tudo</h2>
