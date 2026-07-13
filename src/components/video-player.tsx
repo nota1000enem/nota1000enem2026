@@ -301,8 +301,16 @@ export function VideoPlayer({ open, onClose, videoUrl, title }: Props) {
     const el = wrapperRef.current;
     if (!el) return;
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await el.requestFullscreen();
+      if (document.fullscreenElement) {
+        try { (screen.orientation as any)?.unlock?.(); } catch {}
+        await document.exitFullscreen();
+      } else {
+        await el.requestFullscreen();
+        try {
+          const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches;
+          if (isMobile) await (screen.orientation as any)?.lock?.("landscape");
+        } catch {}
+      }
     } catch {}
     bumpControls();
   }, [bumpControls]);
