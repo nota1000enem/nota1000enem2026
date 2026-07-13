@@ -65,9 +65,7 @@ export function Navbar() {
             </>
           )}
         </div>
-        <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X /> : <Menu />}
-        </button>
+        {/* Menu mobile agora vive na bottom nav (padrão app). Hamburger removido. */}
       </div>
       {user && (
         <div className="hidden border-t border-border/40 md:block">
