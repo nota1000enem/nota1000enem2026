@@ -1,6 +1,6 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Menu, X } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -8,7 +8,7 @@ import { usePlanAccess } from "@/hooks/use-plan-access";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [shrunk, setShrunk] = useState(false);
   const [shrunk, setShrunk] = useState(false);
   const { user } = useAuth();
   const { isPaid } = usePlanAccess();
