@@ -133,7 +133,7 @@
     background: transparent;
     color: var(--color-foreground);
     font-family: var(--font-body);
-    font-feature-settings: "ss01", "ss03";
+    font-feature-settings: "ss03";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     position: relative;
