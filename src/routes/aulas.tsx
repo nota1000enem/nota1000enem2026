@@ -261,10 +261,123 @@ function Aulas() {
     navigate({ to: "/planos", hash: "pro" });
   }
 
+  const [areaAtiva, setAreaAtiva] = useState<string>(trilhas[0].area);
+  const trilhasOrdenadas = [...trilhas].sort((a, b) => {
+    const aLib = planoPago && canAccessArea(tier, a.area) ? 0 : 1;
+    const bLib = planoPago && canAccessArea(tier, b.area) ? 0 : 1;
+    return aLib - bLib;
+  });
+  const trilhaAtiva = trilhasOrdenadas.find((t) => t.area === areaAtiva) ?? trilhasOrdenadas[0];
+
+  function shortArea(a: string) {
+    return a.split(" ")[0].replace(",", "");
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="mx-auto max-w-7xl px-4 py-12">
+
+      {/* ===== MOBILE: cara de app ===== */}
+      <section className="md:hidden px-4 pt-4 pb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-widest text-primary/80 font-semibold">Trilhas</p>
+            <h1 className="text-2xl font-bold font-display leading-tight">Vídeo aulas</h1>
+          </div>
+          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/15 ring-1 ring-primary/30">
+            <PlayCircle className="h-5 w-5 text-primary" />
+          </div>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          <span className="font-semibold text-primary">Aula nova toda semana</span> até a prova.
+        </p>
+
+        {/* Chips de áreas — sticky, cara de app */}
+        <div className="sticky top-[3.75rem] z-30 -mx-4 mt-4 bg-background/90 backdrop-blur-md px-4 py-2">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
+            {trilhasOrdenadas.map((t) => {
+              const ativa = t.area === trilhaAtiva.area;
+              const liberada = planoPago && canAccessArea(tier, t.area);
+              return (
+                <button
+                  key={t.area}
+                  type="button"
+                  onClick={() => setAreaAtiva(t.area)}
+                  className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition active:scale-95 ${
+                    ativa
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+                      : "bg-muted/40 text-muted-foreground border border-border/40"
+                  }`}
+                >
+                  {shortArea(t.area)}
+                  {!liberada && <Lock className="inline ml-1 h-3 w-3 opacity-70" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Hero card da área ativa */}
+        <div className="mt-4 relative overflow-hidden rounded-3xl">
+          <img src={trilhaAtiva.thumb} alt={trilhaAtiva.area} className="h-40 w-full object-cover" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-4">
+            <h2 className="text-lg font-bold font-display leading-tight">{trilhaAtiva.area}</h2>
+            <p className="text-[11px] text-muted-foreground">{trilhaAtiva.aulas.length} aulas • trilha completa</p>
+          </div>
+        </div>
+
+        {/* Lista de aulas — formato app (linha com thumb + play) */}
+        <div className="mt-4 flex flex-col gap-2">
+          {trilhaAtiva.aulas.map((a, idx) => {
+            const liberada = isLiberada(a.t, trilhaAtiva.area, idx);
+            const free = idx < 4;
+            return (
+              <button
+                key={a.t}
+                type="button"
+                onClick={() => handleClick(a.t, trilhaAtiva.area, idx)}
+                className="group flex items-center gap-3 rounded-2xl border border-border/40 bg-card/60 p-2.5 text-left transition active:scale-[0.98]"
+              >
+                <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-black">
+                  <img src={trilhaAtiva.thumb} alt="" className="h-full w-full object-cover" loading="lazy" />
+                  <div className="absolute inset-0 grid place-items-center bg-black/30">
+                    {liberada ? (
+                      <PlayCircle className="h-6 w-6 text-white drop-shadow" />
+                    ) : (
+                      <Lock className="h-5 w-5 text-white drop-shadow" />
+                    )}
+                  </div>
+                  <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-[9px] font-bold text-primary">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{a.t}</h3>
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                    <span>{formatDuration(a.min)}</span>
+                    <span>•</span>
+                    <span className={liberada ? "text-primary font-semibold" : free ? "text-emerald-400 font-semibold" : ""}>
+                      {liberada ? "Liberada" : free ? "Grátis c/ login" : "Premium"}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <a href="https://t.me/+wr3mUBagkQkyODYx" target="_blank" rel="noopener noreferrer" className="mt-6 block">
+          <div className="rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent p-5 border border-primary/30 text-center">
+            <h3 className="text-base font-bold">Grupo VIP no Telegram</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Network + aulas extras direto no celular.</p>
+            <Button size="sm" className="mt-3 rounded-full">Entrar agora</Button>
+          </div>
+        </a>
+      </section>
+
+      {/* ===== DESKTOP ===== */}
+      <section className="hidden md:block mx-auto max-w-7xl px-4 py-12">
         <h1 className="text-3xl font-bold md:text-5xl font-display">
           Vídeo aulas <span className="gradient-text">Nota 1000 ENEM</span>
         </h1>
@@ -272,90 +385,66 @@ function Aulas() {
           <span className="font-semibold text-primary">Aula nova toda semana</span> (em cada matéria) até o dia da prova.
         </p>
 
-
         <div className="mt-10 space-y-14">
-          {[...trilhas]
-            .sort((a, b) => {
-              const aLib = planoPago && canAccessArea(tier, a.area) ? 0 : 1;
-              const bLib = planoPago && canAccessArea(tier, b.area) ? 0 : 1;
-              return aLib - bLib;
-            })
-            .map((tr) => (
-              <div key={tr.area}>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
-                  <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
-                </div>
-                <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
-                  <CarouselContent>
-                    {tr.aulas.map((a, idx) => {
-                      const liberada = isLiberada(a.t, tr.area, idx);
-                      const free = idx < 4;
-                      return (
-                        <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                          <Card
-                            onClick={() => handleClick(a.t, tr.area, idx)}
-                            className="card-glass card-gradient-border h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1"
-                          >
-                            <div className="relative aspect-video overflow-hidden bg-black">
-                              <img
-                                src={tr.thumb}
-                                alt={`Thumb da trilha ${tr.area}`}
-                                className="h-full w-full object-cover"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-black/20" />
-                              <div className="absolute inset-0 grid place-content-center">
-                                <div className="grid h-16 w-16 place-content-center rounded-full bg-background/75 shadow-lg ring-2 ring-primary/40 backdrop-blur-sm">
-                                  <PlayCircle className="h-8 w-8 text-primary drop-shadow-lg" />
+          {trilhasOrdenadas.map((tr) => (
+            <div key={tr.area}>
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold md:text-2xl">{tr.area}</h2>
+                <p className="text-xs text-muted-foreground">{tr.aulas.length} aulas</p>
+              </div>
+              <Carousel opts={{ align: "start" }} className="px-10 md:px-12">
+                <CarouselContent>
+                  {tr.aulas.map((a, idx) => {
+                    const liberada = isLiberada(a.t, tr.area, idx);
+                    const free = idx < 4;
+                    return (
+                      <CarouselItem key={a.t} className="basis-4/5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                        <Card
+                          onClick={() => handleClick(a.t, tr.area, idx)}
+                          className="card-glass card-gradient-border h-full cursor-pointer overflow-hidden transition-transform hover:-translate-y-1"
+                        >
+                          <div className="relative aspect-video overflow-hidden bg-black">
+                            <img src={tr.thumb} alt={`Thumb da trilha ${tr.area}`} className="h-full w-full object-cover" loading="lazy" />
+                            <div className="absolute inset-0 bg-black/20" />
+                            <div className="absolute inset-0 grid place-content-center">
+                              <div className="grid h-16 w-16 place-content-center rounded-full bg-background/75 shadow-lg ring-2 ring-primary/40 backdrop-blur-sm">
+                                <PlayCircle className="h-8 w-8 text-primary drop-shadow-lg" />
+                              </div>
+                            </div>
+                            {!liberada && (
+                              <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
+                                <div className="relative grid h-16 w-16 place-content-center rounded-full btn-gradient-primary shadow-xl">
+                                  <Lock className="h-7 w-7 text-white" />
                                 </div>
                               </div>
-                              {!liberada && (
-                                <div className="absolute inset-0 grid place-content-center bg-background/40 backdrop-blur-sm">
-                                  <div className="relative grid h-16 w-16 place-content-center rounded-full btn-gradient-primary shadow-xl">
-                                    <Lock className="h-7 w-7 text-white" />
-                                  </div>
-                                </div>
-                              )}
-                              <Badge className="absolute right-3 top-3" variant="outline">
-                                {liberada ? (
-                                  <><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>
-                                ) : free ? (
-                                  <>Grátis com login</>
-                                ) : (
-                                  <><Lock className="mr-1 h-3 w-3" /> Premium</>
-                                )}
-                              </Badge>
-                              <span className="absolute left-3 top-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
-                                Aula {String(idx + 1).padStart(2, "0")}
-                              </span>
-                            </div>
-                            <div className="p-4">
-                              <h3 className="line-clamp-2 text-sm font-medium font-display">{a.t}</h3>
-                              <p className="mt-1 text-xs text-muted-foreground">{formatDuration(a.min)}</p>
-                            </div>
-                          </Card>
-                        </CarouselItem>
-
-                      );
-                    })}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-0" />
-                  <CarouselNext className="right-0" />
-                </Carousel>
-              </div>
-            ))}
+                            )}
+                            <Badge className="absolute right-3 top-3" variant="outline">
+                              {liberada ? (<><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>) : free ? (<>Grátis com login</>) : (<><Lock className="mr-1 h-3 w-3" /> Premium</>)}
+                            </Badge>
+                            <span className="absolute left-3 top-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
+                              Aula {String(idx + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                          <div className="p-4">
+                            <h3 className="line-clamp-2 text-sm font-medium font-display">{a.t}</h3>
+                            <p className="mt-1 text-xs text-muted-foreground">{formatDuration(a.min)}</p>
+                          </div>
+                        </Card>
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
+            </div>
+          ))}
         </div>
 
         <Card className="card-glass mt-12 p-8 text-center">
           <h3 className="text-2xl font-bold">Faça parte da nossa comunidade</h3>
           <p className="mt-2 text-muted-foreground">
-            <a
-              href="https://t.me/+wr3mUBagkQkyODYx"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-primary underline-offset-4 hover:underline"
-            >
+            <a href="https://t.me/+wr3mUBagkQkyODYx" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
               Entre no GRUPO VIP do ENEM no Telegram pra fazer network e aprender ainda mais
             </a>
           </p>
@@ -365,15 +454,9 @@ function Aulas() {
         </Card>
       </section>
 
+      <VideoPlayer open={videoOpen} onClose={() => setVideoOpen(false)} videoUrl={videoUrl} title={aulaSelecionada} />
 
-      <VideoPlayer
-        open={videoOpen}
-        onClose={() => setVideoOpen(false)}
-        videoUrl={videoUrl}
-        title={aulaSelecionada}
-      />
-
-      <Footer />
+      <div className="hidden md:block"><Footer /></div>
     </div>
   );
 }
