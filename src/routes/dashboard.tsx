@@ -218,13 +218,13 @@ function Dashboard() {
               <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
                 <TrendingUp className="h-3.5 w-3.5 text-primary" /> Nota média
               </div>
-              <p className="mt-2 text-3xl md:text-4xl font-black gradient-text tabular-nums">{media}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text tabular-nums">{media}</p>
             </div>
             <div className="p-5 md:p-6">
               <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
                 <Trophy className="h-3.5 w-3.5 text-primary" /> Melhor nota
               </div>
-              <p className="mt-2 text-3xl md:text-4xl font-black gradient-text tabular-nums">{melhor}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text tabular-nums">{melhor}</p>
             </div>
           </div>
         </Card>
@@ -241,11 +241,11 @@ function Dashboard() {
             </div>
             <div className="p-5 md:p-6">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">Nota média</div>
-              <p className="mt-2 text-3xl md:text-4xl font-black gradient-text tabular-nums">{mediaSim}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text tabular-nums">{mediaSim}</p>
             </div>
             <div className="p-5 md:p-6">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">Melhor nota</div>
-              <p className="mt-2 text-3xl md:text-4xl font-black gradient-text tabular-nums">{melhorSim}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold gradient-text tabular-nums">{melhorSim}</p>
             </div>
           </div>
         </Card>
