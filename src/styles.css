@@ -630,3 +630,8 @@
   .hero-dots, .hero-blob, .hero-laser { animation: none !important; }
 }
 
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
