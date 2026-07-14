@@ -212,7 +212,7 @@ function Dashboard() {
               <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
                 <FileText className="h-3.5 w-3.5 text-primary" /> Corrigidas
               </div>
-              <p className="mt-2 text-3xl md:text-4xl font-black tabular-nums">{redacoes.length}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold tabular-nums">{redacoes.length}</p>
             </div>
             <div className="p-5 md:p-6">
               <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
@@ -237,7 +237,7 @@ function Dashboard() {
           <div className="grid grid-cols-3 divide-x divide-white/5">
             <div className="p-5 md:p-6">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">Feitos</div>
-              <p className="mt-2 text-3xl md:text-4xl font-black tabular-nums">{tentativas.length}</p>
+              <p className="mt-2 text-3xl md:text-4xl font-bold tabular-nums">{tentativas.length}</p>
             </div>
             <div className="p-5 md:p-6">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">Nota média</div>
