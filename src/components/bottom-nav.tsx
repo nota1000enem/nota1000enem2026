@@ -94,7 +94,7 @@ export function BottomNav() {
                   }`}
                 >
                   {active && (
-                    <span className="absolute -top-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_12px_oklch(0.58_0.32_25/0.8)]" />
+                    <span className="absolute -top-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-primary" />
                   )}
                   <Icon
                     className={`h-5 w-5 transition-transform ${active ? "scale-110" : "group-active:scale-90"}`}
@@ -118,7 +118,7 @@ export function BottomNav() {
               aria-expanded={openMore}
             >
               {openMore && (
-                <span className="absolute -top-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_12px_oklch(0.58_0.32_25/0.8)]" />
+                <span className="absolute -top-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-primary" />
               )}
               <MoreHorizontal
                 className={`h-5 w-5 transition-transform ${openMore ? "scale-110" : "group-active:scale-90"}`}
