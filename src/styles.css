@@ -481,17 +481,22 @@
 }
 .bottom-nav-item:active { transform: scale(0.92); }
 
-/* Espaço extra no fim do conteúdo no mobile pra não ficar embaixo da bottom nav */
+/* Espaço extra no fim do conteúdo no mobile pra não ficar embaixo da bottom nav + FAB */
 @media (max-width: 767px) {
-  #main-content { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+  #main-content { padding-bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px)); }
 }
 
-/* FAB do Telegram sobe acima da bottom nav no mobile */
+/* FAB do Telegram sobe acima da bottom nav no mobile e fica compacto */
 @media (max-width: 767px) {
   a[aria-label="Entrar no grupo VIP do Telegram"] {
-    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(4.9rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+    transform: scale(0.9);
+    transform-origin: bottom right;
   }
 }
+
 
 /* Navbar compacto ao rolar */
 .nav-shrink { transition: padding 0.25s ease, background-color 0.25s ease; }
