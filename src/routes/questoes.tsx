@@ -40,6 +40,19 @@ function QuestoesPage() {
   const carregado = !planLoading;
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [provaSelecionada, setProvaSelecionada] = useState<string | undefined>();
+  const [cupomSimAtivo, setCupomSimAtivo] = useState(false);
+
+  async function loadCupom() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setCupomSimAtivo(false); return; }
+    const { data } = await supabase
+      .from("beneficios_cupom")
+      .select("simulado_expira_em")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const exp = data?.simulado_expira_em ? new Date(data.simulado_expira_em) : null;
+    setCupomSimAtivo(!!exp && exp.getTime() > Date.now());
+  }
 
   useEffect(() => {
     (async () => {
@@ -50,7 +63,10 @@ function QuestoesPage() {
         .order("ordem");
       setSims((simData as Sim[]) ?? []);
     })();
+    loadCupom();
   }, []);
+
+  const acessoLiberado = planoPago || cupomSimAtivo;
 
   const isFreeSim = (id: string) => {
     const idx = sims.findIndex((s) => s.id === id);
@@ -59,7 +75,7 @@ function QuestoesPage() {
 
   function handleProva(id: string) {
     const free = isFreeSim(id);
-    if (planoPago || (loggedIn && free)) {
+    if (acessoLiberado || (loggedIn && free)) {
       navigate({ to: "/simulado/$id", params: { id } });
       return;
     }
@@ -71,6 +87,7 @@ function QuestoesPage() {
     setProvaSelecionada(sim ? `O simulado "${sim.nome}"` : undefined);
     setShowUpgrade(true);
   }
+
 
 
   return (
