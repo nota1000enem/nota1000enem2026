@@ -15,6 +15,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { ProfileIncompleteBanner } from "@/components/profile-incomplete-banner";
+import { CupomResgate } from "@/components/cupom-resgate";
+
 
 import { Sparkles, Brain, Flame, Loader2 } from "lucide-react";
 import { Lock, Crown, Zap } from "lucide-react";
@@ -257,7 +259,12 @@ function RedacaoPage() {
 
         <div className="mt-6"><ProfileIncompleteBanner /></div>
 
+        {user && !access.isPaid && (
+          <CupomResgate tipo="redacao" onResgatado={recarregarStatus} />
+        )}
+
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
+
 
           <Card className="card-glass p-6">
             {bloqueado && (

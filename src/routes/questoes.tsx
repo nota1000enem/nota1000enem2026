@@ -9,6 +9,8 @@ import { Sparkles, AlertTriangle, BookOpen, Play, Lock, Crown } from "lucide-rea
 import { supabase } from "@/integrations/supabase/client";
 import { usePlanAccess } from "@/hooks/use-plan-access";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { CupomResgate } from "@/components/cupom-resgate";
+
 
 
 export const Route = createFileRoute("/questoes")({
@@ -40,6 +42,19 @@ function QuestoesPage() {
   const carregado = !planLoading;
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [provaSelecionada, setProvaSelecionada] = useState<string | undefined>();
+  const [cupomSimAtivo, setCupomSimAtivo] = useState(false);
+
+  async function loadCupom() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setCupomSimAtivo(false); return; }
+    const { data } = await supabase
+      .from("beneficios_cupom")
+      .select("simulado_expira_em")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const exp = data?.simulado_expira_em ? new Date(data.simulado_expira_em) : null;
+    setCupomSimAtivo(!!exp && exp.getTime() > Date.now());
+  }
 
   useEffect(() => {
     (async () => {
@@ -50,7 +65,10 @@ function QuestoesPage() {
         .order("ordem");
       setSims((simData as Sim[]) ?? []);
     })();
+    loadCupom();
   }, []);
+
+  const acessoLiberado = planoPago || cupomSimAtivo;
 
   const isFreeSim = (id: string) => {
     const idx = sims.findIndex((s) => s.id === id);
@@ -59,7 +77,7 @@ function QuestoesPage() {
 
   function handleProva(id: string) {
     const free = isFreeSim(id);
-    if (planoPago || (loggedIn && free)) {
+    if (acessoLiberado || (loggedIn && free)) {
       navigate({ to: "/simulado/$id", params: { id } });
       return;
     }
@@ -71,6 +89,7 @@ function QuestoesPage() {
     setProvaSelecionada(sim ? `O simulado "${sim.nome}"` : undefined);
     setShowUpgrade(true);
   }
+
 
 
   return (
@@ -89,7 +108,7 @@ function QuestoesPage() {
         </p>
 
 
-        {carregado && !planoPago && (
+        {carregado && !planoPago && !cupomSimAtivo && (
           <Card className="card-glass mt-4 p-5 border-primary/40 bg-primary/5">
             <div className="flex items-start gap-3">
               <Crown className="mt-0.5 h-5 w-5 text-primary" />
@@ -109,26 +128,32 @@ function QuestoesPage() {
           </Card>
         )}
 
+        {carregado && cupomSimAtivo && !planoPago && (
+          <Card className="card-glass mt-4 p-4 border-emerald-500/40 bg-emerald-500/5">
+            <p className="text-sm text-emerald-300 font-semibold">
+              🎁 Acesso liberado por cupom — simulados desbloqueados por 30 dias.
+            </p>
+          </Card>
+        )}
+
+        {loggedIn && !planoPago && (
+          <CupomResgate tipo="simulado" onResgatado={loadCupom} />
+        )}
+
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {sims.map((s, idx) => {
             const free = idx < 4;
-            const liberado = planoPago || (loggedIn && free);
+            const liberado = acessoLiberado || (loggedIn && free);
             return (
               <Card key={s.id} className="card-glass p-6 relative">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <BookOpen className="h-3 w-3" /> {s.total_questoes} questões mistas
                   </div>
-                  {free ? (
-                    <Badge variant="outline" className="shrink-0 border-emerald-500/40 text-emerald-400">
-                      Grátis com login
+                  {!free && !acessoLiberado && (
+                    <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
+                      <Lock className="mr-1 h-3 w-3" /> Premium
                     </Badge>
-                  ) : (
-                    !planoPago && (
-                      <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
-                        <Lock className="mr-1 h-3 w-3" /> Premium
-                      </Badge>
-                    )
                   )}
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-primary">{s.nome}</h2>
@@ -141,7 +166,7 @@ function QuestoesPage() {
                   {liberado ? (
                     <><Play className="mr-1 h-4 w-4" /> Iniciar prova</>
                   ) : free && !loggedIn ? (
-                    <><Lock className="mr-1 h-4 w-4" /> Entrar para acessar grátis</>
+                    <><Lock className="mr-1 h-4 w-4" /> Entrar para acessar</>
                   ) : (
                     <><Lock className="mr-1 h-4 w-4" /> Desbloquear simulados</>
                   )}
@@ -161,4 +186,5 @@ function QuestoesPage() {
     </div>
   );
 }
+
 

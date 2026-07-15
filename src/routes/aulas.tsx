@@ -419,7 +419,7 @@ function Aulas() {
                               </div>
                             )}
                             <Badge className="absolute right-3 top-3" variant="outline">
-                              {liberada ? (<><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>) : free ? (<>Grátis com login</>) : (<><Lock className="mr-1 h-3 w-3" /> Premium</>)}
+                              {liberada ? (<><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>) : free ? (<><PlayCircle className="mr-1 h-3 w-3" /> Liberada</>) : (<><Lock className="mr-1 h-3 w-3" /> Premium</>)}
                             </Badge>
                             <span className="absolute left-3 top-3 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-primary/30">
                               Aula {String(idx + 1).padStart(2, "0")}
