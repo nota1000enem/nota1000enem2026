@@ -65,6 +65,27 @@ export type Database = {
         }
         Relationships: []
       }
+      beneficios_cupom: {
+        Row: {
+          atualizado_em: string
+          redacao_creditos: number
+          simulado_expira_em: string | null
+          user_id: string
+        }
+        Insert: {
+          atualizado_em?: string
+          redacao_creditos?: number
+          simulado_expira_em?: string | null
+          user_id: string
+        }
+        Update: {
+          atualizado_em?: string
+          redacao_creditos?: number
+          simulado_expira_em?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cobrancas: {
         Row: {
           assinatura_id: string
@@ -111,6 +132,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cupons_resgatados: {
+        Row: {
+          codigo: string
+          criado_em: string
+          user_id: string
+        }
+        Insert: {
+          codigo: string
+          criado_em?: string
+          user_id: string
+        }
+        Update: {
+          codigo?: string
+          criado_em?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       email_send_log: {
         Row: {
@@ -834,6 +873,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      resgatar_cupom: { Args: { _codigo: string }; Returns: Json }
       tier_rank: { Args: { _t: string }; Returns: number }
       user_plan_tier: { Args: { _user_id: string }; Returns: string }
       verificar_codigo_email: { Args: { _codigo: string }; Returns: Json }
