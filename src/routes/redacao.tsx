@@ -91,12 +91,14 @@ function RedacaoPage() {
       limite?: number;
       usadas?: number;
       creditos?: number;
+      plano?: string;
     };
     setBloqueado(!r.pode);
     setMotivoBloqueio(r.motivo ?? "");
     setLimite(r.limite ?? 1);
     setUsadas(r.usadas ?? 0);
     setCreditos(r.creditos ?? 0);
+    setPlanoAtual(r.plano ?? "free");
   }
 
   useEffect(() => {
