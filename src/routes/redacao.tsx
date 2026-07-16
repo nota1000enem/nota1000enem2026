@@ -76,6 +76,7 @@ function RedacaoPage() {
   const [limite, setLimite] = useState<number>(1);
   const [usadas, setUsadas] = useState<number>(0);
   const [creditos, setCreditos] = useState<number>(0);
+  const [planoAtual, setPlanoAtual] = useState<string>("free");
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
