@@ -262,9 +262,19 @@ function RedacaoPage() {
 
         <div className="mt-6"><ProfileIncompleteBanner /></div>
 
-        {user && !access.isPaid && (
+        {user && !access.isPaid && planoAtual !== "cupom" && (
           <CupomResgate tipo="redacao" onResgatado={recarregarStatus} />
         )}
+
+        {user && planoAtual === "cupom" && (
+          <Card className="card-glass mt-4 p-4 border-emerald-500/40 bg-emerald-500/5">
+            <p className="text-sm font-semibold text-emerald-300">
+              🎁 Cupom ativo — você tem {creditos} {creditos === 1 ? "correção" : "correções"} de redação disponíveis.
+            </p>
+          </Card>
+        )}
+
+
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
 
