@@ -143,7 +143,14 @@ export function BottomNav() {
             onClick={() => setOpenMore(false)}
             className="absolute inset-0 bg-black/70 animate-in fade-in"
           />
-          <div className="more-sheet absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border/50 bg-background shadow-2xl">
+          <div
+            className="more-sheet absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border/50 shadow-2xl"
+            style={{
+              background: "oklch(0.04 0.005 25)",
+              isolation: "isolate",
+              transform: "translateZ(0)",
+            }}
+          >
 
             <div className="relative mx-auto flex max-w-md flex-col gap-4 px-5 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3">
               <div className="mx-auto h-1.5 w-12 rounded-full bg-muted-foreground/30" />
@@ -170,8 +177,8 @@ export function BottomNav() {
                       onClick={() => setOpenMore(false)}
                       className={`flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-center text-[11px] font-semibold transition active:scale-95 ${
                         active
-                          ? "border-primary/60 bg-primary/10 text-primary"
-                          : "border-border/50 bg-muted/30 text-foreground"
+                          ? "border-primary/60 bg-primary/15 text-primary"
+                          : "border-border/60 bg-card text-foreground"
                       }`}
                     >
                       <Icon className="h-5 w-5" />
