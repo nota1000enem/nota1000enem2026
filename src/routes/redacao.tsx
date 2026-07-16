@@ -318,9 +318,11 @@ function RedacaoPage() {
               </Label>
               <span className="flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                 <Zap className="h-3 w-3" />
-                {access.isPaid
-                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
-                  : `${Math.max(0, 2 - usadas)}/2 Grátis`}
+                {planoAtual === "cupom"
+                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} (cupom)`
+                  : access.isPaid
+                    ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
+                    : `${Math.max(0, 2 - usadas)}/2 Grátis`}
               </span>
             </div>
             <Input
