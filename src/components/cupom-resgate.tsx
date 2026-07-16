@@ -18,8 +18,8 @@ export function CupomResgate({ tipo, onResgatado }: Props) {
   const codigoEsperado = tipo === "redacao" ? "REDACAO10" : "SIMULA10";
   const descricao =
     tipo === "redacao"
-      ? "Tem um cupom? Digite o código para liberar 10 correções de redação."
-      : "Tem um cupom? Digite o código para liberar acesso a simulados por 30 dias.";
+      ? "Tem um cupom promocional? Digite o código para liberar seus benefícios de correção de redação."
+      : "Tem um cupom promocional? Digite o código para liberar seus benefícios em simulados.";
 
   async function handleResgate() {
     const cod = codigo.trim().toUpperCase();
@@ -67,7 +67,7 @@ export function CupomResgate({ tipo, onResgatado }: Props) {
             <Input
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-              placeholder={codigoEsperado}
+              placeholder="Digite seu código"
               maxLength={20}
               className="uppercase"
             />
