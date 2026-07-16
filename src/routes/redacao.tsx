@@ -76,6 +76,7 @@ function RedacaoPage() {
   const [limite, setLimite] = useState<number>(1);
   const [usadas, setUsadas] = useState<number>(0);
   const [creditos, setCreditos] = useState<number>(0);
+  const [planoAtual, setPlanoAtual] = useState<string>("free");
 
   useEffect(() => {
     if (!loading && !user) router.navigate({ to: "/auth" });
@@ -90,12 +91,14 @@ function RedacaoPage() {
       limite?: number;
       usadas?: number;
       creditos?: number;
+      plano?: string;
     };
     setBloqueado(!r.pode);
     setMotivoBloqueio(r.motivo ?? "");
     setLimite(r.limite ?? 1);
     setUsadas(r.usadas ?? 0);
     setCreditos(r.creditos ?? 0);
+    setPlanoAtual(r.plano ?? "free");
   }
 
   useEffect(() => {
@@ -259,9 +262,19 @@ function RedacaoPage() {
 
         <div className="mt-6"><ProfileIncompleteBanner /></div>
 
-        {user && !access.isPaid && (
+        {user && !access.isPaid && planoAtual !== "cupom" && (
           <CupomResgate tipo="redacao" onResgatado={recarregarStatus} />
         )}
+
+        {user && planoAtual === "cupom" && (
+          <Card className="card-glass mt-4 p-4 border-emerald-500/40 bg-emerald-500/5">
+            <p className="text-sm font-semibold text-emerald-300">
+              🎁 Cupom ativo — você tem {creditos} {creditos === 1 ? "correção" : "correções"} de redação disponíveis.
+            </p>
+          </Card>
+        )}
+
+
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
 
@@ -305,9 +318,11 @@ function RedacaoPage() {
               </Label>
               <span className="flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                 <Zap className="h-3 w-3" />
-                {access.isPaid
-                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
-                  : `${Math.max(0, 2 - usadas)}/2 Grátis`}
+                {planoAtual === "cupom"
+                  ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} (cupom)`
+                  : access.isPaid
+                    ? `${creditos} ${creditos === 1 ? "crédito" : "créditos"} restantes`
+                    : `${Math.max(0, 2 - usadas)}/2 Grátis`}
               </span>
             </div>
             <Input
