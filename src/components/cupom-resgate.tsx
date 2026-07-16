@@ -67,7 +67,7 @@ export function CupomResgate({ tipo, onResgatado }: Props) {
             <Input
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-              placeholder={codigoEsperado}
+              placeholder="Digite seu código"
               maxLength={20}
               className="uppercase"
             />
