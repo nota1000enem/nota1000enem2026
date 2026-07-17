@@ -237,9 +237,12 @@ function SimuladoPage() {
         </div>
         <Progress value={progresso} className="mt-3" />
 
-        <Card className="card-glass mt-6 p-6">
+        <Card className="card-glass mt-6 p-6" style={{ fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif' }}>
           <div className="mb-2 text-xs uppercase tracking-wider text-primary">{AREA_LABEL[atual.area] ?? atual.area}</div>
-          <h2 className="text-lg font-semibold">{atual.numero}. {atual.enunciado}</h2>
+          <p className="text-[1.15rem] md:text-xl font-medium leading-[1.65] text-foreground whitespace-pre-line" style={{ fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif' }}>
+            <span className="mr-1 font-bold text-primary">{atual.numero}.</span>
+            {atual.enunciado}
+          </p>
 
           <div className="mt-5 space-y-2">
             {alternativas.filter(([, t]) => t !== null).map(([letra, t]) => {
@@ -248,14 +251,15 @@ function SimuladoPage() {
                 <button
                   key={letra}
                   onClick={() => escolher(letra)}
-                  className={`w-full rounded-lg border p-3 text-left text-sm transition ${
+                  className={`w-full rounded-lg border p-4 text-left text-base leading-relaxed transition ${
                     selected
                       ? "border-primary bg-primary/10 ring-1 ring-primary"
                       : "border-border/60 hover:border-primary/50 hover:bg-muted/40"
                   }`}
+                  style={{ fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif' }}
                 >
-                  <span className="mr-2 inline-grid h-6 w-6 place-content-center rounded-full border border-primary/40 text-xs font-bold text-primary">{letra}</span>
-                  {t}
+                  <span className="mr-2 inline-grid h-7 w-7 place-content-center rounded-full border border-primary/40 text-sm font-bold text-primary align-middle">{letra}</span>
+                  <span className="align-middle">{t}</span>
                 </button>
               );
             })}
