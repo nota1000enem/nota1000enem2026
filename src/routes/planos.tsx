@@ -226,25 +226,16 @@ function Planos() {
   const confirmarFn = useServerFn(forcarConfirmacaoMP);
   const checkoutInFlightRef = useRef<PlanType | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<PlanType | null>(null);
-  const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("mp_pending_v1");
-      return raw ? (JSON.parse(raw) as { plan: PlanType; checkoutUrl: string }) : null;
-    } catch { return null; }
-  });
+  const [aguardandoPgto, setAguardandoPgto] = useState<{ plan: PlanType; checkoutUrl: string } | null>(null);
   const [confirmando, setConfirmando] = useState(false);
   const promo = useFakePromoTimer();
 
-  // Persiste/limpa o estado de "aguardando pagamento" entre reloads
+  // Limpa qualquer estado antigo de "aguardando pagamento" ao abrir a página.
+  // O popup só deve aparecer depois que o usuário clicar em um plano nesta sessão.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (aguardandoPgto) {
-      localStorage.setItem("mp_pending_v1", JSON.stringify(aguardandoPgto));
-    } else {
-      localStorage.removeItem("mp_pending_v1");
-    }
-  }, [aguardandoPgto]);
+    try { localStorage.removeItem("mp_pending_v1"); } catch {}
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
