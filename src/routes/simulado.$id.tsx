@@ -207,7 +207,7 @@ function SimuladoPage() {
                     {ok ? <CheckCircle2 className="mt-1 h-5 w-5 text-green-500" /> : <XCircle className="mt-1 h-5 w-5 text-destructive" />}
                     <div className="flex-1">
                       <p className="text-xs text-muted-foreground">Questão {i + 1} · {AREA_LABEL[q.area] ?? q.area}</p>
-                      <p className="mt-1 text-sm">{q.enunciado}</p>
+                      <p className="mt-1 text-base leading-relaxed whitespace-pre-line" style={{ fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif' }}>{q.enunciado}</p>
                       <p className="mt-2 text-xs">
                         Sua resposta: <span className={ok ? "text-green-500 font-semibold" : "text-destructive font-semibold"}>{marc ?? "—"}</span>
                         {" · "}Gabarito: <span className="text-primary font-semibold">{correta}</span>
