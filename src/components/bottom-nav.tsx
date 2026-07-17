@@ -15,6 +15,7 @@ import {
   LogOut,
   LogIn,
   X,
+  Send,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
