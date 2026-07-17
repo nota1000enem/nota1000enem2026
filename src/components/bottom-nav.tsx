@@ -137,19 +137,23 @@ export function BottomNav() {
           role="dialog"
           aria-modal="true"
           aria-label="Mais opções"
+          style={{ isolation: "isolate" }}
         >
           <button
             type="button"
             aria-label="Fechar"
             onClick={() => setOpenMore(false)}
-            className="absolute inset-0 bg-black/70 animate-in fade-in"
+            className="absolute inset-0"
+            style={{ background: "rgba(0,0,0,0.92)" }}
           />
           <div
             className="more-sheet absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border/50 shadow-2xl"
             style={{
-              background: "oklch(0.04 0.005 25)",
+              background: "#0a0a0f",
+              backgroundColor: "#0a0a0f",
               isolation: "isolate",
               transform: "translateZ(0)",
+              willChange: "transform",
             }}
           >
 
@@ -160,12 +164,23 @@ export function BottomNav() {
                 <button
                   type="button"
                   onClick={() => setOpenMore(false)}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-muted/60 text-muted-foreground active:scale-95"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-card text-muted-foreground active:scale-95 border border-border/60"
                   aria-label="Fechar"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
+
+              <a
+                href="https://t.me/+wr3mUBagkQkyODYx"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpenMore(false)}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] px-4 py-3 text-sm font-bold text-white shadow-lg ring-2 ring-white/20 active:scale-[0.98]"
+              >
+                <Send className="h-4 w-4" />
+                GRUPO VIP ENEM · TELEGRAM
+              </a>
 
               <div className="grid grid-cols-3 gap-2">
                 {moreLinks.map((l) => {
@@ -181,6 +196,7 @@ export function BottomNav() {
                           ? "border-primary/60 bg-primary/15 text-primary"
                           : "border-border/60 bg-card text-foreground"
                       }`}
+                      style={{ backgroundColor: active ? undefined : "#141420" }}
                     >
                       <Icon className="h-5 w-5" />
                       <span className="leading-tight">{l.label}</span>
@@ -188,6 +204,7 @@ export function BottomNav() {
                   );
                 })}
               </div>
+
 
               <div className="flex flex-col gap-1.5 rounded-2xl border border-border/50 bg-muted/20 p-1.5">
                 {accountLinks.map((l) => {
