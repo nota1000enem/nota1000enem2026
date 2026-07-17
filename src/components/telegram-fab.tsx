@@ -12,7 +12,7 @@ export function TelegramFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Entrar no grupo VIP do Telegram"
-      className="group fixed bottom-4 right-4 z-[60] flex max-w-[calc(100vw-2rem)] items-center gap-2 overflow-hidden rounded-full bg-[length:200%_200%] bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] px-3 py-2.5 font-bold text-white shadow-2xl shadow-red-500/60 ring-2 ring-white/40 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 animate-[gradient-shift_3s_ease_infinite] sm:bottom-5 sm:right-5 sm:px-4 sm:py-3"
+      className="group fixed bottom-5 right-5 z-[60] hidden max-w-[calc(100vw-2rem)] items-center gap-2 overflow-hidden rounded-full bg-[length:200%_200%] bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] px-4 py-3 font-bold text-white shadow-2xl shadow-red-500/60 ring-2 ring-white/40 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 animate-[gradient-shift_3s_ease_infinite] md:flex"
     >
       <span
         className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#dc2626] via-[#ef4444] to-[#7f1d1d] opacity-70 blur-lg animate-pulse"
