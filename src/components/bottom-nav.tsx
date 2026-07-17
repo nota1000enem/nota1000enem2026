@@ -206,7 +206,7 @@ export function BottomNav() {
               </div>
 
 
-              <div className="flex flex-col gap-1.5 rounded-2xl border border-border/50 bg-muted/20 p-1.5">
+              <div className="flex flex-col gap-1.5 rounded-2xl border border-border/50 p-1.5" style={{ backgroundColor: "#141420" }}>
                 {accountLinks.map((l) => {
                   const Icon = l.icon;
                   return (
