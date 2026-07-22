@@ -1,0 +1,2 @@
+-- CONTEÚDO GERADO A PARTIR DE /tmp/mig_full.sql (377940 bytes, 370 questões)
+-- Cole aqui o conteúdo completo do arquivo mig_full.sql
